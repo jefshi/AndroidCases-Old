@@ -161,16 +161,4 @@ public abstract class BaseLibraryFragmentActivity extends FragmentActivity imple
     public boolean isEmpty(Object[] array) {
         return array == null || array.length == 0;
     }
-
-    @Override
-    public void logError(Object message) {
-        if (SystemConstant.LOG_DEBUG)
-            LogCat.log(Log.ERROR, 2, null, message);
-    }
-
-    @Override
-    public void logError(String explain, Object message) {
-        if (SystemConstant.LOG_DEBUG)
-            LogCat.log(Log.ERROR, 2, explain, message);
-    }
 }

@@ -9,6 +9,8 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Description: 日志打印
@@ -23,6 +25,7 @@ import java.util.List;
 public class LogCat {
     private static final boolean DEBUG = SystemConstant.LOG_DEBUG;
     private static final int LOG_MAX_LENGTH = 4096; // Android 能够打印的最大日志长度
+    public static final int DEFAULT_STACK_ID = 2;
 
     /**
      * 获取日志标签, 例: --[类名][方法名]
@@ -156,6 +159,32 @@ public class LogCat {
     }
 
     /**
+     * 格式化[Message]
+     *
+     * @param explain  日志说明
+     * @param messages 日志内容
+     */
+    private static String formatLog(String explain, Map messages) {
+        StringBuilder log = new StringBuilder();
+        if (messages.isEmpty()) {
+            log.append(": null");
+        } else {
+            Set keys = messages.keySet();
+            int i = 0;
+            for (Object key : keys) {
+                log.append('\n').append(explain == null ? "" : explain)
+                        .append("[")
+                        .append(i).append(", ").append(key)
+                        .append("]: ")
+                        .append(messages.get(key));
+                i++;
+            }
+            log.deleteCharAt(0);
+        }
+        return log.toString();
+    }
+
+    /**
      * 打印日志(生成[Message])
      *
      * @param stackId 异常栈序号, 用于获取日志标签
@@ -168,7 +197,9 @@ public class LogCat {
             return;
 
         String log;
-        if (message instanceof Collection) {
+        if (message instanceof Map) {
+            log = formatLog(explain, (Map) message);
+        } else if (message instanceof Collection) {
             log = formatLog(explain, (Collection) message);
         } else if (message.getClass().isArray()) {
             log = formatLog(explain, (Object[]) message);
@@ -184,97 +215,97 @@ public class LogCat {
      * @see #log(int, int, String, Object)
      */
     public static void log(int level, String explain, Object message) {
-        log(level, 2, explain, message);
+        log(level, DEFAULT_STACK_ID, explain, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void log(int level, Object message) {
-        log(level, 2, null, message);
+        log(level, DEFAULT_STACK_ID, null, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void a(String explain, Object message) {
-        log(Log.ASSERT, 2, explain, message);
+        log(Log.ASSERT, DEFAULT_STACK_ID, explain, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void a(Object message) {
-        log(Log.ASSERT, 2, null, message);
+        log(Log.ASSERT, DEFAULT_STACK_ID, null, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void e(String explain, Object message) {
-        log(Log.ERROR, 2, explain, message);
+        log(Log.ERROR, DEFAULT_STACK_ID, explain, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void e(Object message) {
-        log(Log.ERROR, 2, null, message);
+        log(Log.ERROR, DEFAULT_STACK_ID, null, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void w(String explain, Object message) {
-        log(Log.WARN, 2, explain, message);
+        log(Log.WARN, DEFAULT_STACK_ID, explain, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void w(Object message) {
-        log(Log.WARN, 2, null, message);
+        log(Log.WARN, DEFAULT_STACK_ID, null, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void i(String explain, Object message) {
-        log(Log.INFO, 2, explain, message);
+        log(Log.INFO, DEFAULT_STACK_ID, explain, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void i(Object message) {
-        log(Log.INFO, 2, null, message);
+        log(Log.INFO, DEFAULT_STACK_ID, null, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void d(String explain, Object message) {
-        log(Log.DEBUG, 2, explain, message);
+        log(Log.DEBUG, DEFAULT_STACK_ID, explain, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void d(Object message) {
-        log(Log.DEBUG, 2, null, message);
+        log(Log.DEBUG, DEFAULT_STACK_ID, null, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void v(String explain, Object message) {
-        log(Log.VERBOSE, 2, explain, message);
+        log(Log.VERBOSE, DEFAULT_STACK_ID, explain, message);
     }
 
     /**
      * @see #log(int, int, String, Object)
      */
     public static void v(Object message) {
-        log(Log.VERBOSE, 2, null, message);
+        log(Log.VERBOSE, DEFAULT_STACK_ID, null, message);
     }
 }

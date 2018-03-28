@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description: Android 6.0以上 动态权限获取案例
@@ -55,24 +56,7 @@ public class PermissionActivity extends BaseListActivity {
     }
 
     private void requestAllPermissions() {
-        List<String> log = new ArrayList<>();
-        log.add("asdrwer");
-        log.add("fatewqtdffd");
-
-
-        LogCat.e(new Date());
-        LogCat.e("women");
-        LogCat.e("yayaya", new String[]{"women", "aaa"});
-        LogCat.e(log);
-
-        LogCat.e("==========================");
-
-        logError(new Date());
-        logError("women");
-        logError("yayaya", new String[]{"women", "aaa"});
-        logError(log);
-
-//        PermissionUtil.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE);
+        PermissionUtil.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE);
     }
 
     @Override
