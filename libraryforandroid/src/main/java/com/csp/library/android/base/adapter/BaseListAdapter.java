@@ -169,7 +169,7 @@ public abstract class BaseListAdapter<T> extends BaseAdapter {
 	 * 获取当前[Item]对象
 	 * <p>重复利用，防止反复创建的资源消耗
 	 */
-	private View getConvertView(int position, View convertView, ViewGroup parent) {
+	protected View getConvertView(int position, View convertView, ViewGroup parent) {
 		if (convertView == null) {
 			int type = getItemViewType(position);
 			convertView = inflater.inflate(resources[type], parent, false);

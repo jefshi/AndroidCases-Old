@@ -55,10 +55,6 @@ public class PermissionActivity extends BaseListActivity {
         return items;
     }
 
-    private void requestAllPermissions() {
-        PermissionUtil.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE);
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -73,5 +69,10 @@ public class PermissionActivity extends BaseListActivity {
         super.onRestart();
 
         PermissionUtil.requestMustPermissions(this, mustPermissions, PERMISSIONS_REQUEST_CODE);
+    }
+
+    // 动态获取权限
+    private void requestAllPermissions() {
+        PermissionUtil.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE);
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ArcLayout">
+        <attr name="fromDegrees" format="float" />
+        <attr name="toDegrees" format="float" />
+        <attr name="radius" format="dimension" />
+        <attr name="center_radius" format="dimension" />
+        <attr name="src" format="reference" />
+        <!--<attr name="childSize"/>-->
+    </declare-styleable>
+</resources>

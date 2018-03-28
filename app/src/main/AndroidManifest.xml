@@ -1,184 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-		  package="com.csp.cases">
+    package="com.csp.cases">
 
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-	<uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
-	<!-- 悬浮窗 -->
-	<uses-permission android:name="android.Manifest.permission.SYSTEM_ALERT_WINDOW"/>
+    <!-- 悬浮窗 -->
+    <uses-permission android:name="android.Manifest.permission.SYSTEM_ALERT_WINDOW" />
 
-	<!-- 存储相关 -->
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-	<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <!-- 存储相关 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
-	<!-- 自定义权限 -->
-	<permission android:name="android.cases.custom.permission"/>
-	<uses-permission android:name="android.cases.custom.permission"/>
+    <!-- 自定义权限 -->
+    <permission android:name="android.cases.custom.permission" />
+    <uses-permission android:name="android.cases.custom.permission" />
 
-	<application
-		android:allowBackup="true"
-		android:icon="@mipmap/item_card"
-		android:label="@string/app_name"
-		android:roundIcon="@mipmap/ic_launcher_round"
-		android:supportsRtl="true"
-		android:theme="@style/AppTheme">
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/item_card"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
 
-		<!-- 静态注册广播 -->
-		<receiver
-			android:name=".activity.broadcast.StaticReceiver"
-			android:enabled="true"
-			android:exported="true">
-			<intent-filter android:priority="100">
-				<action android:name="android.cases.receiver"/>
-			</intent-filter>
-		</receiver>
+        <!-- 静态注册广播 -->
+        <receiver
+            android:name=".activity.broadcast.StaticReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="100">
+                <action android:name="android.cases.receiver" />
+            </intent-filter>
+        </receiver>
 
-		<activity
-			android:name=".MainActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN"/>
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-				<category android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
-		</activity>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-		<!-- 启动模式 -->
-		<activity
-			android:name=".activity.activity.luanchmod.LauchModeActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:launchMode="standard"
-			android:screenOrientation="landscape"/>
+        <!-- 启动模式 -->
+        <activity
+            android:name=".activity.activity.luanchmod.LauchModeActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="standard"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.activity.luanchmod.SingleTopActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:launchMode="singleTop"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.activity.luanchmod.SingleTopActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.activity.luanchmod.SingleTaskActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:launchMode="singleTask"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.activity.luanchmod.SingleTaskActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.activity.luanchmod.SingleInstanceActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:launchMode="singleInstance"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.activity.luanchmod.SingleInstanceActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape" />
 
-		<!-- 案例Activity -->
-		<activity
-			android:name=".activity.AnimationActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <!-- 案例Activity -->
+        <activity
+            android:name=".activity.AnimationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.broadcast.BroadcastActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.broadcast.BroadcastActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.permissions.PermissionActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.permissions.PermissionActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.uicomponent.DialogActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.uicomponent.DialogActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.uicomponent.NotificationActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.uicomponent.NotificationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.uicomponent.ToastActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.uicomponent.ToastActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.MetricsActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.MetricsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.storage.StorageActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.storage.StorageActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.SharedPreferencesActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.SharedPreferencesActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.view.ViewActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.view.ViewActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.view.ViewEventActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.view.ViewEventActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.storage.database.SqliteActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.storage.database.SqliteActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.ProcessActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.ProcessActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.intent.IntentActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.intent.IntentActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.thread.ThreadActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.thread.ThreadActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.thread.RxjavaActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.thread.RxjavaActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.network.NetworkActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.network.NetworkActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.network.VolleyActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.network.VolleyActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.network.OkHttpActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.network.OkHttpActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.network.RetrofitActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.network.RetrofitActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-		<activity
-			android:name=".activity.activity.ActivityActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.activity.ActivityActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
-	</application>
+
+        <activity
+            android:name=".activity.view.arcmenu.ArcActicity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
+
+    </application>
 
 </manifest>

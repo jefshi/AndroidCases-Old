@@ -1,5 +1,6 @@
 package com.csp.library.android.util.log;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.csp.library.android.constants.SystemConstant;
@@ -15,7 +16,7 @@ import java.util.Set;
 /**
  * Description: 日志打印
  * <p>Create Date: 2017/7/14
- * <p>Modify Date: 20180328
+ * <p>Modify Date: 2018/03/28
  *
  * @author csp
  * @version 1.0.3
@@ -121,13 +122,13 @@ public class LogCat {
      * @param explain  日志说明
      * @param messages 日志内容
      */
-    private static String formatLog(String explain, Object[] messages) {
+    private static String formatLog(@NonNull String explain, Object[] messages) {
         StringBuilder log = new StringBuilder();
         if (messages.length == 0) {
             log.append(": null");
         } else {
             for (int i = 0; i < messages.length; i++) {
-                log.append('\n').append(explain == null ? "" : explain)
+                log.append('\n').append(explain)
                         .append("[").append(i).append("]: ")
                         .append(messages[i]);
             }
@@ -142,14 +143,14 @@ public class LogCat {
      * @param explain  日志说明
      * @param messages 日志内容
      */
-    private static String formatLog(String explain, Collection messages) {
+    private static String formatLog(@NonNull String explain, Collection messages) {
         StringBuilder log = new StringBuilder();
         if (messages.isEmpty()) {
             log.append(": null");
         } else {
             Iterator iterator = messages.iterator();
             for (int i = 0; iterator.hasNext(); i++) {
-                log.append('\n').append(explain == null ? "" : explain)
+                log.append('\n').append(explain)
                         .append("[").append(i).append("]: ")
                         .append(iterator.next());
             }
@@ -164,7 +165,7 @@ public class LogCat {
      * @param explain  日志说明
      * @param messages 日志内容
      */
-    private static String formatLog(String explain, Map messages) {
+    private static String formatLog(@NonNull String explain, Map messages) {
         StringBuilder log = new StringBuilder();
         if (messages.isEmpty()) {
             log.append(": null");
@@ -172,7 +173,7 @@ public class LogCat {
             Set keys = messages.keySet();
             int i = 0;
             for (Object key : keys) {
-                log.append('\n').append(explain == null ? "" : explain)
+                log.append('\n').append(explain)
                         .append("[")
                         .append(i).append(", ").append(key)
                         .append("]: ")
@@ -197,6 +198,7 @@ public class LogCat {
             return;
 
         String log;
+        explain = explain == null ? "" : explain;
         if (message instanceof Map) {
             log = formatLog(explain, (Map) message);
         } else if (message instanceof Collection) {
@@ -223,20 +225,6 @@ public class LogCat {
      */
     public static void log(int level, Object message) {
         log(level, DEFAULT_STACK_ID, null, message);
-    }
-
-    /**
-     * @see #log(int, int, String, Object)
-     */
-    public static void a(String explain, Object message) {
-        log(Log.ASSERT, DEFAULT_STACK_ID, explain, message);
-    }
-
-    /**
-     * @see #log(int, int, String, Object)
-     */
-    public static void a(Object message) {
-        log(Log.ASSERT, DEFAULT_STACK_ID, null, message);
     }
 
     /**
