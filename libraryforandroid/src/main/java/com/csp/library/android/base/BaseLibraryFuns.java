@@ -46,18 +46,4 @@ interface BaseLibraryFuns extends VerifyEmpty {
 	 * @see com.csp.library.android.util.log.LogCat#e(String, Object)
 	 */
 	void logError(String explain, Object message);
-
-	/**
-	 * 打印日志
-	 *
-	 * @see com.csp.library.android.util.log.LogCat#e(String, Object[])
-	 */
-	void logError(String explain, Object[] message);
-
-	/**
-	 * 打印日志
-	 *
-	 * @see com.csp.library.android.util.log.LogCat#e(String, List)
-	 */
-	void logError(String explain, List message);
 }

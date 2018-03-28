@@ -3,6 +3,7 @@ package com.csp.cases.base.activity;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -28,96 +29,84 @@ import java.util.List;
  * @since AndroidCases 1.0.0
  */
 public abstract class BaseActivity extends BaseLibraryActivity implements ItemInterface {
-	protected Bundle bundle;
-	private TextView txtDescription;
-	private String description;
+    protected Bundle bundle;
+    private TextView txtDescription;
+    private String description;
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setTxtDescription(TextView txtDescription) {
-		this.txtDescription = txtDescription;
-	}
+    public void setTxtDescription(TextView txtDescription) {
+        this.txtDescription = txtDescription;
+    }
 
-	@Override
-	public void initBundle() {
-		if (getIntent() != null)
-			bundle = getIntent().getExtras();
-	}
+    @Override
+    public void initBundle() {
+        if (getIntent() != null)
+            bundle = getIntent().getExtras();
+    }
 
-	@Override
-	public void initViewEvent() {
-	}
+    @Override
+    public void initViewEvent() {
+    }
 
-	@Override
-	public void initViewContent() {
-		String caseDescription = null;
-		if (bundle != null)
-			caseDescription = bundle.getString(ItemAdapter.KEY_DESCRIPTION);
+    @Override
+    public void initViewContent() {
+        String caseDescription = null;
+        if (bundle != null)
+            caseDescription = bundle.getString(ItemAdapter.KEY_DESCRIPTION);
 
-		if (description != null)
-			caseDescription += '\n' + description;
+        if (description != null)
+            caseDescription += '\n' + description;
 
-		txtDescription.setText(caseDescription);
-	}
+        txtDescription.setText(caseDescription);
+    }
 
-	@Override
-	public void onRefresh() {
-	}
+    @Override
+    public void onRefresh() {
+    }
 
-	@Override
-	public void logError(Object message) {
-		if (SystemConstant.LOG_DEBUG)
-			LogCat.e(4, message);
-	}
+    @Override
+    public void logError(Object message) {
+        if (SystemConstant.LOG_DEBUG)
+            LogCat.log(Log.ERROR, 2, null, message);
+    }
 
-	@Override
-	public void logError(String explain, Object message) {
-		if (SystemConstant.LOG_DEBUG)
-			LogCat.e(4, explain, message);
-	}
+    @Override
+    public void logError(String explain, Object message) {
+        if (SystemConstant.LOG_DEBUG)
+            LogCat.log(Log.ERROR, 2, explain, message);
+    }
 
-	@Override
-	public void logError(String explain, Object[] message) {
-		if (SystemConstant.LOG_DEBUG)
-			LogCat.e(4, explain, message);
-	}
+    @Override
+    @SuppressWarnings("RedundantCast")
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public void setAbsListView(AbsListView view, List<ItemInfo> objects) {
+        final ItemAdapter adapter = new ItemAdapter(this, objects);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            view.setAdapter(adapter);
+        } else if (view instanceof ListView) {
+            ((ListView) view).setAdapter(adapter);
+        } else {
+            ((GridView) view).setAdapter(adapter);
+        }
 
-	@Override
-	public void logError(String explain, List message) {
-		if (SystemConstant.LOG_DEBUG)
-			LogCat.e(4, explain, message);
-	}
+        view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View itemview, int position, long id) {
+                description = null;
+                adapter.onItemClick(parent, itemview, position, id);
 
-	@Override
-	@SuppressWarnings("RedundantCast")
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public void setAbsListView(AbsListView view, List<ItemInfo> objects) {
-		final ItemAdapter adapter = new ItemAdapter(this, objects);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			view.setAdapter(adapter);
-		} else if (view instanceof ListView) {
-			((ListView) view).setAdapter(adapter);
-		} else {
-			((GridView) view).setAdapter(adapter);
-		}
+                String text = adapter.getItem(position).getDescription()
+                        + (description == null ? "" : '\n' + description);
+                txtDescription.setText(text);
+            }
+        });
+    }
 
-		view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View itemview, int position, long id) {
-				description = null;
-				adapter.onItemClick(parent, itemview, position, id);
-
-				String text = adapter.getItem(position).getDescription()
-						+ (description == null ? "" : '\n' + description);
-				txtDescription.setText(text);
-			}
-		});
-	}
-
-	@Override
-	public List<ItemInfo> getItemInfos() {
-		return null;
-	}
+    @Override
+    public List<ItemInfo> getItemInfos() {
+        return null;
+    }
 }

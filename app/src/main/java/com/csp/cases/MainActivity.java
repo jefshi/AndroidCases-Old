@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.csp.cases.activity.AnimationActivity;
 import com.csp.cases.activity.MetricsActivity;
-import com.csp.cases.activity.PermissionActivity;
+import com.csp.cases.activity.permissions.PermissionActivity;
 import com.csp.cases.activity.ProcessActivity;
 import com.csp.cases.activity.SharedPreferencesActivity;
 import com.csp.cases.activity.activity.ActivityActivity;
@@ -22,7 +22,7 @@ import com.csp.cases.activity.view.ViewActivity;
 import com.csp.cases.activity.view.ViewEventActivity;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.library.android.util.PermissionUtil;
+import com.csp.library.android.util.permissions.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
