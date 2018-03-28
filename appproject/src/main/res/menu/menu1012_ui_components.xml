@@ -1,0 +1,59 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_launcher"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_settings"/>
+
+    <group android:visible="true" >
+        <item
+            android:id="@+id/menuCall"
+            android:orderInCategory="200"
+            android:showAsAction="always"
+            android:title="拨打号码"/>
+        <item
+            android:id="@+id/menuMedia"
+            android:orderInCategory="101"
+            android:showAsAction="always"
+            android:title="打开相机"/>
+        <item
+            android:id="@+id/menuCopy"
+            android:orderInCategory="250"
+            android:showAsAction="always"
+            android:title="复制文本"
+            android:visible="false"/>
+    </group>
+
+    <item
+        android:id="@+id/menuGrp01"
+        android:orderInCategory="300"
+        android:showAsAction="always"
+        android:title="子菜单">
+        <menu>
+            <item
+                android:id="@+id/menuGrpMenu01"
+                android:icon="@drawable/png_01"
+                android:showAsAction="always"
+                android:title="子菜单01"/>
+            <item
+                android:id="@+id/menuGrpMenu02"
+                android:icon="@drawable/png_02"
+                android:showAsAction="always"
+                android:title="子菜单02(有子菜单)">
+                <menu>
+                    <item
+                        android:id="@+id/menuGrpMenu03"
+                        android:showAsAction="always"
+                        android:title="子菜单02_01"/>
+                    <item
+                        android:id="@+id/menuGrpMenu04"
+                        android:showAsAction="always"
+                        android:title="子菜单02_02"/>
+                </menu>
+            </item>
+        </menu>
+    </item>
+
+</menu>

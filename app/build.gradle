@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+
+    useLibrary 'org.apache.http.legacy'
+
+    defaultConfig {
+        applicationId "com.csp.cases"
+        minSdkVersion 9
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        // testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:percent:25.3.1'
+
+    compile project(':libraryforandroid')
+    compile project(':libraryforjava')
+
+    compile files('libs/network/gson-2.8.0.jar')
+    compile files('libs/network/volley.jar')
+
+    compile files('libs/network/okhttp/okhttp-3.9.0.jar')
+    compile files('libs/network/okhttp/okio-1.13.0.jar')
+
+    compile files('libs/network/retrofit/retrofit-2.3.0.jar')
+    compile files('libs/network/retrofit/converter-gson-2.3.0.jar')
+    compile files('libs/network/retrofit/retrofit2-rxjava2-adapter-1.0.0.jar')
+
+    compile files('libs/rxjava/rxjava-2.1.7.jar')
+    compile files('libs/rxjava/rxandroid-2.0.1.jar')
+
+    compile files('libs/reactive-streams-1.0.1.jar')
+
+    // testCompile 'junit:junit:4.12'
+}

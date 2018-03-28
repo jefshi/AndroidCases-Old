@@ -1,0 +1,1 @@
+include ':app', ':appnote', ':appproject', ':libraryforandroid', ':eclipselibrary', ':lazylibrary', ':libraryforjava', ':sourceofkitkat'
