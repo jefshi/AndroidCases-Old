@@ -181,9 +181,10 @@
 
 
         <activity
-            android:name=".activity.view.arcmenu.ArcActicity"
+            android:name=".activity.windowmanager.WindowManagerActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
+
 
     </application>
 

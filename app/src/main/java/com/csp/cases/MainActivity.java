@@ -2,6 +2,7 @@ package com.csp.cases;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import com.csp.cases.activity.AnimationActivity;
 import com.csp.cases.activity.MetricsActivity;
@@ -20,6 +21,7 @@ import com.csp.cases.activity.uicomponent.NotificationActivity;
 import com.csp.cases.activity.uicomponent.ToastActivity;
 import com.csp.cases.activity.view.ViewActivity;
 import com.csp.cases.activity.view.ViewEventActivity;
+import com.csp.cases.activity.windowmanager.WindowManagerActivity;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.library.android.util.permissions.PermissionUtil;
@@ -65,6 +67,7 @@ public class MainActivity extends BaseGridActivity {
 		items.add(new ItemInfo("Thread", ThreadActivity.class, "线程管理案例"));
 		items.add(new ItemInfo("Network", NetworkActivity.class, "网络案例"));
 		items.add(new ItemInfo("Activity", ActivityActivity.class, "[Activity]案例"));
+		items.add(new ItemInfo("WindowManager", WindowManagerActivity.class, "[Activity]案例"));
 
 		return items;
 	}

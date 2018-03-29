@@ -8,4 +8,6 @@
     <color name="click">#FFB0B0B0</color>
 
     <color name="red_dark">#FFCC0000</color>
+    
+    <color name="mask">#1F000000</color>
 </resources>

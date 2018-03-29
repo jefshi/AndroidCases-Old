@@ -234,13 +234,15 @@ public class AnimationActivity extends BaseListActivity {
 		ObjectAnimator rotation = ObjectAnimator.ofFloat(imgItem, "rotation", 0f, 360f, 0f);
 
 		// 平移
-		ObjectAnimator translation = ObjectAnimator.ofFloat(imgItem, "translationY", 0f, 100f);
+		ObjectAnimator translationX = ObjectAnimator.ofFloat(imgItem, "translationX", 0f, 300f);
+		ObjectAnimator translationY = ObjectAnimator.ofFloat(imgItem, "translationY", 0f, 300f);
 
 		// Set 集合
 		AnimatorSet set = new AnimatorSet();
 		set.play(alpha)
 				.with(rotation)
-				.before(translation)
+				.before(translationX)
+				.before(translationY)
 				.after(scale);
 		set.setDuration(2000);
 		set.addListener(newAnimatorListener());

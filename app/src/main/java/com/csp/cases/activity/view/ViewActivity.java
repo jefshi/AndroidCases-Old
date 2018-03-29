@@ -1,5 +1,6 @@
 package com.csp.cases.activity.view;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,11 +13,13 @@ import android.graphics.Rect;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.csp.cases.R;
-import com.csp.cases.activity.view.arcmenu.ArcActicity;
+import com.csp.cases.activity.view.arcmenu.ArcAdapter;
 import com.csp.cases.activity.view.arcmenu.ArcLayout;
+import com.csp.cases.activity.view.arcmenu.ArcMenu;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
 
@@ -41,7 +44,7 @@ public class ViewActivity extends BaseListActivity {
         List<ItemInfo> items = new ArrayList<>();
         items.add(new ItemInfo("绘制图片", "drawPaint", ""));
         items.add(new ItemInfo("绘制图片", "drawPaint02", ""));
-        items.add(new ItemInfo("自定义[ArcMenu]", ArcActicity.class, ""));
+        items.add(new ItemInfo("自定义[ArcMenu]", "arcMenu", ""));
 
         return items;
     }
@@ -160,5 +163,28 @@ public class ViewActivity extends BaseListActivity {
                 fos.close();
             }
         }
+    }
+
+    /**
+     * 自定义[ArcMenu]
+     */
+    private void arcMenu() {
+        txtItem.setText("测试透明度\n测试透明度\n测试透明度\n测试透明度\n测试透明度\n测试透明度\n");
+
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.view_sample, null, false);
+        lfrItem.addView(view);
+
+        Integer[] resIds = new Integer[]{
+                R.drawable.recorder_goon,
+                R.drawable.recorder_pause,
+                R.drawable.recorder_stop,
+                R.drawable.recorder_start,
+                R.drawable.recorder_browser
+        };
+        ArcAdapter adapter = new ArcAdapter(this, resIds);
+        ArcMenu arc = (ArcMenu) view.findViewById(R.id.arc);
+        arc.setAdapter(adapter);
     }
 }
