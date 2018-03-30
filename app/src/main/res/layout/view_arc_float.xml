@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<com.csp.cases.activity.view.arcmenu.ArcMenu-->
+    <!--android:id="@+id/arc"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="#00FF8F"-->
+    <!--app:centerRadius="0dp"-->
+    <!--app:fromDegrees="0.0"-->
+    <!--app:radius="60dp"-->
+    <!--app:src="@drawable/recorder_icon"-->
+    <!--app:toDegrees="360.0" />-->
+
+    <!--<FrameLayout-->
+    <!--android:id="@+id/control_layout"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerInParent="true">-->
+
+    <ImageView
+        android:id="@+id/img_control_hint"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_margin="1dp"
+        android:duplicateParentState="true"
+        android:src="@drawable/recorder_icon" />
+
+    <!--<FrameLayout-->
+    <!--android:id="@+id/float_timer"-->
+    <!--android:layout_width="@dimen/offset_45dp"-->
+    <!--android:layout_height="@dimen/offset_45dp"-->
+    <!--android:background="@drawable/recorder_timer"-->
+    <!--android:visibility="invisible">-->
+
+    <Chronometer
+        android:id="@+id/chronometer_float"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:background="@drawable/recorder_timer"
+        android:format="%s"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="8sp" />
+    <!--</FrameLayout>-->
+    <!--</FrameLayout>-->
+
+
+    <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical">-->
+
+    <!--</FrameLayout>-->
+
+
+</merge>
+

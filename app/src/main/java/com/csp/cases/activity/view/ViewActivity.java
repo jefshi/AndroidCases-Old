@@ -18,7 +18,6 @@ import android.view.View;
 
 import com.csp.cases.R;
 import com.csp.cases.activity.view.arcmenu.ArcAdapter;
-import com.csp.cases.activity.view.arcmenu.ArcLayout;
 import com.csp.cases.activity.view.arcmenu.ArcMenu;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
@@ -173,7 +172,7 @@ public class ViewActivity extends BaseListActivity {
 
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.view_sample, null, false);
+        View view = inflater.inflate(R.layout.view_arclayout, null, false);
         lfrItem.addView(view);
 
         Integer[] resIds = new Integer[]{

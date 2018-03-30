@@ -35,7 +35,7 @@ public class LogCat {
      * @return 日志标签
      */
     private static String getTag(StackTraceElement element) {
-        String className = element.getMethodName();
+        String className = element.getClassName();
         String methodName = element.getMethodName();
         String simpleClassName = className.substring(className.lastIndexOf('.') + 1);
         return "--[" + simpleClassName + "][" + methodName + ']';
@@ -225,6 +225,19 @@ public class LogCat {
      */
     public static void log(int level, Object message) {
         log(level, DEFAULT_STACK_ID, null, message);
+    }
+
+    /**
+     * TODO ？？？
+     * @param messages
+     */
+    public static void e(Object... messages) {
+        StringBuilder builder = new StringBuilder();
+        for (Object message : messages) {
+            builder.append(message).append(", ");
+        }
+        builder.delete(builder.length() - 2, builder.length() -1);
+        log(Log.ERROR, DEFAULT_STACK_ID, null, builder.toString());
     }
 
     /**

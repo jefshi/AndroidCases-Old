@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.csp.cases.R;
@@ -23,19 +25,33 @@ public class ArcLayout extends ViewGroup {
     // 子项数据
     private ArcAdapter mAdapter;
     private int mItemCount;
-    private int mChildSize; // 子菜单项大小（为保证大小相同，取最大值）
+    protected int mChildSize; // 子菜单项大小（为保证大小相同，取最大值）
+    private OnItemClickListener mOnItemClickListener;
 
     // 自定义属性
     private int mCenterRadius; // 中心圆大小
     private int centerResId; // 中心圆图片ID
-    private int mRadius; // 子项距离中心半径(px)
+    protected int mRadius; // 子项距离中心半径(px)
     //    private int padding; // TODO 子项距离中心半径
+
+    // 角度
     private float mFromDegrees; // 子项起点角度
     private float mToDegrees; // 子项终点角度
+    private float mPerDegrees; // 相邻子项间的角度差
 
     // View 相对中心坐标
-    private int mCenterX; // 中心圆相对坐标
-    private int mCenterY; // 中心圆相对坐标
+    protected int mCenterX; // 中心圆相对坐标
+    protected int mCenterY; // 中心圆相对坐标
+
+    /**
+     * @see AdapterView.OnItemClickListener
+     */
+    public interface OnItemClickListener {
+        /**
+         * @see AdapterView.OnItemClickListener#onItemClick(AdapterView, View, int, long)
+         */
+        void onItemClick(ArcLayout parent, View view, int position, long id);
+    }
 
     public void setAdapter(ArcAdapter mAdapter) {
         LogCat.e("setAdapter");
@@ -48,6 +64,7 @@ public class ArcLayout extends ViewGroup {
         }
         addItemViews();
 
+        adjustPerDegrees();
         adjustCenterCoord();
 
         requestLayout();
@@ -55,6 +72,10 @@ public class ArcLayout extends ViewGroup {
 
     public ArcAdapter getAdapter() {
         return mAdapter;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+        this.mOnItemClickListener = mOnItemClickListener;
     }
 
     public int getItemCount() {
@@ -98,9 +119,10 @@ public class ArcLayout extends ViewGroup {
 
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ArcLayout, 0, 0);
-            mFromDegrees = a.getFloat(R.styleable.ArcLayout_fromDegrees, 0.0f);
-            mToDegrees = a.getFloat(R.styleable.ArcLayout_toDegrees, 360.0f);
             mRadius = (int) a.getDimension(R.styleable.ArcLayout_radius, 0);
+            mFromDegrees = mRadius <= 0 ? 0 : a.getFloat(R.styleable.ArcLayout_fromDegrees, 0.0f);
+            mToDegrees = mRadius <= 0 ? 0 : a.getFloat(R.styleable.ArcLayout_toDegrees, 360.0f);
+
             mCenterRadius = (int) a.getDimension(R.styleable.ArcLayout_centerRadius, 0);
             centerResId = a.getResourceId(R.styleable.ArcLayout_src, 0);
             a.recycle();
@@ -110,7 +132,7 @@ public class ArcLayout extends ViewGroup {
     }
 
     private void init(Context context) {
-        mInherentViews = addInherentViews(context);
+        addInherentViews(context);
         mItemCount = 0;
         if (mAdapter != null) {
             mItemCount = mAdapter.getCount();
@@ -124,7 +146,7 @@ public class ArcLayout extends ViewGroup {
     /**
      * 添加固有 View
      */
-    private View[] addInherentViews(Context context) {
+    private void addInherentViews(Context context) {
         int width, height;
 
         ImageView imageView = new ImageView(context);
@@ -133,21 +155,13 @@ public class ArcLayout extends ViewGroup {
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(width, height);
         addView(imageView, -1, lp);
 
-        setInherentViewsEvent(context, imageView);
-
         View[] extra = addExtraInherentViews(context);
-        View[] views = new View[1 + (extra == null ? 0 : extra.length)];
-        views[0] = imageView;
+        mInherentViews = new View[1 + (extra == null ? 0 : extra.length)];
+        mInherentViews[0] = imageView;
         if (extra != null)
-            System.arraycopy(extra, 0, views, 1, extra.length);
+            System.arraycopy(extra, 0, mInherentViews, 1, extra.length);
 
-        return views;
-    }
-
-    /**
-     * 设置固有 View 事件
-     */
-    protected void setInherentViewsEvent(Context context, View... inherentViews) {
+        setInherentViews(context, mInherentViews);
     }
 
     /**
@@ -155,6 +169,12 @@ public class ArcLayout extends ViewGroup {
      */
     protected View[] addExtraInherentViews(Context context) {
         return null;
+    }
+
+    /**
+     * 设置固有 View 事件
+     */
+    protected void setInherentViews(Context context, View[] inherentViews) {
     }
 
     /**
@@ -188,7 +208,7 @@ public class ArcLayout extends ViewGroup {
     }
 
     /**
-     * 调整起始，终点角度
+     * 调整角度
      */
     private void adjustDegrees() {
         // 格式化角度
@@ -208,12 +228,23 @@ public class ArcLayout extends ViewGroup {
             else
                 mToDegrees -= 360;
         }
+
+        adjustPerDegrees();
+    }
+
+    /**
+     * 调整相邻子项间的角度差
+     */
+    private void adjustPerDegrees() {
+        final float degrees = mToDegrees - mFromDegrees;
+        mPerDegrees = Math.abs(degrees - 360) < 0.001
+                ? degrees / mItemCount : degrees / (mItemCount - 1);
     }
 
     /**
      * 校准中心坐标
      */
-    private void adjustCenterCoord() {
+    protected void adjustCenterCoord() {
         final int childCount = getChildCount();
         if (childCount == 0)
             mCenterX = mCenterY = 0;
@@ -225,8 +256,6 @@ public class ArcLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        onMeasureInherentView();
-
         int size;
         final int childrenCount = getChildCount();
         if (childrenCount == 0)
@@ -236,50 +265,34 @@ public class ArcLayout extends ViewGroup {
         else
             size = mChildSize + mRadius * 2;
 
-        LogCat.e(toString());
-
         setMeasuredDimension(size, size);
-    }
-
-    /**
-     * 固有 View measure
-     */
-    private void onMeasureInherentView() {
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        LogCat.e("onLayout, l = " + l + ", t = " + t + ", t = " + t + ", b = " + b);
-
-        onLayoutInherentViews();
+        onLayoutInherentViews(changed, l, t, r, b);
         onLayoutItemViews();
     }
 
     /**
      * 固有 View layout
      */
-    private void onLayoutInherentViews() {
-        int left, top, right, bottom;
-
-        View child = getChildAt(0);
-        left = top = mCenterX - mCenterRadius;
-        right = bottom = mCenterY + mCenterRadius;
-        child.layout(left, top, right, bottom);
+    protected void onLayoutInherentViews(boolean changed, int l, int t, int r, int b) {
+        getChildAt(0).layout(mCenterX - mCenterRadius,
+                mCenterY - mCenterRadius,
+                mCenterX + mCenterRadius,
+                mCenterY + mCenterRadius);
     }
 
     /**
      * 子项 View layout
      */
     private void onLayoutItemViews() {
-        // 子项 layout
-        final float degrees = mToDegrees - mFromDegrees;
-        final float perDegrees = Math.abs(degrees - 360) < 0.001 ? degrees / mItemCount : degrees / (mItemCount - 1);
-
         float fromDegrees = mFromDegrees;
         for (int i = getInherentViewsNum(); i < getChildCount(); i++) {
             Rect frame = computeChildFrame(fromDegrees);
             getChildAt(i).layout(frame.left, frame.top, frame.right, frame.bottom);
-            fromDegrees += perDegrees;
+            fromDegrees += mPerDegrees;
         }
     }
 
@@ -297,17 +310,32 @@ public class ArcLayout extends ViewGroup {
     }
 
     @Override
-    public String toString() {
-        return "ArcLayout{" +
-                "mItemCount=" + mItemCount +
-                "\n, mCenterRadius=" + mCenterRadius +
-                "\n, centerResId=" + centerResId +
-                "\n, mRadius=" + mRadius +
-                "\n, mFromDegrees=" + mFromDegrees +
-                "\n, mToDegrees=" + mToDegrees +
-                "\n, mCenterX=" + mCenterX +
-                "\n, mCenterY=" + mCenterY +
-                "\n, mChildSize=" + mChildSize +
-                '}';
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+                float x = event.getX();
+                float y = event.getY();
+                float deltaX = Math.abs(mCenterX - x);
+                float deltaY = Math.abs(mCenterY - y);
+                int radius = mCenterRadius + mChildSize / 2;
+                if (radius * radius > deltaX * deltaX + deltaY * deltaY) {
+
+                    // TODO 点击 Item 折叠
+//                    int index = 0;
+//                    if (mOnItemClickListener != null) {
+//                        mOnItemClickListener.onItemClick(this
+//                                , getChildAt(getInherentViewsNum() + index)
+//                                , index
+//                                , -1);
+//                    }
+                }
+                break;
+        }
+
+        return super.onTouchEvent(event);
     }
 }

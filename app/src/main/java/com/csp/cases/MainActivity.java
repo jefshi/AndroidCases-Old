@@ -56,6 +56,12 @@ public class MainActivity extends BaseGridActivity {
 		items.add(new ItemInfo("Dialog", DialogActivity.class, "对话框案例"));
 		items.add(new ItemInfo("Notification", NotificationActivity.class, "状态栏通知案例"));
 		items.add(new ItemInfo("Toast", ToastActivity.class, "Toast 通知案例"));
+
+		items.add(new ItemInfo("WindowManager", WindowManagerActivity.class, "[Activity]案例"));
+		items.add(new ItemInfo("View", ViewActivity.class, "View 案例"));
+
+
+
 		items.add(new ItemInfo("Metrics", MetricsActivity.class, "度量以及屏幕参数案例"));
 		items.add(new ItemInfo("Storage", StorageActivity.class, "文件存储案例"));
 		items.add(new ItemInfo("SharedPreferences", SharedPreferencesActivity.class, "偏好设置案例"));

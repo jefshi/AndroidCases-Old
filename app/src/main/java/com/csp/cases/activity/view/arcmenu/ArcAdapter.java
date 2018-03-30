@@ -179,6 +179,12 @@ public class ArcAdapter extends BaseAdapter {
             ImageView img = new ImageView(mContext);
             img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             img.setLayoutParams(wlp);
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LogCat.e("Adapter.getConvertView.onClick");
+                }
+            });
             return img;
         }
         return convertView;

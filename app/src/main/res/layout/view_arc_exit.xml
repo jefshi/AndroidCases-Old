@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.csp.cases.activity.view.arcmenu.ArcExitView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/delete_iv"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:padding="10dp"
+    android:contentDescription="@string/ok"
+    android:scaleType="fitCenter"
+    android:src="@drawable/float_exit" />

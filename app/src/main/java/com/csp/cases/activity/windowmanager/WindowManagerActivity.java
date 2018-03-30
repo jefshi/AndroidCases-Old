@@ -12,7 +12,9 @@ import android.widget.ImageView;
 
 import com.csp.cases.R;
 import com.csp.cases.activity.view.arcmenu.ArcAdapter;
-import com.csp.cases.activity.view.arcmenu.ArcLayout;
+import com.csp.cases.activity.view.arcmenu.ArcExitView;
+import com.csp.cases.activity.view.arcmenu.ArcFloat;
+import com.csp.cases.activity.view.arcmenu.ArcMenu;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.library.android.util.display_metrics.DisplayMetricsUtil;
@@ -40,7 +42,7 @@ public class WindowManagerActivity extends BaseListActivity {
         List<ItemInfo> items = new ArrayList<>();
         items.add(new ItemInfo("显示悬浮窗", "showFloatWindow", ""));
         items.add(new ItemInfo("隐藏悬浮窗", "hideFloatWindow", ""));
-        items.add(new ItemInfo("自定义[ArcMenu]", "showarcmenu", ""));
+        items.add(new ItemInfo("自定义[ArcMenu]", "showarcfloat", ""));
 
         return items;
     }
@@ -90,9 +92,9 @@ public class WindowManagerActivity extends BaseListActivity {
                         int ymove = y - lastY;
 
 
-                            wlp.x  += xmove;
-                            wlp.y  += ymove;
-                            wm.updateViewLayout(this, wlp);
+                        wlp.x += xmove;
+                        wlp.y += ymove;
+                        wm.updateViewLayout(this, wlp);
 
 //                            lastX = x;
 //                            lastY = y;
@@ -119,12 +121,13 @@ public class WindowManagerActivity extends BaseListActivity {
         wm.addView(frameLayout, wlp);
     }
 
-
     private void hideFloatWindow() {
         wm.removeView(frameLayout);
     }
 
-    private void showarcmenu() {
+
+    private ArcFloat arcFloat;
+    private void showarcfloat() {
         Integer[] resIds = new Integer[]{
                 R.drawable.recorder_goon,
                 R.drawable.recorder_pause,
@@ -135,13 +138,23 @@ public class WindowManagerActivity extends BaseListActivity {
 
         ArcAdapter adapter = new ArcAdapter(this, resIds);
 
-//        ArcLayout arcLayout = (ArcLayout) findViewById(R.id.arc);
+//        ArcLayout arcLayout = (ArcLayout) findViewById(R.id.arcMenu);
 //        arcLayout.setAdapter(adapter);
 
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ArcLayout arcLayout = (ArcLayout) inflater.inflate(R.layout.view_sample, null, false);
-        arcLayout.setAdapter(adapter);
-//        arcLayout.show();
+        assert inflater != null;
+        ArcMenu arcMenu = (ArcMenu) inflater.inflate(R.layout.view_arclayout, null, false);
+        arcMenu.setAdapter(adapter);
+
+        ArcExitView arcExit = (ArcExitView) inflater.inflate(R.layout.view_arc_exit, null, false);
+
+        if (arcFloat != null) {
+            arcFloat.attach(false);
+            arcFloat = null;
+        } else {
+            arcFloat = new ArcFloat(this, arcMenu, arcExit);
+            arcFloat.attach(true);
+        }
     }
 }
