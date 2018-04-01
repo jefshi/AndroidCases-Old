@@ -12,4 +12,7 @@
     <color name="red_dark">#FFCC0000</color>
     
     <color name="mask">#1F000000</color>
+
+    <!--<color name="black">#00FFFFFF</color>-->
+    <color name="black">#FF000000</color>
 </resources>

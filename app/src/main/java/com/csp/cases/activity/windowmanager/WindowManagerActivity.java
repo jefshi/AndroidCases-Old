@@ -9,12 +9,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.csp.cases.R;
 import com.csp.cases.activity.view.arcmenu.ArcAdapter;
 import com.csp.cases.activity.view.arcmenu.ArcExitView;
 import com.csp.cases.activity.view.arcmenu.ArcFloat;
+import com.csp.cases.activity.view.arcmenu.ArcFloatManager;
 import com.csp.cases.activity.view.arcmenu.ArcMenu;
+import com.csp.cases.activity.view.arcmenu.ArcTipView;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.library.android.util.display_metrics.DisplayMetricsUtil;
@@ -128,33 +131,26 @@ public class WindowManagerActivity extends BaseListActivity {
 
     private ArcFloat arcFloat;
     private void showarcfloat() {
-        Integer[] resIds = new Integer[]{
-                R.drawable.recorder_goon,
-                R.drawable.recorder_pause,
-                R.drawable.recorder_stop,
-                R.drawable.recorder_start,
-                R.drawable.recorder_browser
-        };
 
-        ArcAdapter adapter = new ArcAdapter(this, resIds);
 
 //        ArcLayout arcLayout = (ArcLayout) findViewById(R.id.arcMenu);
 //        arcLayout.setAdapter(adapter);
 
 
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        assert inflater != null;
-        ArcMenu arcMenu = (ArcMenu) inflater.inflate(R.layout.view_arclayout, null, false);
-        arcMenu.setAdapter(adapter);
 
-        ArcExitView arcExit = (ArcExitView) inflater.inflate(R.layout.view_arc_exit, null, false);
 
-        if (arcFloat != null) {
-            arcFloat.attach(false);
-            arcFloat = null;
-        } else {
-            arcFloat = new ArcFloat(this, arcMenu, arcExit);
-            arcFloat.attach(true);
-        }
+//        ArcExitView arcExit = null; // (ArcExitView) inflater.inflate(R.layout.view_arc_exit, null, false);
+//
+//        RelativeLayout arcTipView = (RelativeLayout) inflater.inflate(R.layout.view_arc_tip, null, false);
+//
+//        if (arcFloat != null) {
+//            arcFloat.attach(false);
+//            arcFloat = null;
+//        } else {
+//            arcFloat = new ArcFloat(this, arcMenu, arcExit, arcTipView);
+//            arcFloat.attach(true);
+//        }
+
+        new ArcFloatManager(this).attach(true);
     }
 }

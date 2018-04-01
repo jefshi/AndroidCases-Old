@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/main_rl"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-<com.csp.cases.activity.view.arcmenu.ArcExitView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/delete_iv"
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    android:padding="10dp"
-    android:contentDescription="@string/ok"
-    android:scaleType="fitCenter"
-    android:src="@drawable/float_exit" />
+    <ImageView
+        android:id="@+id/delete_iv"
+        android:layout_width="108dp"
+        android:layout_height="108dp"
+        android:scaleType="center"
+        android:src="@drawable/float_exit"
+        android:layout_gravity="center|bottom"
+        android:visibility="invisible"
+        android:contentDescription="@string/ok"/>
+</FrameLayout>

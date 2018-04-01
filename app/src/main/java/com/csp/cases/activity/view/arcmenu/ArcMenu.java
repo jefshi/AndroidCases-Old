@@ -3,8 +3,10 @@ package com.csp.cases.activity.view.arcmenu;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -16,12 +18,19 @@ import com.csp.cases.R;
  * Created by chenshp on 2018/3/29.
  */
 
-public class ArcMenu extends ArcLayout {
+public class ArcMenu extends ArcLayout implements IWindowLayoutParams{
     private WindowManager.LayoutParams wlp;
     private boolean showMenu = true;
 
+    @Override
     public WindowManager.LayoutParams getWindowLayoutParams() {
         return wlp;
+    }
+
+    @Override
+    public void setWindowLayoutParams(int x, int y) {
+        wlp.x = x;
+        wlp.y = y;
     }
 
     public ArcMenu(Context context) {
@@ -50,7 +59,11 @@ public class ArcMenu extends ArcLayout {
     /**
      * initialize WindowManager.LayoutParams
      */
-    private void initWindowLayoutParams() {
+    @Override
+    public void initWindowLayoutParams() {
+        if (wlp != null)
+            return;
+
         wlp = new WindowManager.LayoutParams();
 
         wlp.type = WindowManager.LayoutParams.TYPE_PHONE;
@@ -131,5 +144,45 @@ public class ArcMenu extends ArcLayout {
             requestLayout();
         }
         setVisibility(showMenu ? VISIBLE : GONE);
+    }
+
+    public interface MenuPosition {
+        int LEFT_TOP = 1;
+        int CENTER_TOP = 2;
+        int RIGHT_TOP = 3;
+        int LEFT_CENTER = 4;
+        int CENTER = 5;
+        int RIGHT_CENTER = 6;
+        int LEFT_BOTTOM = 7;
+        int CENTER_BOTTOM = 8;
+        int RIGHT_BOTTOM = 9;
+    }
+
+
+    public int position;
+
+    public void setPosition(int position) {
+        this.position = position;
+
+        switch (position) {
+            case MenuPosition.LEFT_TOP:
+                setDegrees(0, 90);
+                break;
+            case MenuPosition.RIGHT_TOP:
+                setDegrees(180, 90);
+                break;
+            case MenuPosition.LEFT_CENTER:
+                setDegrees(-90, 90);
+                break;
+            case MenuPosition.RIGHT_CENTER:
+                setDegrees(-90, 90);
+                break;
+            case MenuPosition.LEFT_BOTTOM:
+                setDegrees(-90, 0);
+                break;
+            case MenuPosition.RIGHT_BOTTOM:
+                setDegrees(-90, -180);
+                break;
+        }
     }
 }

@@ -20,7 +20,7 @@
     <!--android:layout_centerInParent="true">-->
 
     <ImageView
-        android:id="@+id/img_control_hint"
+        android:id="@+id/img_record_float"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_margin="1dp"
