@@ -37,7 +37,7 @@ public class ArcTipView extends FrameLayout {
     }
 
     private void init() {
-//        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        inflater.inflate(R.layout.view_arc_tip, this, true);
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.view_arc_tip, this, true);
     }
 }
