@@ -3,13 +3,10 @@ package com.csp.library.android.util.log;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.csp.library.android.constants.SystemConstant;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,9 +21,14 @@ import java.util.Set;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class LogCat {
-    private static final boolean DEBUG = SystemConstant.LOG_DEBUG;
     private static final int LOG_MAX_LENGTH = 4096; // Android 能够打印的最大日志长度
     public static final int DEFAULT_STACK_ID = 2;
+
+    private static boolean debug = true;
+
+    public static void setDebug(boolean debug) {
+        LogCat.debug = debug;
+    }
 
     /**
      * 获取日志标签, 例: --[类名][方法名]
@@ -104,16 +106,28 @@ public class LogCat {
     /**
      * 打印异常信息
      *
+     * @param explain   异常说明
      * @param exception 异常错误对象
      */
-    public static void printStackTrace(Exception exception) {
+    public static void printStackTrace(String explain, Exception exception) {
+        String log = explain == null ? "" : explain;
+        String tag = getTag(exception != null
+                ? exception.getStackTrace()[0]
+                : new Exception().getStackTrace()[DEFAULT_STACK_ID - 1]);
+
         if (exception != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             exception.printStackTrace(new PrintStream(baos));
-
-            String tag = getTag(exception.getStackTrace()[0]);
-            printLog(tag, baos.toString(), Log.ERROR);
+            log += '\n' + baos.toString();
         }
+        printLog(tag, log, Log.ERROR);
+    }
+
+    /**
+     * @see #printStackTrace(String, Exception)
+     */
+    public static void printStackTrace(Exception exception) {
+        printStackTrace(null, exception);
     }
 
     /**
@@ -193,12 +207,14 @@ public class LogCat {
      * @param message 日志内容
      * @param level   日志优先级
      */
+    @SuppressWarnings("ConstantConditions")
     public static void log(int level, int stackId, String explain, Object message) {
-        if (!DEBUG)
+        if (!debug)
             return;
 
         String log;
         explain = explain == null ? "" : explain;
+        message = message == null ? "null" : message;
         if (message instanceof Map) {
             log = formatLog(explain, (Map) message);
         } else if (message instanceof Collection) {
@@ -206,7 +222,7 @@ public class LogCat {
         } else if (message.getClass().isArray()) {
             log = formatLog(explain, (Object[]) message);
         } else {
-            log = explain + String.valueOf(message);
+            log = explain + ": " + String.valueOf(message);
         }
 
         String tag = getTag(new Exception().getStackTrace()[stackId]);
@@ -229,15 +245,9 @@ public class LogCat {
 
     /**
      * TODO ？？？
-     * @param messages
      */
     public static void e(Object... messages) {
-        StringBuilder builder = new StringBuilder();
-        for (Object message : messages) {
-            builder.append(message).append(", ");
-        }
-        builder.delete(builder.length() - 2, builder.length() -1);
-        log(Log.ERROR, DEFAULT_STACK_ID, null, builder.toString());
+        log(Log.ERROR, DEFAULT_STACK_ID, null, (Object) messages);
     }
 
     /**
