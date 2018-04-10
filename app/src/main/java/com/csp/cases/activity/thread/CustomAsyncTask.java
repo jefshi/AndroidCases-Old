@@ -2,7 +2,7 @@ package com.csp.cases.activity.thread;
 
 import android.os.AsyncTask;
 
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.log.LogCat;
 
 /**
  * Description: 异步任务案例

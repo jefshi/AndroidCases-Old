@@ -6,7 +6,7 @@ import android.os.Environment;
 
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.log.LogCat;
 
 import java.io.File;
 import java.util.ArrayList;

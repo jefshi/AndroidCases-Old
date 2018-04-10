@@ -15,7 +15,7 @@ import com.csp.cases.activity.network.retrolfit.phone.PhoneInfo;
 import com.csp.cases.activity.network.retrolfit.phone.PhoneUtil;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.log.LogCat;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.util.ArrayList;

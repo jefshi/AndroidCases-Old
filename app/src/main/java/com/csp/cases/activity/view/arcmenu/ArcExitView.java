@@ -12,7 +12,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.csp.cases.R;
-import com.csp.library.android.util.display_metrics.DisplayMetricsUtil;
+import com.csp.utils.android.DisplayMetricsUtil;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class ArcExitView extends FrameLayout implements IWindowLayoutParams {

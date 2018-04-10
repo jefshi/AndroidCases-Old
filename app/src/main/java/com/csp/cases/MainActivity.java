@@ -2,10 +2,10 @@ package com.csp.cases;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.view.WindowManager;
 
 import com.csp.cases.activity.AnimationActivity;
 import com.csp.cases.activity.MetricsActivity;
+import com.csp.cases.activity.TestActivity;
 import com.csp.cases.activity.permissions.PermissionActivity;
 import com.csp.cases.activity.ProcessActivity;
 import com.csp.cases.activity.SharedPreferencesActivity;
@@ -24,7 +24,7 @@ import com.csp.cases.activity.view.ViewEventActivity;
 import com.csp.cases.activity.windowmanager.WindowManagerActivity;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.library.android.util.permissions.PermissionUtil;
+import com.csp.utils.android.permissions.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +50,9 @@ public class MainActivity extends BaseGridActivity {
 	@Override
 	public List<ItemInfo> getItemInfos() {
 		List<ItemInfo> items = new ArrayList<>();
+		items.add(new ItemInfo("Test", TestActivity.class, "Android 6.0以上 动态权限获取案例"));
+
+
 		items.add(new ItemInfo("Permission", PermissionActivity.class, "Android 6.0以上 动态权限获取案例"));
 		items.add(new ItemInfo("Animation", AnimationActivity.class, "动画案例"));
 		items.add(new ItemInfo("Broadcast", BroadcastActivity.class, "广播案例"));

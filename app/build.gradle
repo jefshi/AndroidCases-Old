@@ -11,8 +11,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
-        // testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionName "1.0.0"
     }
 
     buildTypes {
@@ -32,11 +31,12 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:percent:25.3.1'
+    implementation 'com.android.support:appcompat-v7:26.0.+'
+    implementation 'com.android.support:percent:26.0.+'
 
-    compile project(':libraryforandroid')
-    compile project(':libraryforjava')
+    implementation project(':libraryforandroid')
+    implementation project(':libraryforjava')
+    implementation project(':utilsforandroid')
 
     compile files('libs/network/gson-2.8.0.jar')
     compile files('libs/network/volley.jar')
@@ -52,6 +52,4 @@ dependencies {
     compile files('libs/rxjava/rxandroid-2.0.1.jar')
 
     compile files('libs/reactive-streams-1.0.1.jar')
-
-    // testCompile 'junit:junit:4.12'
 }

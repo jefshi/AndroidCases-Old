@@ -1,9 +1,10 @@
-package com.csp.library.android.util.log;
+package com.csp.utils.android.log;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Iterator;
@@ -12,23 +13,18 @@ import java.util.Set;
 
 /**
  * Description: 日志打印
- * <p>Create Date: 2017/7/14
+ * <p>Create Date: 2017/07/14
  * <p>Modify Date: 2018/03/28
  *
  * @author csp
  * @version 1.0.3
- * @since AndroidLibrary 1.0.0
+ * @since AndroidUtils 1.0.0
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class LogCat {
-    private static final int LOG_MAX_LENGTH = 4096; // Android 能够打印的最大日志长度
-    public static final int DEFAULT_STACK_ID = 2;
-
-    private static boolean debug = true;
-
-    public static void setDebug(boolean debug) {
-        LogCat.debug = debug;
-    }
+    private final static boolean DEBUG = true;
+    private final static int LOG_MAX_LENGTH = 4096; // Android 能够打印的最大日志长度
+    public final static int DEFAULT_STACK_ID = 2;
 
     /**
      * 获取日志标签, 例: --[类名][方法名]
@@ -104,6 +100,25 @@ public class LogCat {
     }
 
     /**
+     * 获取异常栈信息
+     *
+     * @param exception 异常错误对象
+     * @return 异常栈信息
+     */
+    @SuppressWarnings("EmptyCatchBlock")
+    public static String getStackTrace(Exception exception) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        exception.printStackTrace(new PrintStream(baos));
+        String message = baos.toString();
+
+        try {
+            baos.close();
+        } catch (IOException e) {
+        }
+        return message;
+    }
+
+    /**
      * 打印异常信息
      *
      * @param explain   异常说明
@@ -111,15 +126,13 @@ public class LogCat {
      */
     public static void printStackTrace(String explain, Exception exception) {
         String log = explain == null ? "" : explain;
+        if (exception != null)
+            log += '\n' + getStackTrace(exception);
+
         String tag = getTag(exception != null
                 ? exception.getStackTrace()[0]
                 : new Exception().getStackTrace()[DEFAULT_STACK_ID - 1]);
 
-        if (exception != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            exception.printStackTrace(new PrintStream(baos));
-            log += '\n' + baos.toString();
-        }
         printLog(tag, log, Log.ERROR);
     }
 
@@ -209,7 +222,7 @@ public class LogCat {
      */
     @SuppressWarnings("ConstantConditions")
     public static void log(int level, int stackId, String explain, Object message) {
-        if (!debug)
+        if (!DEBUG)
             return;
 
         String log;

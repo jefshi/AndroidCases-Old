@@ -1,1 +1,2 @@
-include ':app', ':appnote', ':appproject', ':libraryforandroid', ':eclipselibrary', ':lazylibrary', ':libraryforjava', ':sourceofkitkat'
+include ':app', ':libraryforandroid', ':libraryforjava',':utilsforandroid'
+include ':appnote', ':appproject', ':eclipselibrary', ':lazylibrary', ':sourceofkitkat'

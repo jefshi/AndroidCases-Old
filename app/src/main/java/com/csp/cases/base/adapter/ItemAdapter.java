@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.csp.cases.R;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.library.android.base.adapter.BaseListAdapter;
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.log.LogCat;
 import com.csp.library.java.EmptyUtil;
 
 import java.lang.reflect.Method;

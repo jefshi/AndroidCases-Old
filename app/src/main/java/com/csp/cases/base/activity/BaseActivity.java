@@ -15,7 +15,7 @@ import com.csp.cases.base.adapter.ItemAdapter;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.cases.constants.SystemConstant;
 import com.csp.library.android.base.BaseLibraryActivity;
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.log.LogCat;
 
 import java.util.List;
 

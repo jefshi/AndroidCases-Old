@@ -2,7 +2,7 @@ package com.csp.library.android.constants;
 
 /**
  * Description: 系统常量
- * <p>Create Date: 2017/7/14
+ * <p>Create Date: 2017/07/14
  * <p>Modify Date: 无
  *
  * @author csp

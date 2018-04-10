@@ -4,14 +4,12 @@ import android.support.annotation.NonNull;
 
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.library.android.util.permissions.PermissionUtil;
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.permissions.PermissionUtil;
+import com.csp.utils.android.log.LogCat;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Description: Android 6.0以上 动态权限获取案例

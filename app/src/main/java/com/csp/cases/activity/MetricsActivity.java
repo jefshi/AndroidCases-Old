@@ -3,14 +3,13 @@ package com.csp.cases.activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
 
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.cases.base.activity.BaseGridActivity;
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.log.LogCat;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,7 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.csp.cases.R;
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.log.LogCat;
 
 /**
  * Created by chenshp on 2018/3/28.

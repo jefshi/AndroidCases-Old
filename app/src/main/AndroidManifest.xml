@@ -78,6 +78,11 @@
 
         <!-- 案例Activity -->
         <activity
+            android:name=".activity.TestActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
+
+        <activity
             android:name=".activity.AnimationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />

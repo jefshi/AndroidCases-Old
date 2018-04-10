@@ -4,8 +4,6 @@ import android.view.View;
 
 import com.csp.library.java.interfaces.VerifyEmpty;
 
-import java.util.List;
-
 /**
  * Description: 页面(Activity、Fragment)都需要实现的接口
  * <p>Create Date: 2017-07-05
@@ -36,14 +34,14 @@ interface BaseLibraryFuns extends VerifyEmpty {
 	/**
 	 * 打印日志
 	 *
-	 * @see com.csp.library.android.util.log.LogCat#e(Object)
+	 * @see com.csp.utils.android.log.LogCat#e(Object)
 	 */
 	void logError(Object message);
 
 	/**
 	 * 打印日志
 	 *
-	 * @see com.csp.library.android.util.log.LogCat#e(String, Object)
+	 * @see com.csp.utils.android.log.LogCat#e(String, Object)
 	 */
 	void logError(String explain, Object message);
 }

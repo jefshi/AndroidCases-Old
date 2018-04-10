@@ -3,14 +3,12 @@ package com.csp.library.android.base;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.csp.library.android.constants.SystemConstant;
 import com.csp.library.android.interfaces.InitialUi;
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.log.LogCat;
 
 import java.util.List;
 

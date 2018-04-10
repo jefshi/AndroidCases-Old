@@ -29,7 +29,7 @@ import android.widget.RelativeLayout;
 
 import com.csp.cases.R;
 import com.csp.cases.activity.view.other.RECState;
-import com.csp.library.android.util.display_metrics.DisplayMetricsUtil;
+import com.csp.utils.android.DisplayMetricsUtil;
 
 /**
  * Created by chenshp on 2018/3/30.

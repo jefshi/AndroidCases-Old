@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.csp.cases.R;
 import com.csp.cases.constants.SystemConstant;
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.log.LogCat;
 
 /**
  * Description: ListView Item列表

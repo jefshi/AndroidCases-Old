@@ -3,25 +3,19 @@ package com.csp.cases.activity.windowmanager;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.csp.cases.R;
-import com.csp.cases.activity.view.arcmenu.ArcAdapter;
-import com.csp.cases.activity.view.arcmenu.ArcExitView;
 import com.csp.cases.activity.view.arcmenu.ArcFloat;
 import com.csp.cases.activity.view.arcmenu.ArcFloatManager;
-import com.csp.cases.activity.view.arcmenu.ArcMenu;
-import com.csp.cases.activity.view.arcmenu.ArcTipView;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.library.android.util.display_metrics.DisplayMetricsUtil;
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.DisplayMetricsUtil;
+import com.csp.utils.android.log.LogCat;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -8,11 +8,8 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.csp.library.android.util.display_metrics.DisplayMetricsUtil;
-import com.csp.library.android.util.log.LogCat;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.csp.utils.android.DisplayMetricsUtil;
+import com.csp.utils.android.log.LogCat;
 
 /**
  * Description: AbsListView 适配器

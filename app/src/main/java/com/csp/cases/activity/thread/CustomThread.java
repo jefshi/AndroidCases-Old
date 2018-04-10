@@ -5,7 +5,7 @@ import android.os.Build;
 import android.os.Looper;
 import android.os.Process;
 
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.log.LogCat;
 
 /**
  * Description: 自定义工作线程，模仿HandlerThread

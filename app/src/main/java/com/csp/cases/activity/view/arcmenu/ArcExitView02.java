@@ -7,13 +7,11 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import com.csp.cases.R;
-import com.csp.library.android.util.display_metrics.DisplayMetricsUtil;
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.DisplayMetricsUtil;
+import com.csp.utils.android.log.LogCat;
 
 /**
  * Created by chenshp on 2018/3/30.

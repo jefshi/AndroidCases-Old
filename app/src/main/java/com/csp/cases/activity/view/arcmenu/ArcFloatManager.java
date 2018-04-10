@@ -7,18 +7,14 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Chronometer;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.csp.cases.R;
 import com.csp.cases.activity.view.other.RECState;
-import com.csp.library.android.util.Utils;
-import com.csp.library.android.util.display_metrics.DisplayMetricsUtil;
+import com.csp.utils.android.DisplayMetricsUtil;
+import com.csp.utils.android.aaaTemp.Utils;
 
 /**
  * Created by csp on 2018/4/2 002.

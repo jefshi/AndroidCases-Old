@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.csp.library.android.util.log.LogCat;
+import com.csp.utils.android.log.LogCat;
 
 @SuppressWarnings("UnusedAssignment")
 public class StaticReceiver extends BroadcastReceiver {
