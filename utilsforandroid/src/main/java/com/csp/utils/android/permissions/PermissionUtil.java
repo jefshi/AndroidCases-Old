@@ -198,7 +198,7 @@ public final class PermissionUtil {
             }
         }
 
-        SettingUtils.skipAppInformation(activity, requestCode);
+        SettingUtils.startAppInformationSetting(activity, requestCode);
     }
 
     /**

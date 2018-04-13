@@ -26,9 +26,9 @@ public class SettingActivity extends BaseGridActivity {
     @Override
     public List<ItemInfo> getItemInfos() {
         List<ItemInfo> itemInfos = new ArrayList<>();
-        itemInfos.add(new ItemInfo("Wifi 设置界面", "skipWifi", "跳转到 Wifi 设置界面"));
-        itemInfos.add(new ItemInfo("应用信息设置界面", "skipAppInformation", "跳转到应用信息界面"));
-        itemInfos.add(new ItemInfo("悬浮窗权限设置界面", "skipFloatingPermission", "跳转到悬浮窗权限设置界面"));
+        itemInfos.add(new ItemInfo("Wifi 设置界面", "startWifiSetting", "跳转到 Wifi 设置界面"));
+        itemInfos.add(new ItemInfo("应用信息设置界面", "startAppInformationSetting", "跳转到应用信息界面"));
+        itemInfos.add(new ItemInfo("悬浮窗权限设置界面", "startFloatingPermissionSetting", "跳转到悬浮窗权限设置界面"));
 
         return itemInfos;
     }
@@ -44,14 +44,14 @@ public class SettingActivity extends BaseGridActivity {
     }
 
     private void skipWifi() {
-        SettingUtils.skipWifi(this, PERMISSIONS_REQUEST_CODE);
+        SettingUtils.startWifiSetting(this, PERMISSIONS_REQUEST_CODE);
     }
 
     private void skipAllPermission() {
-        SettingUtils.skipAppInformation(this, PERMISSIONS_REQUEST_CODE);
+        SettingUtils.startAppInformationSetting(this, PERMISSIONS_REQUEST_CODE);
     }
 
     private void skipFloatingPermission() {
-        SettingUtils.skipFloatingPermission(this, PERMISSIONS_REQUEST_CODE);
+        SettingUtils.startFloatingPermissionSetting(this, PERMISSIONS_REQUEST_CODE);
     }
 }

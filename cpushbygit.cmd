@@ -1,13 +1,5 @@
 @echo off
 
-set DATE_TIME=%date:~0,4%-%date:~5,2%-%date:~8,2% %time:~0,2%:%time:~3,2%:%time:~6,2%
-
-git status
-call :log "git status over"
-
-git add . && git commit -m "push on %DATE_TIME%"
-call :log "git commit successful"
-
 git push -u origin master:master
 call :log "git push successful"
 

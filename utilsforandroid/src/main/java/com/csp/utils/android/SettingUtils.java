@@ -28,7 +28,7 @@ public class SettingUtils {
      * @param intent      intent
      * @param requestCode 请求码
      */
-    private static void skip(Context context, Intent intent, int requestCode) {
+    private static void start(Context context, Intent intent, int requestCode) {
         if (context instanceof Activity)
             ((Activity) context).startActivityForResult(intent, requestCode);
         else
@@ -38,10 +38,10 @@ public class SettingUtils {
     /**
      * 跳转到 Wifi 设置界面
      *
-     * @see #skip(Context, Intent, int)
+     * @see #start(Context, Intent, int)
      */
     @SuppressLint("ObsoleteSdkInt")
-    public static void skipWifi(@NonNull Context context, int requestCode) {
+    public static void startWifiSetting(@NonNull Context context, int requestCode) {
         Intent intent = new Intent();
 
         if (Build.VERSION.SDK_INT > 10)
@@ -52,15 +52,15 @@ public class SettingUtils {
         if (context instanceof Application) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
-        skip(context, intent, requestCode);
+        start(context, intent, requestCode);
     }
 
     /**
      * 跳转到应用信息界面
      *
-     * @see #skip(Context, Intent, int)
+     * @see #start(Context, Intent, int)
      */
-    public static void skipAppInformation(@NonNull Context context, int requestCode) {
+    public static void startAppInformationSetting(@NonNull Context context, int requestCode) {
         Intent intent = new Intent();
         intent.setData(Uri.parse("package:" + context.getPackageName()));
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -69,15 +69,15 @@ public class SettingUtils {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 
-        skip(context, intent, requestCode);
+        start(context, intent, requestCode);
     }
 
     /**
      * 跳转到悬浮窗权限设置界面
      *
-     * @see #skip(Context, Intent, int)
+     * @see #start(Context, Intent, int)
      */
-    public static void skipFloatingPermission(@NonNull Context context, int requestCode) {
+    public static void startFloatingPermissionSetting(@NonNull Context context, int requestCode) {
         String action = Build.VERSION.SDK_INT >= 23
                 ? Settings.ACTION_MANAGE_OVERLAY_PERMISSION
                 : Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
@@ -86,6 +86,6 @@ public class SettingUtils {
         intent.setData(Uri.parse("package:" + context.getPackageName()));
         intent.setAction(action);
 
-        skip(context, intent, requestCode);
+        start(context, intent, requestCode);
     }
 }
