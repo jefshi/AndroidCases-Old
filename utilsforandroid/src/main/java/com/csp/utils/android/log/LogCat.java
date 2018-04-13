@@ -235,7 +235,7 @@ public class LogCat {
         } else if (message.getClass().isArray()) {
             log = formatLog(explain, (Object[]) message);
         } else {
-            log = explain + ": " + String.valueOf(message);
+            log = explain + String.valueOf(message);
         }
 
         String tag = getTag(new Exception().getStackTrace()[stackId]);

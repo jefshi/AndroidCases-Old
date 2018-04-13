@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="intArray">
+        <item>@drawable/float_exit</item>
+        <item>@drawable/float_exit</item>
+        <item>@drawable/float_exit</item>
+    </integer-array>
+
+</resources>

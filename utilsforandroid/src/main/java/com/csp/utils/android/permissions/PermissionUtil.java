@@ -12,6 +12,8 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import com.csp.utils.android.SettingUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -196,14 +198,7 @@ public final class PermissionUtil {
             }
         }
 
-        Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.setData(Uri.parse("package:" + activity.getPackageName()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        activity.startActivityForResult(intent, requestCode);
+        SettingUtils.skipAppInformation(activity, requestCode);
     }
 
     /**

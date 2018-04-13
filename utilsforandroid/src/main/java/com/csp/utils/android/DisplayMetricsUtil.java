@@ -8,6 +8,15 @@ import java.lang.reflect.Field;
  * Created by chenshp on 2018/3/28.
  */
 
+/**
+ * Description: 当前应用信息工具类
+ * <p>Create Date: 2018/04/09
+ * <p>Modify Date: nothing
+ *
+ * @author csp
+ * @version 1.0.0
+ * @since AndroidUtils 1.0.0
+ */
 public class DisplayMetricsUtil {
     private static float density;
 
