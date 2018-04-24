@@ -62,11 +62,13 @@ public class ArcExitView02 extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        LogCat.e(MeasureSpec.EXACTLY,
+        LogCat.e(new Object[]{
+                MeasureSpec.EXACTLY,
                 MeasureSpec.getMode(widthMeasureSpec),
                 MeasureSpec.getMode(heightMeasureSpec),
                 MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec));
+                MeasureSpec.getSize(heightMeasureSpec)
+        });
 
         int size = DisplayMetricsUtil.dipToPx(getContext(), 80);
         setMeasuredDimension(size, size);

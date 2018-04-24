@@ -1,4 +1,4 @@
 include ':app', ':libraryforandroid', ':libraryforjava',':utilsforandroid'
 
 // 无用的 Module
-include ':appnote', ':appproject', ':eclipselibrary', ':lazylibrary', ':sourceofkitkat'
+include ':appproject', ':eclipselibrary', ':lazylibrary', ':sourceofkitkat'

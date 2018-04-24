@@ -1,7 +1,5 @@
 package com.csp.library.java.string;
 
-import android.annotation.SuppressLint;
-
 /**
  * 字符串应用类
  *
@@ -17,7 +15,6 @@ public class StringUtil {
 	 * @param object 文本
 	 * @return String 大写文本
 	 */
-	@SuppressLint("DefaultLocale")
 	public static String toUpperCase(Object object) {
 		return object != null ? String.valueOf(object).toUpperCase() : "";
 	}
@@ -62,7 +59,6 @@ public class StringUtil {
 	 * @param str 指定字符串
 	 * @return String 首字母大写的字符串
 	 */
-	@SuppressLint("DefaultLocale")
 	public static String getFirstCapital(String str) {
 		return String.valueOf(str.charAt(0)).toUpperCase() + str.substring(1, str.length());
 	}

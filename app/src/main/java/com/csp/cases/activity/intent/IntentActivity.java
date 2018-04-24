@@ -2,7 +2,7 @@ package com.csp.cases.activity.intent;
 
 import android.content.Intent;
 
-import com.csp.cases.activity.broadcast.StaticReceiver;
+import com.csp.cases.activity.component.broadcast.StaticReceiver;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * <p>Create Date: 2017/9/5
  * <p>Modify Date: 无
  *
- * @author 永丰基地
+ * @author csp
  * @version 1.0.0
  * @since AndroidCases 1.0.0
  */

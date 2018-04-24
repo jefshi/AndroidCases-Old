@@ -300,7 +300,6 @@ public class MiscUtils {
         try {
             sdk = Integer.parseInt(Build.VERSION.SDK);
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
         return sdk;
@@ -325,7 +324,6 @@ public class MiscUtils {
             Object value = bundle.get(keyName);
             return value;
         } catch (NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return "";
@@ -346,7 +344,6 @@ public class MiscUtils {
             String versionName = pi.versionName;
             return versionName;
         } catch (NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return "";

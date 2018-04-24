@@ -41,6 +41,8 @@ public class ViewActivity extends BaseListActivity {
     @Override
     public List<ItemInfo> getItemInfos() {
         List<ItemInfo> items = new ArrayList<>();
+        items.add(new ItemInfo("View Event", ViewEventActivity.class, "View 事件体系案例: 待完成"));
+
         items.add(new ItemInfo("绘制图片", "drawPaint", ""));
         items.add(new ItemInfo("绘制图片", "drawPaint02", ""));
         items.add(new ItemInfo("自定义[ArcMenu]", "arcMenu", ""));

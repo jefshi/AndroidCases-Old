@@ -137,6 +137,7 @@ public class LogCat {
     }
 
     /**
+     * TODO printStackTrace(Throwable)
      * @see #printStackTrace(String, Exception)
      */
     public static void printStackTrace(Exception exception) {
@@ -254,13 +255,6 @@ public class LogCat {
      */
     public static void log(int level, Object message) {
         log(level, DEFAULT_STACK_ID, null, message);
-    }
-
-    /**
-     * TODO ？？？
-     */
-    public static void e(Object... messages) {
-        log(Log.ERROR, DEFAULT_STACK_ID, null, (Object) messages);
     }
 
     /**
