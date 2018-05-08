@@ -83,14 +83,11 @@ public class NetworkActivity extends BaseListActivity {
      * 网络连通检测
      */
     private void networkConnected() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean connected = NetWorkUtils.isConnected(NetworkActivity.this)
-                        && !NetWorkUtils.isPortalWifi();
+        new Thread(() -> {
+            boolean connected = NetWorkUtils.isConnected(NetworkActivity.this)
+                    && !NetWorkUtils.isPortalWifi();
 
-                LogCat.e("网络连通检测：" + connected);
-            }
+            LogCat.e("网络连通检测：" + connected);
         }).start();
     }
 
