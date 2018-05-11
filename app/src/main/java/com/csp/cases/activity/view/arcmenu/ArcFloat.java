@@ -29,7 +29,7 @@ import android.widget.RelativeLayout;
 
 import com.csp.cases.R;
 import com.csp.cases.activity.view.other.RECState;
-import com.csp.utils.android.DisplayMetricsUtil;
+import com.csp.utils.android.MetricsUtil;
 
 /**
  * Created by chenshp on 2018/3/30.
@@ -200,7 +200,7 @@ public class ArcFloat extends FrameLayout implements View.OnClickListener {
         mScreenWidth = point.x;
         mScreenHeight = point.y;
 
-        mStatusBarHeight = DisplayMetricsUtil.getStatusBarHeight(getContext());
+        mStatusBarHeight = MetricsUtil.getStatusBarHeight(getContext());
     }
 
     /**
@@ -483,8 +483,8 @@ public class ArcFloat extends FrameLayout implements View.OnClickListener {
 //        mScreenHeight = point.y;
         final int appletHeight = mScreenHeight - mStatusBarHeight;
 
-        int toppx = DisplayMetricsUtil.dipToPx(getContext(), (MAX_LENGTH - MIN_LENGTH) / 2);
-        int bottompx = DisplayMetricsUtil.dipToPx(getContext(), (MAX_LENGTH + MIN_LENGTH) / 2);
+        int toppx = (int) MetricsUtil.dipToPx(getContext(), (MAX_LENGTH - MIN_LENGTH) / 2);
+        int bottompx = (int) MetricsUtil.dipToPx(getContext(), (MAX_LENGTH + MIN_LENGTH) / 2);
 
 
 //        mScreenHeight = mScreenHeight - mStatusBarHeight;

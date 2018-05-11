@@ -22,16 +22,17 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.csp.cases.R;
-import com.csp.utils.android.DisplayMetricsUtil;
+import com.csp.utils.android.MetricsUtil;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class ArcExitView extends FrameLayout implements IWindowLayoutParams {
-//    @BindView(R.id.delete_iv)
+    //    @BindView(R.id.delete_iv)
     ImageView mDeleteIv;
     private AnimatorSet mShowAnimSet;
     private AnimatorSet mHideAnimSet = new AnimatorSet();
     private int marginBottom;
     private int stateBarHeight;
+
     public ArcExitView(@NonNull Context context) {
         this(context, null, 0);
     }
@@ -53,41 +54,46 @@ public class ArcExitView extends FrameLayout implements IWindowLayoutParams {
         mDeleteIv = view.findViewById(R.id.delete_iv);
 
 
-        marginBottom = DisplayMetricsUtil.dipToPx(context, 100);
-        setMargins(mDeleteIv,0,0,0,marginBottom);
-        stateBarHeight = isSamsungS8() ? DisplayMetricsUtil.getStatusBarHeight(context):0;
+        marginBottom = (int) MetricsUtil.dipToPx(context, 100);
+        setMargins(mDeleteIv, 0, 0, 0, marginBottom);
+        stateBarHeight = isSamsungS8() ? MetricsUtil.getStatusBarHeight(context) : 0;
     }
-    public void setMargins (View v, int l, int t, int r, int b) {
+
+    public void setMargins(View v, int l, int t, int r, int b) {
         if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
             p.setMargins(l, t, r, b);
             v.requestLayout();
         }
     }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         //横竖屏切换后关闭在打开刷新
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            marginBottom = DisplayMetricsUtil.dipToPx(getContext(), 100);
-            setMargins(mDeleteIv,0,0,0,marginBottom);
-        }else if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
-            marginBottom = DisplayMetricsUtil.dipToPx(getContext(), 5);
-            setMargins(mDeleteIv,0,0,0,marginBottom);
+            marginBottom = (int) MetricsUtil.dipToPx(getContext(), 100);
+            setMargins(mDeleteIv, 0, 0, 0, marginBottom);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            marginBottom = (int) MetricsUtil.dipToPx(getContext(), 5);
+            setMargins(mDeleteIv, 0, 0, 0, marginBottom);
         }
     }
+
     /**
      * 获取手机型号
      *
-     * @return  手机型号
+     * @return 手机型号
      */
     private String getSystemModel() {
         return android.os.Build.MODEL;
     }
-    private boolean isSamsungS8(){
+
+    private boolean isSamsungS8() {
         return getSystemModel().equals("SM-G950F");
     }
-    public void getCenterXY(int[] array){
+
+    public void getCenterXY(int[] array) {
 
         int width = getWidth();
         int height = getHeight();
@@ -153,7 +159,7 @@ public class ArcExitView extends FrameLayout implements IWindowLayoutParams {
                 WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, 0, 0,
                 WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
 //                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
 //                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 //                | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR

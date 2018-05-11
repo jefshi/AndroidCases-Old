@@ -104,9 +104,4 @@ public abstract class BaseActivity extends BaseLibraryActivity implements ItemIn
             }
         });
     }
-
-    @Override
-    public List<ItemInfo> getItemInfos() {
-        return null;
-    }
 }

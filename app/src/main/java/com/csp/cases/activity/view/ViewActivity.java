@@ -41,6 +41,10 @@ public class ViewActivity extends BaseListActivity {
     @Override
     public List<ItemInfo> getItemInfos() {
         List<ItemInfo> items = new ArrayList<>();
+        items.add(new ItemInfo("View Event", StyleActivity.class, "样式案例"));
+
+
+        items.add(new ItemInfo("自定义 View 测试", CustomViewActivity.class, ""));
         items.add(new ItemInfo("View Event", ViewEventActivity.class, "View 事件体系案例: 待完成"));
 
         items.add(new ItemInfo("绘制图片", "drawPaint", ""));

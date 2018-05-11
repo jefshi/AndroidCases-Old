@@ -10,7 +10,7 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import com.csp.utils.android.DisplayMetricsUtil;
+import com.csp.utils.android.MetricsUtil;
 import com.csp.utils.android.log.LogCat;
 
 /**
@@ -70,7 +70,7 @@ public class ArcExitView02 extends ViewGroup {
                 MeasureSpec.getSize(heightMeasureSpec)
         });
 
-        int size = DisplayMetricsUtil.dipToPx(getContext(), 80);
+        int size = (int) MetricsUtil.dipToPx(getContext(), 80);
         setMeasuredDimension(size, size);
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

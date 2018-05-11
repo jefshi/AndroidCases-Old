@@ -14,7 +14,7 @@ import com.csp.cases.activity.view.arcmenu.ArcFloat;
 import com.csp.cases.activity.view.arcmenu.ArcFloatManager;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.utils.android.DisplayMetricsUtil;
+import com.csp.utils.android.MetricsUtil;
 import com.csp.utils.android.log.LogCat;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class WindowManagerActivity extends BaseListActivity {
     }
 
     private void initParams(Context context) {
-        int size = DisplayMetricsUtil.dipToPx(this, 50);
+        int size = (int) MetricsUtil.dipToPx(this, 50);
 
         wlp.type = WindowManager.LayoutParams.TYPE_PHONE;
         wlp.format = PixelFormat.TRANSLUCENT;
@@ -65,7 +65,7 @@ public class WindowManagerActivity extends BaseListActivity {
     private int minmove = 10;
 
     private void showFloatWindow() {
-        int size = DisplayMetricsUtil.dipToPx(this, 40);
+        int size = (int) MetricsUtil.dipToPx(this, 40);
 
 //        WindowManager.LayoutParams wlp = new WindowManager.LayoutParams();
 //        wlp.height = wlp.width = radius;
@@ -124,13 +124,12 @@ public class WindowManagerActivity extends BaseListActivity {
 
 
     private ArcFloat arcFloat;
+
     private void showarcfloat() {
 
 
 //        ArcLayout arcLayout = (ArcLayout) findViewById(R.id.arcMenu);
 //        arcLayout.setAdapter(adapter);
-
-
 
 
 //        ArcExitView arcExit = null; // (ArcExitView) inflater.inflate(R.layout.view_arc_exit, null, false);

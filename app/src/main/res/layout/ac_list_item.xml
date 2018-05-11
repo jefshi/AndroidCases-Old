@@ -20,11 +20,19 @@
         android:layout_above="@id/txtDescription"
         app:layout_widthPercent="30%" />
 
+    <View
+        android:id="@+id/view_divide"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/txtDescription"
+        android:layout_toEndOf="@id/lsvItem"
+        android:background="@color/black" />
+
     <FrameLayout
         android:id="@+id/lfrItem"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/txtDescription"
+        android:layout_above="@id/view_divide"
         android:layout_toRightOf="@id/lsvItem" />
 
     <ImageView

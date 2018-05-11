@@ -13,7 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.csp.cases.R;
 import com.csp.cases.activity.view.other.RECState;
-import com.csp.utils.android.DisplayMetricsUtil;
+import com.csp.utils.android.MetricsUtil;
 import com.csp.utils.android.aaaTemp.Utils;
 
 /**
@@ -150,7 +150,7 @@ public class ArcFloatManager {
         mScreenWidth = point.x;
         mScreenHeight = point.y;
 
-        mStatusBarHeight = DisplayMetricsUtil.getStatusBarHeight(mContext);
+        mStatusBarHeight = MetricsUtil.getStatusBarHeight(mContext);
     }
 
 

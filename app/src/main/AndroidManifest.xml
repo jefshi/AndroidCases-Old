@@ -213,6 +213,11 @@
             android:screenOrientation="landscape" />
 
         <activity
+            android:name=".activity.view.StyleActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
+
+        <activity
             android:name=".activity.system.SystemActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
@@ -227,22 +232,28 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
 
+        <activity
+            android:name=".activity.view.CustomViewActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
+
 
         <service
             android:name=".activity.network.jobscheduler.MyJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
+        <activity
+            android:name=".activity.view.LrcActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
+
         <!--监听app的安装和卸载-->
         <receiver android:name=".activity.system.AppInfoReceiver">
             <intent-filter>
-                <!--<action android:name="android.intent.action.PACKAGE_ADDED" />-->
-                <!--<action android:name="android.intent.action.PACKAGE_REMOVED" />-->
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
 
-                <action android:name="android.intent.action.SCREEN_ON" />
-                <action android:name="android.intent.action.SCREEN_OFF" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-
-                <!--<data android:scheme="package" />-->
+                <data android:scheme="package" />
             </intent-filter>
         </receiver>
     </application>

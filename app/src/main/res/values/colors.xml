@@ -15,4 +15,13 @@
 
     <!--<color name="black">#00FFFFFF</color>-->
     <color name="black">#FF000000</color>
+
+    <color name="color_ACAFCB">#ACAFCB</color>
+    <color name="color_868CBB">#868CBB</color>
+    <color name="color_7082FF">#7082FF</color>
+    <color name="color_01">#DE000000</color>
+    <color name="color_02">#FFFAFAFA</color>
+    <color name="color_03">#FF3F51B5</color>
+    <color name="color_04">#FF303F9F</color>
+    <color name="color_05">#FF00FF</color>
 </resources>

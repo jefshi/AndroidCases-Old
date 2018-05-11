@@ -8,7 +8,7 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.csp.utils.android.DisplayMetricsUtil;
+import com.csp.utils.android.MetricsUtil;
 import com.csp.utils.android.log.LogCat;
 
 /**
@@ -24,7 +24,7 @@ import com.csp.utils.android.log.LogCat;
 public class ArcAdapter extends BaseAdapter {
     private Context mContext;
     private Integer[] objects; // 数据源
-//    private int[] resources; // 模板文件: R.selector_item_background
+    //    private int[] resources; // 模板文件: R.selector_item_background
     private LayoutInflater inflater; // 解析XML布局资源的填充器
 
     // ========================================
@@ -169,7 +169,7 @@ public class ArcAdapter extends BaseAdapter {
      */
     protected View getConvertView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            int radius = DisplayMetricsUtil.dipToPx(mContext, 40);
+            int radius = (int) (MetricsUtil.dipToPx(mContext, 40) + 0.5);
             WindowManager.LayoutParams wlp = new WindowManager.LayoutParams();
             wlp.height = wlp.width = radius;
 

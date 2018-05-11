@@ -7,10 +7,6 @@ import android.util.TypedValue;
 import java.lang.reflect.Field;
 
 /**
- * Created by chenshp on 2018/3/28.
- */
-
-/**
  * Description: 测量工具类
  * <p>Create Date: 2018/04/09
  * <p>Modify Date: nothing
