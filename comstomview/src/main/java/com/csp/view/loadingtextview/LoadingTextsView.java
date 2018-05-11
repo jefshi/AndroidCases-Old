@@ -96,8 +96,6 @@ public class LoadingTextsView extends VerticalTextsView {
         LogCat.e("onDraw");
 
 
-
-
         int size = mContents.size();
 
         float showY = getStartBaseLineY();
@@ -118,6 +116,30 @@ public class LoadingTextsView extends VerticalTextsView {
     @Override
     protected int getExtraBaseLineY() {
         return mScrollY;
+    }
+
+    @Override
+    protected void extraOperateBefore() {
+        super.extraOperateBefore();
+
+        int size = mContents.size();
+
+        mShowY = getStartBaseLineY();
+        if (size >= mRaw)
+            mShowY += (size - mRaw) * mLineHeight;
+
+        mTotal = (int) (mRaw * mLineHeight - mLineSpace + 0.5);
+    }
+
+    private float mShowY;
+    private int mTotal;
+
+    @Override
+    protected void extraOperating(float baseLineY) {
+        super.extraOperating(baseLineY);
+
+        int alpha = (int) (255 * (baseLineY - mShowY) /  mTotal);
+        mTextPaint.setAlpha(alpha);
     }
 
     private boolean mScrolling;

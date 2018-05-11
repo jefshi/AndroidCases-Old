@@ -29,7 +29,7 @@ import java.util.List;
 public class VerticalTextsView extends View {
     List<String> mContents = new ArrayList<>();
 
-    private TextPaint mTextPaint;
+    protected TextPaint mTextPaint;
     protected Paint.FontMetrics mFontMetrics;
 
     protected float mLineSpace;
@@ -125,12 +125,14 @@ public class VerticalTextsView extends View {
         float baseLineX = getStartBaseLineX();
         float startBaseLineY = getStartBaseLineY();
 
+        extraOperateBefore();
+
         float baseLineY;
         for (int i = 0; i < size; i++) {
             baseLineY = startBaseLineY + i * mLineHeight + getExtraBaseLineY();
 
 
-
+            extraOperating(baseLineY);
 
 //            if (baseLineY < showY) {
 //                mTextPaint.setAlpha(0);
@@ -146,6 +148,12 @@ public class VerticalTextsView extends View {
 
     protected int getExtraBaseLineY() {
         return 0;
+    }
+
+    protected void extraOperateBefore() {
+    }
+
+    protected void extraOperating(float baseLineY) {
     }
 
     protected float getStartBaseLineX() {
