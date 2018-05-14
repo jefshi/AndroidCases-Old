@@ -60,7 +60,7 @@
         <attr name="raw" format="integer" />
         <attr name="oneLineDuration" format="integer" />
         <attr name="needGradient" format="boolean" />
-        <attr name="startAlpha" format="integer" />
-        <attr name="endAlpha" format="integer" />
+        <attr name="startAlpha" format="fraction" />
+        <attr name="endAlpha" format="fraction" />
     </declare-styleable>
 </resources>

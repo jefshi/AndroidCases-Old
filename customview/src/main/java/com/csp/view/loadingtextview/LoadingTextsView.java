@@ -18,6 +18,8 @@ import com.csp.utils.android.classutil.BitmapUtil;
 import com.csp.utils.android.classutil.GravityUtl;
 import com.csp.view.R;
 
+import java.util.List;
+
 /**
  * Description: Application
  * Create Date: 2018/05/14
@@ -64,6 +66,13 @@ public class LoadingTextsView extends VerticalTextsView {
     }
 
     @Override
+    public void setContents(List<String> contents) {
+        mHadScrollCount = 0;
+
+        super.setContents(contents);
+    }
+
+    @Override
     public void refreshContent(boolean invalidate) {
         if (mAutoRaw)
             setRaw(mContents.size(), false);
@@ -105,15 +114,15 @@ public class LoadingTextsView extends VerticalTextsView {
 
         mAutoRaw = true;
         boolean needGradient = false;
-        int startAlpha = 0;
-        int endAlpha = 255;
+        float startAlpha = 0;
+        float endAlpha = 255;
 
         if (array != null) {
             oneLineDuration = array.getInt(R.styleable.LoadingTextsView_oneLineDuration, oneLineDuration);
             raw = array.getInt(R.styleable.LoadingTextsView_raw, raw);
             needGradient = array.getBoolean(R.styleable.LoadingTextsView_needGradient, false);
-            startAlpha = array.getInt(R.styleable.LoadingTextsView_startAlpha, startAlpha);
-            endAlpha = array.getInt(R.styleable.LoadingTextsView_endAlpha, endAlpha);
+            startAlpha = array.getFraction(R.styleable.LoadingTextsView_startAlpha, 1, 1, startAlpha);
+            endAlpha = array.getFraction(R.styleable.LoadingTextsView_endAlpha, 1, 1, endAlpha);
 
             if (raw >= 0)
                 mAutoRaw = false;
@@ -121,7 +130,7 @@ public class LoadingTextsView extends VerticalTextsView {
 
         setRaw(raw, false);
         setNeedGradient(needGradient);
-        setGradientAlpha(startAlpha, endAlpha);
+        setGradientAlpha((int) (startAlpha * 255 + 0.5), (int) (endAlpha * 255 + 0.5));
         setOneLineDuration(oneLineDuration);
     }
 
@@ -136,7 +145,7 @@ public class LoadingTextsView extends VerticalTextsView {
         }
 
         if (heightMode == MeasureSpec.AT_MOST) {
-            int heightSize = (int) (mLineHeight * mRaw - mLineSpace + 0.5);
+            int heightSize = (int) (mLineHeight * mRaw - mLineSpace + mFontMetrics.bottom + 0.5);
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize, heightMode);
         }
 
@@ -187,11 +196,13 @@ public class LoadingTextsView extends VerticalTextsView {
             return false;
 
         if (baseLineY > mGradientShowY) {
-            mTextPaint.setAlpha(255);
+            mTextPaint.setAlpha(mStartAlpha);
             return true;
         }
 
-        int alpha = (int) (255 * (mGradientTotal + baseLineY - mGradientShowY) / mGradientTotal);
+        int alpha = (int) (Math.abs(mStartAlpha - mEndAlpha)
+                * (mGradientTotal + baseLineY - mGradientShowY) / mGradientTotal
+                + mEndAlpha);
         mTextPaint.setAlpha(alpha);
         return true;
     }
@@ -254,6 +265,11 @@ public class LoadingTextsView extends VerticalTextsView {
 
         mScrolling = true;
         mScroller.startScroll(0, scrollY, 0, -scrollY, duration);
+    }
+
+    public void resetScroll() {
+        mHadScrollCount = 0;
+        startScroll();
     }
 
     public void setRaw(int raw) {

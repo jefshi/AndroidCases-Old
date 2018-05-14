@@ -49,7 +49,10 @@ public class VerticalTextsView extends View {
     }
 
     public void setContents(List<String> contents) {
-        mContents = contents;
+        if (contents == null)
+            mContents.clear();
+        else
+            mContents.addAll(contents);
 
         refreshContent(true);
     }
@@ -129,7 +132,7 @@ public class VerticalTextsView extends View {
         }
 
         if (heightMode == MeasureSpec.AT_MOST) {
-            int heightSize = (int) (mLineHeight * mContents.size() - mLineSpace + 0.5);
+            int heightSize = (int) (mLineHeight * mContents.size() - mLineSpace + mFontMetrics.bottom + 0.5);
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize, heightMode);
         }
 
@@ -186,7 +189,7 @@ public class VerticalTextsView extends View {
                 baseLineX = getWidth() - paddingEnd;
                 break;
             case Gravity.CENTER_HORIZONTAL:
-                baseLineX = getWidth() * 0.5f;
+                baseLineX = (getWidth() - paddingStart - paddingEnd) * 0.5f + paddingStart;
                 break;
             default:
                 baseLineX = paddingStart;

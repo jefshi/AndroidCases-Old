@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.csp.cases.activity.view.custom.LoadingTextViewActivity;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.utils.android.log.LogCat;
@@ -23,7 +24,7 @@ public class CustomViewActivity extends BaseListActivity {
         List<ItemInfo> items = new ArrayList<>();
         items.add(new ItemInfo("跑马灯", "ScrollTextView", ""));
         items.add(new ItemInfo("LoadingTextView", "LoadingTextView", ""));
-        items.add(new ItemInfo("LrcActivity", LrcActivity.class, ""));
+        items.add(new ItemInfo("LoadingTextViewActivity", LoadingTextViewActivity.class, ""));
 
 
         return items;
