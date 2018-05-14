@@ -1,4 +1,4 @@
-package com.csp.utils.android;
+package com.csp.utils.android.classutil;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -6,28 +6,29 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
-import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 /**
- * Created by chenshp on 2018/4/17.
+ * Description: Byte 操作工具类
+ * <p>Create Date: 2018/04/17
+ * <p>Modify Date: 无
+ *
+ * @author csp
+ * @version 1.0.0
+ * @since AndroidUtils 1.0.0
  */
-
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class BitmapUtil {
 
-
-    // Bitmap转换成byte[]
-    public byte[] Bitmap2Bytes(Bitmap bm) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        return baos.toByteArray();
-    }
-
-    // byte[]转换成Bitmap
-    public Bitmap Bytes2Bitmap(byte[] b) {
-        if (b.length != 0) {
-            return BitmapFactory.decodeByteArray(b, 0, b.length);
-        }
-        return null;
+    /**
+     * byte[] -> Bitmap
+     *
+     * @param bytes byte[]
+     * @return Bitmap
+     */
+    public static Bitmap toBitmap(byte[] bytes) {
+        return bytes == null || bytes.length == 0 ? null
+                : BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
     /**
@@ -37,6 +38,9 @@ public class BitmapUtil {
      * @return Bitmap
      */
     public static Bitmap toBitmap(Drawable drawable) {
+        if (drawable == null)
+            return null;
+
         int width = drawable.getIntrinsicWidth();
         int height = drawable.getIntrinsicHeight();
         width = width <= 0 ? 1 : width;
@@ -50,5 +54,15 @@ public class BitmapUtil {
         Bitmap bitmap = Bitmap.createBitmap(width, height, config);
         drawable.draw(new Canvas(bitmap)); // 将 Drawable 内容画到 Canvas 中
         return bitmap;
+    }
+
+    /**
+     * InputStream -> Bitmap
+     *
+     * @param is InputStream
+     * @return Bitmap
+     */
+    public static Bitmap toBitmap(InputStream is) {
+        return BitmapFactory.decodeStream(is);
     }
 }

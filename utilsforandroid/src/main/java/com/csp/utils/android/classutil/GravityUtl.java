@@ -1,4 +1,4 @@
-package com.csp.utils.android;
+package com.csp.utils.android.classutil;
 
 import android.annotation.SuppressLint;
 import android.view.Gravity;

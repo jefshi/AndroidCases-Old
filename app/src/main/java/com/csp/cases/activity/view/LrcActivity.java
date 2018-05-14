@@ -42,10 +42,11 @@ public class LrcActivity extends Activity {
                     loading.startScroll();
                 }, 100)
         );
-//        handler.postDelayed(loading::startScroll, 1000);
-        loading.addContent("正在连接次元连接主服务器…完毕");
-        loading.startScroll();
 
+        handler.postDelayed(() -> {
+            loading.addContent("正在连接次元连接主服务器…完毕");
+            loading.startScroll();
+        }, 1000);
 
 
 //        loading.startScroll();

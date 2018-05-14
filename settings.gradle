@@ -1,4 +1,4 @@
-include ':app', ':libraryforandroid', ':libraryforjava', ':utilsforandroid', ':comstomview'
+include ':app', ':libraryforandroid', ':libraryforjava', ':utilsforandroid', ':customview'
 
 // 第三方集成测试：
 include ':appintegrate'

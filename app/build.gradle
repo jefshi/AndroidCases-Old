@@ -39,7 +39,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:percent:26.1.0'
 
-    implementation project(':comstomview')
+    implementation project(':customview')
     implementation project(':libraryforandroid')
     implementation project(':libraryforjava')
     implementation project(':utilsforandroid')

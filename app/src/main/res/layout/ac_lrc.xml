@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
     android:orientation="horizontal">
 
     <com.csp.view.LrcView02
@@ -30,12 +31,16 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="@color/white"
         android:paddingEnd="50dp"
         android:paddingStart="50dp"
+        app:endAlpha="255"
         app:gravity="start|bottom"
         app:lineSpacing="20dp"
+        app:needGradient="true"
         app:oneLineDuration="400"
         app:raw="3"
+        app:startAlpha="0"
         app:textColor="@color/color_7082FF"
         app:textSize="16sp" />
 
