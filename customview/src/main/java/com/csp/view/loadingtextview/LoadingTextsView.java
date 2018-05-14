@@ -68,16 +68,30 @@ public class LoadingTextsView extends VerticalTextsView {
     @Override
     public void setContents(List<String> contents) {
         mHadScrollCount = 0;
+        if (contents == null)
+            mScrollY = 0;
+        else
+            mScrollY = (contents.size() - mHadScrollCount) * mLineHeight;
 
         super.setContents(contents);
+    }
+
+    @Override
+    public void addContent(String content) {
+        if (mContents.isEmpty()) {
+            mHadScrollCount = 0;
+            mScrollY = mLineHeight;
+        } else {
+            mScrollY = (mContents.size() + 1 - mHadScrollCount) * mLineHeight;
+        }
+
+        super.addContent(content);
     }
 
     @Override
     public void refreshContent(boolean invalidate) {
         if (mAutoRaw)
             setRaw(mContents.size(), false);
-
-        mScrollY = (mContents.size() - mHadScrollCount) * mLineHeight;
 
         super.refreshContent(invalidate);
     }
@@ -108,14 +122,13 @@ public class LoadingTextsView extends VerticalTextsView {
         context.getTheme().resolveAttribute(android.R.attr.colorBackground, typedValue, true);
         mColorBackground = typedValue.data;
 
-
         int raw = -1;
         int oneLineDuration = 0;
 
         mAutoRaw = true;
         boolean needGradient = false;
-        float startAlpha = 0;
-        float endAlpha = 255;
+        float startAlpha = 1.0f;
+        float endAlpha = 0.0f;
 
         if (array != null) {
             oneLineDuration = array.getInt(R.styleable.LoadingTextsView_oneLineDuration, oneLineDuration);
@@ -260,8 +273,6 @@ public class LoadingTextsView extends VerticalTextsView {
         int shouldSize = mContents.size() - mHadScrollCount;
         int scrollY = shouldSize * mLineHeight;
         int duration = mOneLineDuration * shouldSize;
-        if (mHadScrollCount == 0)
-            scrollY -= mLineHeight;
 
         mScrolling = true;
         mScroller.startScroll(0, scrollY, 0, -scrollY, duration);

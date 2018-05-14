@@ -16,6 +16,7 @@ public class LoadingTextViewActivity extends Activity implements View.OnClickLis
     private LoadingTextsView mLoadingTextsView;
 
     private Handler mHandler;
+    private static int mShowContentIndex;
     private List<String> mContents = new ArrayList<>();
 
     {
@@ -25,8 +26,6 @@ public class LoadingTextViewActivity extends Activity implements View.OnClickLis
         mContents.add("正在智能选择最佳路线03…完毕");
         mContents.add("正在智能选择最佳路线04…完毕");
     }
-
-    private static int mShowContentIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +61,6 @@ public class LoadingTextViewActivity extends Activity implements View.OnClickLis
     }
 
     private void resetContent() {
-        mShowContentIndex = 0;
-        mLoadingTextsView.setContents(null);
-
         mLoadingTextsView.setOnScrollListener(() ->
                 mHandler.postDelayed(() -> {
                     if (mShowContentIndex >= mContents.size())
@@ -76,6 +72,8 @@ public class LoadingTextViewActivity extends Activity implements View.OnClickLis
                 }, 100)
         );
 
+        mShowContentIndex = 0;
+        mLoadingTextsView.setContents(null);
         mHandler.postDelayed(() -> {
             mLoadingTextsView.addContent(mContents.get(mShowContentIndex));
             mLoadingTextsView.startScroll();
