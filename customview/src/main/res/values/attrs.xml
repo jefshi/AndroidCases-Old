@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 与 API 19 到 API 27 相同 -->
+    <!-- 从 API 19 处复制，与 API 19 到 API 27 相同 -->
     <attr name="gravity">
         <!-- Push object to the top of its container, not changing its size. -->
         <flag name="top" value="0x30" />
@@ -54,16 +54,13 @@
         <attr name="textColor" />
         <attr name="gravity" />
         <attr name="lineSpacing" format="dimension" />
-        <!--<attr name="raw" format="integer" />-->
-        <!--<attr name="oneLineDuration" format="integer" />-->
     </declare-styleable>
 
     <declare-styleable name="LoadingTextsView">
-        <!--<attr name="textSize" />-->
-        <!--<attr name="textColor" />-->
-        <!--<attr name="gravity" />-->
-        <!--<attr name="lineSpacing" format="dimension" />-->
         <attr name="raw" format="integer" />
         <attr name="oneLineDuration" format="integer" />
+        <attr name="needGradient" format="boolean" />
+        <attr name="startAlpha" format="integer" />
+        <attr name="endAlpha" format="integer" />
     </declare-styleable>
 </resources>

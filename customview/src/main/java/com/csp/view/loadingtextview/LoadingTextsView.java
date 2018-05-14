@@ -10,32 +10,58 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
-import com.csp.utils.android.BitmapUtil;
-import com.csp.utils.android.log.LogCat;
+import com.csp.utils.android.classutil.BitmapUtil;
+import com.csp.utils.android.classutil.GravityUtl;
 import com.csp.view.R;
 
-import java.util.Arrays;
-
 /**
- * Created by chenshp on 2018/5/11.
+ * Description: Application
+ * Create Date: 2018/05/14
+ * Modify Date: 无
+ *
+ * @author csp
+ * @version 1.0.0
+ * @since AndroidCustomVied 1.0.0
  */
+@SuppressWarnings({"unused", "SameParameterValue"})
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class LoadingTextsView extends VerticalTextsView {
+    protected int mRaw;
+    protected int mOneLineDuration;
+    private boolean mNeedGradient;
 
     private Scroller mScroller;
     private int mHadScrollCount = 0;
-    private int mScrollX;
+    private boolean mScrolling;
+    // private int mScrollX;
     private int mScrollY;
 
     private boolean mAutoRaw;
-    protected int mRaw;
 
     private int mColorBackground;
     private RectF mShelterRectF = new RectF();
     private Paint mShelterPaint = new Paint();
+
+    private int mStartAlpha;
+    private int mEndAlpha;
+    private float mGradientShowY;
+    private float mGradientTotal;
+
+    public int getRaw() {
+        return mRaw;
+    }
+
+    public int getOneLineDuration() {
+        return mOneLineDuration;
+    }
+
+    public boolean isNeedGradient() {
+        return mNeedGradient;
+    }
 
     @Override
     public void refreshContent(boolean invalidate) {
@@ -73,28 +99,54 @@ public class LoadingTextsView extends VerticalTextsView {
         context.getTheme().resolveAttribute(android.R.attr.colorBackground, typedValue, true);
         mColorBackground = typedValue.data;
 
+
         int raw = -1;
         int oneLineDuration = 0;
 
         mAutoRaw = true;
+        boolean needGradient = false;
+        int startAlpha = 0;
+        int endAlpha = 255;
 
         if (array != null) {
             oneLineDuration = array.getInt(R.styleable.LoadingTextsView_oneLineDuration, oneLineDuration);
             raw = array.getInt(R.styleable.LoadingTextsView_raw, raw);
+            needGradient = array.getBoolean(R.styleable.LoadingTextsView_needGradient, false);
+            startAlpha = array.getInt(R.styleable.LoadingTextsView_startAlpha, startAlpha);
+            endAlpha = array.getInt(R.styleable.LoadingTextsView_endAlpha, endAlpha);
 
             if (raw >= 0)
                 mAutoRaw = false;
         }
 
         setRaw(raw, false);
-        setOneLineDuration(oneLineDuration, false);
+        setNeedGradient(needGradient);
+        setGradientAlpha(startAlpha, endAlpha);
+        setOneLineDuration(oneLineDuration);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+
+        if (widthMode == MeasureSpec.AT_MOST) {
+            int widthSize = mLineWidth;
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthSize, widthMode);
+        }
+
+        if (heightMode == MeasureSpec.AT_MOST) {
+            int heightSize = (int) (mLineHeight * mRaw - mLineSpace + 0.5);
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize, heightMode);
+        }
+
+        setMeasuredDimension(getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),
+                getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        LogCat.e("onDraw");
-
 
         int size = mContents.size();
 
@@ -122,39 +174,57 @@ public class LoadingTextsView extends VerticalTextsView {
     protected void extraOperateBefore() {
         super.extraOperateBefore();
 
-        int size = mContents.size();
-
-        mShowY = getStartBaseLineY();
-        if (size >= mRaw)
-            mShowY += (size - mRaw) * mLineHeight;
-
-        mTotal = (int) (mRaw * mLineHeight - mLineSpace + 0.5);
+        mGradientShowY = getGradientShowY();
+        mGradientTotal = mRaw * mLineHeight - mLineSpace - mFontMetrics.top;
     }
-
-    private float mShowY;
-    private int mTotal;
 
     @Override
-    protected void extraOperating(float baseLineY) {
-        super.extraOperating(baseLineY);
+    protected boolean extraOperateForChild(float baseLineY) {
+        if (!mNeedGradient)
+            return super.extraOperateForChild(baseLineY);
 
-        int alpha = (int) (255 * (baseLineY - mShowY) /  mTotal);
+        if (baseLineY < (mGradientShowY - mGradientTotal))
+            return false;
+
+        if (baseLineY > mGradientShowY) {
+            mTextPaint.setAlpha(255);
+            return true;
+        }
+
+        int alpha = (int) (255 * (mGradientTotal + baseLineY - mGradientShowY) / mGradientTotal);
         mTextPaint.setAlpha(alpha);
+        return true;
     }
 
-    private boolean mScrolling;
+    // TODO 尚未完成支持 Gravity.TOP、Gravity.CENTER_VERTICAL
+    private float getGradientShowY() {
+        int paddingTop = getPaddingTop();
+        int paddingBottom = getPaddingBottom();
+
+        float gradientShowY;
+        int gravity = GravityUtl.getVerticalGravity(mGravity);
+        switch (gravity) {
+            case Gravity.TOP:
+                gradientShowY = paddingTop - mFontMetrics.top;
+                break;
+            case Gravity.CENTER_VERTICAL:
+                gradientShowY = getMeasuredHeight() * 0.5f;
+                break;
+            default:
+                gradientShowY = getMeasuredHeight() - paddingBottom - mFontMetrics.bottom;
+        }
+        return gradientShowY;
+    }
 
     @Override
     public void computeScroll() {
         super.computeScroll();
 
-        LogCat.e(mScroller.computeScrollOffset() + ", " + mScroller.getCurrY());
         if (mScroller.computeScrollOffset()) {
-            mScrollX = mScroller.getCurrX();
+            // mScrollX = mScroller.getCurrX();
             mScrollY = mScroller.getCurrY();
             invalidateView();
         } else if (mScrolling) {
-            LogCat.e(mHadScrollCount);
             mHadScrollCount = mContents.size();
             mScrolling = false;
             if (mListener != null)
@@ -184,7 +254,6 @@ public class LoadingTextsView extends VerticalTextsView {
 
         mScrolling = true;
         mScroller.startScroll(0, scrollY, 0, -scrollY, duration);
-        LogCat.e(Arrays.toString(new int[]{scrollY, duration}));
     }
 
     public void setRaw(int raw) {
@@ -199,22 +268,31 @@ public class LoadingTextsView extends VerticalTextsView {
             return;
 
         mRaw = raw;
-
         if (invalidate)
             invalidateView();
     }
 
     private void setOneLineDuration(int oneLineDuration) {
-        setOneLineDuration(oneLineDuration, true);
-    }
-
-    private void setOneLineDuration(int oneLineDuration, boolean invalidate) {
-        if (oneLineDuration < 0 || oneLineDuration == mOneLineDuration)
+        if (oneLineDuration == mOneLineDuration)
             return;
 
-        mOneLineDuration = oneLineDuration;
+        mOneLineDuration = oneLineDuration < 0 ? 0 : oneLineDuration;
+    }
 
-        if (invalidate)
-            invalidateView();
+    public void setNeedGradient(boolean needGradient) {
+        if (mNeedGradient == needGradient)
+            return;
+
+        this.mNeedGradient = needGradient;
+        invalidateView();
+    }
+
+    public void setGradientAlpha(int startAlpha, int endAlpha) {
+        if (mStartAlpha == startAlpha && mEndAlpha == endAlpha)
+            return;
+
+        mStartAlpha = startAlpha;
+        mEndAlpha = endAlpha;
+        invalidateView();
     }
 }

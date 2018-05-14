@@ -15,7 +15,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 
-import com.csp.utils.android.GravityUtl;
+import com.csp.utils.android.classutil.GravityUtl;
 import com.csp.utils.android.MetricsUtil;
 import com.csp.view.R;
 
@@ -23,8 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by chenshp on 2018/5/10.
+ * Description: Application
+ * Create Date: 2018/05/14
+ * Modify Date: 无
+ *
+ * @author csp
+ * @version 1.0.0
+ * @since AndroidCustomVied 1.0.0
  */
+@SuppressWarnings({"unused", "SameParameterValue"})
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class VerticalTextsView extends View {
     List<String> mContents = new ArrayList<>();
@@ -34,9 +41,8 @@ public class VerticalTextsView extends View {
 
     protected float mLineSpace;
     protected int mLineHeight;
-    private int mGravity;
-
-    protected int mOneLineDuration;
+    protected int mLineWidth;
+    protected int mGravity;
 
     public List<String> getContents() {
         return mContents;
@@ -62,8 +68,12 @@ public class VerticalTextsView extends View {
     }
 
     public void refreshContent(boolean invalidate) {
-        if (invalidate)
+        measureLineWidth();
+
+        if (invalidate) {
+            requestLayout();
             invalidateView();
+        }
     }
 
     public VerticalTextsView(Context context) {
@@ -104,12 +114,25 @@ public class VerticalTextsView extends View {
 
         setLineSpacing(lineSpacing, false);
         setRawTextSize(textSize, false);
-        setTextColor(textColor != null ? textColor : ColorStateList.valueOf(0xFF000000), false);
-        setGravity(gravity, false);
+        setTextColor(textColor != null ? textColor : ColorStateList.valueOf(0xFF000000));
+        setGravity(gravity);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+
+        if (widthMode == MeasureSpec.AT_MOST) {
+            int widthSize = mLineWidth;
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthSize, widthMode);
+        }
+
+        if (heightMode == MeasureSpec.AT_MOST) {
+            int heightSize = (int) (mLineHeight * mContents.size() - mLineSpace + 0.5);
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize, heightMode);
+        }
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -128,21 +151,15 @@ public class VerticalTextsView extends View {
         extraOperateBefore();
 
         float baseLineY;
+        int showTop = -mLineHeight;
+        int showBottom = getMeasuredHeight() + mLineHeight;
         for (int i = 0; i < size; i++) {
             baseLineY = startBaseLineY + i * mLineHeight + getExtraBaseLineY();
+            if (baseLineY <= showTop || baseLineY >= showBottom)
+                continue;
 
-
-            extraOperating(baseLineY);
-
-//            if (baseLineY < showY) {
-//                mTextPaint.setAlpha(0);
-//            } else
-//                mTextPaint.setAlpha(255);
-
-//            int alpha = 255 * i / (size - 1);
-//            mTextPaint.setAlpha(alpha);
-
-            canvas.drawText(mContents.get(i), baseLineX, baseLineY, mTextPaint);
+            if (extraOperateForChild(baseLineY))
+                canvas.drawText(mContents.get(i), baseLineX, baseLineY, mTextPaint);
         }
     }
 
@@ -153,9 +170,11 @@ public class VerticalTextsView extends View {
     protected void extraOperateBefore() {
     }
 
-    protected void extraOperating(float baseLineY) {
+    protected boolean extraOperateForChild(float baseLineY) {
+        return true;
     }
 
+    @SuppressLint("RtlHardcoded")
     protected float getStartBaseLineX() {
         int paddingStart = getPaddingStart();
         int paddingEnd = getPaddingEnd();
@@ -175,6 +194,7 @@ public class VerticalTextsView extends View {
         return baseLineX;
     }
 
+    // TODO 尚未完成支持 Gravity.TOP、Gravity.CENTER_VERTICAL
     protected float getStartBaseLineY() {
         int paddingTop = getPaddingTop();
         int paddingBottom = getPaddingBottom();
@@ -196,11 +216,20 @@ public class VerticalTextsView extends View {
         return baseLineY;
     }
 
-
     private void measureLineHeight() {
         Rect bound = new Rect();
         mTextPaint.getTextBounds("测试", 0, "测试".length(), bound);
         mLineHeight = (int) (bound.height() + mLineSpace + 0.5f);
+    }
+
+    private void measureLineWidth() {
+        Rect bound = new Rect();
+        int width = 0;
+        for (String content : mContents) {
+            mTextPaint.getTextBounds(content, 0, content.length(), bound);
+            width = Math.max(bound.width(), width);
+        }
+        mLineWidth = width;
     }
 
     public void setTextSize(int unit, float size) {
@@ -214,6 +243,7 @@ public class VerticalTextsView extends View {
         mTextPaint.setTextSize(size);
         mFontMetrics = mTextPaint.getFontMetrics();
         measureLineHeight();
+        measureLineWidth();
 
         if (invalidate) {
             requestLayout();
@@ -222,24 +252,15 @@ public class VerticalTextsView extends View {
     }
 
     public void setTextColor(ColorStateList colors) {
-        setTextColor(colors, true);
-    }
-
-    public void setTextColor(ColorStateList colors, boolean invalidate) {
         if (colors == null) {
             throw new NullPointerException();
         }
         mTextPaint.setColor(colors.getColorForState(getDrawableState(), 0));
-
-        if (invalidate)
-            invalidateView();
+        invalidateView();
     }
 
+    @SuppressLint("RtlHardcoded")
     public void setGravity(int gravity) {
-        setGravity(gravity, true);
-    }
-
-    public void setGravity(int gravity, boolean invalidate) {
         gravity = GravityUtl.formatGravity(gravity, false, false);
         if (mGravity == gravity)
             return;
@@ -258,9 +279,7 @@ public class VerticalTextsView extends View {
                 align = Paint.Align.LEFT;
         }
         mTextPaint.setTextAlign(align);
-
-        if (invalidate)
-            invalidateView();
+        invalidateView();
     }
 
     public void setLineSpacing(int unit, float size) {
