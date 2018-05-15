@@ -8,6 +8,7 @@ import android.content.Context;
 import android.net.NetworkInfo;
 import android.os.Build;
 
+import com.csp.cases.activity.network.downfile.DownFileActivity;
 import com.csp.cases.activity.network.jobscheduler.MyJobService;
 import com.csp.cases.activity.network.ping.PingUtil;
 import com.csp.cases.activity.network.visit.NetworkVisitActivity;
@@ -60,6 +61,7 @@ public class NetworkActivity extends BaseListActivity {
 
         itemInfos.add(new ItemInfo("VPN", VpnActivity.class, "VPN 使用案例"));
         itemInfos.add(new ItemInfo("网络访问", NetworkVisitActivity.class, "各种网络访问"));
+        itemInfos.add(new ItemInfo("下载文件", DownFileActivity.class, "各种网络访问"));
 
         return itemInfos;
     }

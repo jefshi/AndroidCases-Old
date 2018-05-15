@@ -237,6 +237,10 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
 
+        <activity
+            android:name=".activity.network.downfile.DownFileActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
         <service
             android:name=".activity.network.jobscheduler.MyJobService"
