@@ -4,11 +4,11 @@ import java.util.Collection;
 
 /**
  * Description: 判定数据是否为空
- * <p>Create Date: 2017/7/18
+ * <p>Create Date: 2017/07/18
  * <p>Modify Date: 2018/05/14
  *
  * @author csp
- * @version 1.0.0
+ * @version 1.0.2
  * @since JavaLibrary 1.0.0
  */
 @SuppressWarnings("unused")
@@ -20,6 +20,16 @@ public class EmptyUtil {
      * @return true: 是
      */
     public static boolean isEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
+    /**
+     * 字符串内容是否为空
+     *
+     * @param str 字符串
+     * @return true: 是
+     */
+    public static boolean isBank(String str) {
         return str == null || str.trim().isEmpty();
     }
 
