@@ -1,4 +1,4 @@
-package com.csp.appwidget;
+package com.csp.widget;
 
 import android.app.Application;
 
