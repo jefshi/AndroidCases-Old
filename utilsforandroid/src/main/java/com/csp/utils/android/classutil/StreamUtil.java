@@ -3,8 +3,6 @@ package com.csp.utils.android.classutil;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
-import com.csp.library.java.stream.StreamJavaUtil;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,8 +17,9 @@ import java.io.InputStream;
  * @version 1.0.0
  * @since AndroidUtils 1.0.0
  */
-@SuppressWarnings({"unused", "SameParameterValue", "WeakerAccess", "TryFinallyCanBeTryWithResources"})
-public class StreamUtil extends StreamJavaUtil {
+
+@SuppressWarnings({"unused", "WeakerAccess"})
+public class StreamUtil extends com.csp.library.java.stream.StreamUtil {
 
     /**
      * Bitmap -> InputStream
@@ -29,6 +28,7 @@ public class StreamUtil extends StreamJavaUtil {
      * @param quality Hint to the compressor, 0-100.
      * @return InputStream`
      */
+    @SuppressWarnings({"SameParameterValue", "TryFinallyCanBeTryWithResources"})
     public static InputStream toInputStream(Bitmap bitmap, int quality) throws IOException {
         InputStream is;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

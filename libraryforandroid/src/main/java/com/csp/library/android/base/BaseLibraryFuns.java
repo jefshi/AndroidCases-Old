@@ -2,7 +2,7 @@ package com.csp.library.android.base;
 
 import android.view.View;
 
-import com.csp.library.java.interfaces.VerifyEmpty;
+import java.util.Collection;
 
 /**
  * Description: 页面(Activity、Fragment)都需要实现的接口
@@ -14,34 +14,58 @@ import com.csp.library.java.interfaces.VerifyEmpty;
  * @since AndroidLibrary 1.0.0
  */
 @SuppressWarnings("unused")
-interface BaseLibraryFuns extends VerifyEmpty {
-	/**
-	 * @link View.findViewById(int)
-	 */
-	<T extends View> T findView(int resId);
+interface BaseLibraryFuns {
+    /**
+     * @link View.findViewById(int)
+     */
+    <T extends View> T findView(int resId);
 
-	/**
-	 * 获取当前页面布局对应的[View]对象
-	 *
-	 * @return [View]对象
-	 */
-	View getView();
+    /**
+     * 获取当前页面布局对应的[View]对象
+     *
+     * @return [View]对象
+     */
+    View getView();
 
-	// ========================================
-	// Log 方法
-	// ========================================
+    // ========================================
+    // Log 方法
+    // ========================================
 
-	/**
-	 * 打印日志
-	 *
-	 * @see com.csp.utils.android.log.LogCat#e(Object)
-	 */
-	void logError(Object message);
+    /**
+     * 打印日志
+     *
+     * @see com.csp.utils.android.log.LogCat#e(Object)
+     */
+    void logError(Object message);
 
-	/**
-	 * 打印日志
-	 *
-	 * @see com.csp.utils.android.log.LogCat#e(String, Object)
-	 */
-	void logError(String explain, Object message);
+    /**
+     * 打印日志
+     *
+     * @see com.csp.utils.android.log.LogCat#e(String, Object)
+     */
+    void logError(String explain, Object message);
+
+    /**
+     * 字符串是否为空
+     *
+     * @param str 字符串
+     * @return true: 是
+     */
+    boolean isEmpty(String str);
+
+    /**
+     * 集合是否为空
+     *
+     * @param collection 集合
+     * @return true: 是
+     */
+    boolean isEmpty(Collection collection);
+
+    /**
+     * 数组是否为空
+     *
+     * @param array 集合
+     * @return true: 是
+     */
+    boolean isEmpty(Object[] array);
 }

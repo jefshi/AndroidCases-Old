@@ -2,7 +2,7 @@ package com.csp.cases.activity.network.visit;
 
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.library.java.stream.StreamJavaUtil;
+import com.csp.library.java.string.StringUtil;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -75,7 +75,7 @@ public class NetworkVisitActivity extends BaseGridActivity {
         int state = connection.getResponseCode();
         if (state == 200) {
             InputStream is = connection.getInputStream();
-            logError("访问成功：", StreamJavaUtil.getString(is));
+            logError("访问成功：", StringUtil.toString(is));
         } else {
             logError("访问失败：响应码：" + state + "，URL：" + NetwokData.STRING_URL);
         }
@@ -118,7 +118,7 @@ public class NetworkVisitActivity extends BaseGridActivity {
         int state = connection.getResponseCode();
         if (state == 200) {
             InputStream is = connection.getInputStream();
-            logError("访问成功：", StreamJavaUtil.getString(is));
+            logError("访问成功：", StringUtil.toString(is));
         } else {
             logError("访问失败：响应码：" + state + "，URL：" + NetwokData.STRING_URL);
         }

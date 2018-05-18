@@ -1,6 +1,6 @@
 package com.csp.cases.activity.network.ping;
 
-import com.csp.library.java.stream.StreamJavaUtil;
+import com.csp.library.java.string.StringUtil;
 import com.csp.utils.android.log.LogCat;
 
 import java.io.IOException;
@@ -22,8 +22,8 @@ public class PingUtil {
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmd);
-            data[0] = StreamJavaUtil.getString(process.getInputStream());
-            data[1] = StreamJavaUtil.getString(process.getErrorStream());
+            data[0] = StringUtil.toString(process.getInputStream());
+            data[1] = StringUtil.toString(process.getErrorStream());
         } catch (IOException e) {
             LogCat.printStackTrace(e);
         } finally {
