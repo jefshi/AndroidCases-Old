@@ -89,6 +89,11 @@ public class SettingUtils {
         start(context, intent, requestCode);
     }
 
+    /**
+     * 跳转到 VPN 设置界面
+     *
+     * @see #start(Context, Intent, int)
+     */
     public static void startVpnSetting(@NonNull Context context, int requestCode) {
         Intent intent = new Intent();
         intent.setAction("android.net.vpn.SETTINGS");

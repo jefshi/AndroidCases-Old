@@ -16,7 +16,7 @@ import java.util.Set;
  *
  * @author csp
  * @version 1.0.0
- * @since AndroidLibrary 1.0.0
+ * @since AndroidUtils 1.0.0
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class PermissionDialog extends AlertDialog.Builder {

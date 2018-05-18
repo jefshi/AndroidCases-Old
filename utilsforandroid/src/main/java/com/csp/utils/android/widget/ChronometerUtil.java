@@ -13,6 +13,7 @@ import android.widget.Chronometer;
  * @version 1.0.0
  * @since AndroidUtils 1.0.0
  */
+@SuppressWarnings("unused")
 public class ChronometerUtil {
     /**
      * 刷新 Chronometer 控件，格式：00:00:00

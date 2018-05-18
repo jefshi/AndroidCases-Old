@@ -4,9 +4,7 @@ package com.csp.utils.android.permissions;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -26,7 +24,7 @@ import java.util.HashMap;
  *
  * @author csp
  * @version 1.0.0
- * @since AndroidLibrary 1.0.0
+ * @since AndroidUtils 1.0.0
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public final class PermissionUtil {
@@ -37,7 +35,7 @@ public final class PermissionUtil {
      * @param auto        自动权限：通过系统自身的提示框引导用户设置权限
      * @param manual      手动权限：需要通过自定义的提示框引导用户设置权限
      */
-    public static void classifyPermissions(Collection<String> permissions, Collection<String> auto, Collection<String> manual) {
+    private static void classifyPermissions(Collection<String> permissions, Collection<String> auto, Collection<String> manual) {
         for (String permission : permissions) {
             if (permission == null)
                 continue;
@@ -182,39 +180,22 @@ public final class PermissionUtil {
     /**
      * 跳转所有权限设置界面
      *
-     * @param activity    activity
+     * @param context     context
      * @param permissions 权限集合
      * @param requestCode 请求码
      */
-    public static void openPermissionsSetting(Activity activity, Collection<String> permissions, int requestCode) {
+    public static void openPermissionsSetting(Context context, Collection<String> permissions, int requestCode) {
         if (permissions == null || permissions.size() == 0)
             return;
 
         if (permissions.size() == 1) {
-            switch (permissions.iterator().next()) {
-                case android.Manifest.permission.SYSTEM_ALERT_WINDOW:
-                    openPermissionSetting(activity, requestCode);
-                    return;
-            }
+            String permission = permissions.iterator().next();
+            if (android.Manifest.permission.SYSTEM_ALERT_WINDOW.equals(permission))
+                SettingUtils.startFloatingPermissionSetting(context, requestCode);
+
+            return;
         }
 
-        SettingUtils.startAppInformationSetting(activity, requestCode);
-    }
-
-    /**
-     * 打开设置APP的系统权限设置框
-     */
-    private static void openPermissionSetting(final Activity context, int requestCode) {
-        if (Build.VERSION.SDK_INT >= 23) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
-            context.startActivityForResult(intent, requestCode);
-//            Intent  intent=new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-//            context.startActivityForResult(intent, 101);
-        } else {
-            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            Uri uri = Uri.fromParts("package", context.getPackageName(), null);
-            intent.setData(uri);
-            context.startActivityForResult(intent, requestCode);
-        }
+        SettingUtils.startAppInformationSetting(context, requestCode);
     }
 }

@@ -2,8 +2,6 @@ package com.csp.utils.android.log;
 
 import android.util.Log;
 
-import com.csp.utils.android.constants.SystemConstant;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -22,7 +20,7 @@ import java.io.InputStream;
  */
 @SuppressWarnings("unused")
 public class LogWriter extends Thread {
-    private boolean isWrite = SystemConstant.LOG_DEBUG; // true: 允许写日志
+    private boolean isWrite = true; // true: 允许写日志
     private int level; // 日志优先级
     private File file;
 
