@@ -36,10 +36,8 @@ public class NetworkActivity extends BaseListActivity {
 
     @Override
     protected void onDestroy() {
-        if (receiver != null) {
-            NetworkStatusReceiver.unregisterReceiver(this, receiver);
-            receiver = null;
-        }
+        NetworkStatusReceiver.unregisterReceiver(this, receiver);
+        receiver = null;
 
         super.onDestroy();
     }
@@ -145,5 +143,7 @@ public class NetworkActivity extends BaseListActivity {
             NetworkStatusReceiver.unregisterReceiver(this, receiver);
             receiver = null;
         }
+
+        LogCat.e(receiver == null ? "解除注册" : "注册");
     }
 }

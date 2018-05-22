@@ -10,6 +10,7 @@ import android.net.wifi.WifiManager;
 import android.os.Parcelable;
 
 import com.csp.utils.android.NetWorkUtils;
+import com.csp.utils.android.log.LogCat;
 
 /**
  * Description: 网络连通性监听
@@ -54,7 +55,6 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         filter.addAction(NETWORK_CONNECTED_TEST);
         context.registerReceiver(receiver, filter);
-
         return receiver;
     }
 
@@ -62,7 +62,8 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
      * 解除注册广播监听器
      */
     public static void unregisterReceiver(Context context, BroadcastReceiver receiver) {
-        context.unregisterReceiver(receiver);
+        if (receiver != null)
+            context.unregisterReceiver(receiver);
     }
 
     /**
@@ -87,6 +88,7 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
 
                 // 发送网络状态变化广播
                 // EventBus.getDefault().post(Constant.Network.CONNECTED_CHANGE);
+                LogCat.e("网络状态变化 = " + connected);
             }).start();
         }
 

@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
@@ -15,8 +16,10 @@ import com.csp.cases.activity.system.appinfo.AppInfo;
 import com.csp.cases.activity.system.appinfo.AppInfoAdapter;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
+import com.csp.utils.android.AppUtil;
 import com.csp.utils.android.log.LogCat;
 
+import java.io.File;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,19 +30,37 @@ import java.util.List;
  * Description: 系统案例，包括应用扫描等
  * <p>Create Date: 2018/04/23
  * <p>Modify Date: nothing
+ * <p>
+ * 1) 安装应用：通过隐式意图调用系统安装程序安装APK
+ * step 1: 见代码
+ * step 2: AndroidManifest.xml 文件下 <provider> 标签
+ * step 3: res/xml 下 file_provider_paths.xmll 文件
  *
  * @author csp
  * @version 1.0.0
  * @since AndroidCases 1.0.0
  */
 public class SystemActivity extends BaseListActivity {
+    private AppReceiver receiver;
+
     @Override
     public List<ItemInfo> getItemInfos() {
         List<ItemInfo> items = new ArrayList<>();
         items.add(new ItemInfo("应用扫描(含系统应用)", "scanApple01", "速度慢是显示列表慢，并不是扫描慢"));
         items.add(new ItemInfo("应用扫描(含系统进程)", "scanApple02", "速度慢是显示列表慢，并不是扫描慢"));
-        items.add(new ItemInfo("应用扫描(不含系统进程)", "scanApple03", "速度慢是显示列表慢，并不是扫描慢"));
+        items.add(new ItemInfo("应用扫描(只有非系统应用)", "scanApple03", "速度慢是显示列表慢，并不是扫描慢"));
+        items.add(new ItemInfo("应用安装卸载监听", "appInstallListen", ""));
+        items.add(new ItemInfo("安装应用", "installApp", ""));
+        items.add(new ItemInfo("通过包名启动应用", "startApp", ""));
         return items;
+    }
+
+    @Override
+    protected void onDestroy() {
+        AppReceiver.unregisterReceiver(this, receiver);
+        receiver = null;
+
+        super.onDestroy();
     }
 
     private void showAppList(List<AppInfo> appInfos) {
@@ -139,5 +160,44 @@ public class SystemActivity extends BaseListActivity {
         });
 
         showAppList(apps);
+    }
+
+    /**
+     * 应用安装卸载监听
+     */
+    private void appInstallListen() {
+        if (receiver == null) {
+            receiver = AppReceiver.registerReceiver(this);
+        } else {
+            AppReceiver.unregisterReceiver(this, receiver);
+            receiver = null;
+        }
+
+        LogCat.e(receiver == null ? "解除注册" : "注册");
+    }
+
+    /**
+     * 安装应用：通过隐式意图调用系统安装程序安装APK
+     * step 1: 见代码
+     * step 2: AndroidManifest.xml 文件下 <provider> 标签
+     * step 3: res/xml 下 file_provider_paths.xml 文件
+     */
+    private void installApp() throws Exception {
+        File file = Environment.getExternalStorageDirectory();
+        file = new File(file, "/APK/app-debug.apk");
+        if (!AppUtil.installApk(this, file)) {
+            throw new Exception("可能是文件不存在导致失败，文件: " + file.getAbsolutePath());
+        }
+    }
+
+    /**
+     * 通过包名启动 App
+     */
+    private void startApp() throws Exception {
+        // 360 浏览器
+        String packageName = "com.qihoo.browser";
+        if (!AppUtil.startAppByPackageName(this, packageName)) {
+            throw new Exception("可能是应用不存在导致失败，包名: " + packageName);
+        }
     }
 }

@@ -121,10 +121,11 @@ public class LogCat {
     /**
      * 打印异常信息
      *
+     * @param stackId   异常栈序号, 用于获取日志标签
      * @param explain   异常说明
      * @param throwable 异常错误对象
      */
-    public static void printStackTrace(String explain, Throwable throwable) {
+    public static void printStackTrace(int stackId, String explain, Throwable throwable) {
         String log = explain == null ? "" : explain;
         if (throwable != null)
             log += '\n' + getStackTrace(throwable);
@@ -137,10 +138,17 @@ public class LogCat {
     }
 
     /**
-     * @see #printStackTrace(String, Throwable)
+     * @see #printStackTrace(int, String, Throwable)
+     */
+    public static void printStackTrace(String explain, Throwable throwable) {
+        printStackTrace(DEFAULT_STACK_ID - 1, explain, throwable);
+    }
+
+    /**
+     * @see #printStackTrace(int, String, Throwable)
      */
     public static void printStackTrace(Throwable throwable) {
-        printStackTrace(null, throwable);
+        printStackTrace(DEFAULT_STACK_ID - 1, null, throwable);
     }
 
     /**

@@ -86,6 +86,17 @@
             android:launchMode="singleInstance"
             android:screenOrientation="landscape" />
 
+        <!-- Android 7.0 文件权限 -->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
+
         <!-- 案例Activity -->
         <activity
             android:name=".activity.TestActivity"
@@ -252,7 +263,7 @@
             android:screenOrientation="landscape" />
 
         <!--监听app的安装和卸载-->
-        <receiver android:name=".activity.system.AppInfoReceiver">
+        <receiver android:name=".activity.system.AppReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
