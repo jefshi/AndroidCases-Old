@@ -135,14 +135,15 @@ public class NetworkActivity extends BaseListActivity {
 
     /**
      * 广播监听网络状态
+     * TODO 接收广播待补充
      */
     private void networkStatusReceiver() {
-        if (receiver == null)
+        if (receiver == null) {
             receiver = NetworkStatusReceiver.registerReceiver(this);
-        else {
+            NetworkStatusReceiver.sendCheckoutBroadcast(this);
+        } else {
             NetworkStatusReceiver.unregisterReceiver(this, receiver);
             receiver = null;
         }
     }
-
 }

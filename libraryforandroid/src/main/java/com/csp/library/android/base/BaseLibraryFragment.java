@@ -8,9 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.csp.library.android.interfaces.InitialUi;
-import com.csp.utils.android.log.LogCat;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Description: 用于 Fragment 继承
@@ -66,8 +65,8 @@ public abstract class BaseLibraryFragment extends Fragment implements InitialUi,
     }
 
     @Override
-    public boolean isEmpty(List list) {
-        return list == null || list.isEmpty();
+    public boolean isEmpty(Collection collection) {
+        return collection == null || collection.isEmpty();
     }
 
     @Override

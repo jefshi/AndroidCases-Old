@@ -8,8 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.csp.library.android.interfaces.InitialUi;
-import com.csp.utils.android.log.LogCat;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -151,8 +151,8 @@ public abstract class BaseLibraryFragmentActivity extends FragmentActivity imple
     }
 
     @Override
-    public boolean isEmpty(List list) {
-        return list == null || list.isEmpty();
+    public boolean isEmpty(Collection collection) {
+        return collection == null || collection.isEmpty();
     }
 
     @Override

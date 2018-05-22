@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.csp.library.android.interfaces.InitialUi;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Description: 用于 Activity 继承
@@ -66,8 +66,8 @@ public abstract class BaseLibraryActivity extends Activity implements InitialUi,
 	}
 
 	@Override
-	public boolean isEmpty(List list) {
-		return list == null || list.isEmpty();
+	public boolean isEmpty(Collection collection) {
+		return collection == null || collection.isEmpty();
 	}
 
 	@Override
