@@ -100,7 +100,7 @@ public class AppUtil {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Uri data;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            //参数2 Provider主机地址 和配置文件中保持一致   参数3  共享的文件
+            // 参数 2（authority），要与 <provider> 标签的 authorities 属性保持
             String authority = context.getPackageName() + ".fileProvider";
             data = FileProvider.getUriForFile(context, authority, file);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // 文件权限
