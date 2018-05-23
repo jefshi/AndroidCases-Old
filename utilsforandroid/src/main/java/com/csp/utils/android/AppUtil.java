@@ -20,10 +20,10 @@ import java.util.List;
 /**
  * Description: 应用包管理
  * <p>Create Date: 2018/04/23
- * <p>Modify Date: 2018/04/27
+ * <p>Modify Date: 2018/05/23
  *
  * @author csp
- * @version 1.0.2
+ * @version 1.0.3
  * @since AndroidUtils 1.0.0
  */
 public class AppUtil {
@@ -47,13 +47,13 @@ public class AppUtil {
     }
 
     /**
-     * 通过包名启动 App
+     * 是否存在指定的应用
      *
      * @param context     context
      * @param packageName 包名
-     * @return true: 成功
+     * @return null: 不存在指定的应用
      */
-    public static boolean startAppByPackageName(Context context, String packageName) {
+    public static ResolveInfo searchApplication(Context context, String packageName) {
         // 创建一个类别为CATEGORY_LAUNCHER的该包名的Intent
         Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
         resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -61,24 +61,34 @@ public class AppUtil {
 
         PackageManager pManager = context.getPackageManager();
         List<ResolveInfo> resolveInfos = pManager.queryIntentActivities(resolveIntent, 0);
-        if (EmptyUtil.isEmpty(resolveInfos))
+        return EmptyUtil.isEmpty(resolveInfos) ? null : resolveInfos.get(0);
+    }
+
+    /**
+     * 通过包名启动 App
+     *
+     * @param context     context
+     * @param packageName 包名
+     * @return true: 成功
+     */
+    public static boolean startAppByPackageName(Context context, String packageName) {
+        ResolveInfo resolveInfo = searchApplication(context, packageName);
+        if (resolveInfo == null)
             return false;
 
-        for (ResolveInfo resolveInfo : resolveInfos) {
-            // 这个就是我们要找的该APP的LAUNCHER的Activity[组织形式：packagename.mainActivityname]
-            String className = resolveInfo.activityInfo.name;
+        // 这个就是我们要找的该APP的LAUNCHER的Activity[组织形式：packagename.mainActivityname]
+        String className = resolveInfo.activityInfo.name;
 
-            // LAUNCHER Intent
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // LAUNCHER Intent
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            // 设置ComponentName参数1:packagename参数2:MainActivity路径
-            ComponentName componentName = new ComponentName(packageName, className);
+        // 设置ComponentName参数1:packagename参数2:MainActivity路径
+        ComponentName componentName = new ComponentName(packageName, className);
 
-            intent.setComponent(componentName);
-            context.startActivity(intent);
-        }
+        intent.setComponent(componentName);
+        context.startActivity(intent);
         return true;
     }
 

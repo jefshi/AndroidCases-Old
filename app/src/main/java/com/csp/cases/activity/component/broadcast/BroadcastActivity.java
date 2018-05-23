@@ -15,7 +15,9 @@ import java.util.List;
  * Description: 广播案例
  * <p>Create Date: 2017/7/19
  * <p>Modify Date: 无
- * <p/>
+ * <p>
+ * 官方文档：https://developer.android.com/guide/components/broadcasts
+ * <p>
  * <p>发送有序广播(广播接收器优先级)
  * <p>1) 区间: [-1000, 1000]
  * <p>2) 静态未设置优先级, 则按排列顺序作为优先级, 越靠前, 优先级越高
@@ -31,111 +33,111 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public class BroadcastActivity extends BaseGridActivity {
-	BroadcastReceiver receiver = null;
-	BroadcastReceiver localReceiver = null;
+    BroadcastReceiver receiver = null;
+    BroadcastReceiver localReceiver = null;
 
-	@Override
-	public List<ItemInfo> getItemInfos() {
-		List<ItemInfo> items = new ArrayList<>();
-		items.add(new ItemInfo("静态注册广播", "", "静态注册见清单配置文件"));
-		items.add(new ItemInfo("动态注册广播(包含本地广播)", "registerReceiver", "本地广播只能用于应用内通信"));
-		items.add(new ItemInfo("注销广播(包含本地广播)", "unregisterReceiver", ""));
-		items.add(new ItemInfo("发送普通广播", "onSendBroadcast", "该广播接收器追加自定义权限，详情见Manifest.xml"));
-		items.add(new ItemInfo("发送有序广播", "onSendOrderedBroadcast", ""));
-		items.add(new ItemInfo("发送本地广播", "onSendLocalBroadcast", "本地广播只能本地广播接收器才能接收，同时本地广播接收器也只接收本地广播"));
-		return items;
-	}
+    @Override
+    public List<ItemInfo> getItemInfos() {
+        List<ItemInfo> items = new ArrayList<>();
+        items.add(new ItemInfo("静态注册广播", "", "静态注册见清单配置文件"));
+        items.add(new ItemInfo("动态注册广播(包含本地广播)", "registerReceiver", "本地广播只能用于应用内通信"));
+        items.add(new ItemInfo("注销广播(包含本地广播)", "unregisterReceiver", ""));
+        items.add(new ItemInfo("发送普通广播（含权限限制）", "onSendBroadcast", "该广播接收器追加自定义权限，详情见Manifest.xml"));
+        items.add(new ItemInfo("发送有序广播（含权限限制）", "onSendOrderedBroadcast", ""));
+        items.add(new ItemInfo("发送本地广播（含权限限制）", "onSendLocalBroadcast", "本地广播只能本地广播接收器才能接收，同时本地广播接收器也只接收本地广播"));
+        return items;
+    }
 
-	@Override
-	public void initViewContent() {
-		setDescription("注01: 静态注册见清单配置文件");
+    @Override
+    public void initViewContent() {
+        setDescription("注01: 静态注册见清单配置文件");
 
-		super.initViewContent();
-	}
+        super.initViewContent();
+    }
 
-	@Override
-	protected void onDestroy() {
-		unregisterReceiver();
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver();
+        super.onDestroy();
+    }
 
-	/**
-	 * 动态注册广播(包含本地广播)
-	 */
-	private void registerReceiver() {
-		if (receiver == null) {
-			IntentFilter filter = new IntentFilter();
-			filter.addAction(StaticReceiver.RECEIVER_ACTION);
-			filter.setPriority(50);
+    /**
+     * 动态注册广播(包含本地广播)
+     */
+    private void registerReceiver() {
+        if (receiver == null) {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(StaticReceiver.RECEIVER_ACTION);
+            filter.setPriority(50);
 
-			receiver = new DynamicReceiver();
-			registerReceiver(receiver, filter);
-		}
-		if (localReceiver == null) {
-			IntentFilter filter = new IntentFilter();
-			filter.addAction(StaticReceiver.RECEIVER_ACTION);
-			filter.setPriority(150);
+            receiver = new DynamicReceiver();
+            registerReceiver(receiver, filter);
+        }
+        if (localReceiver == null) {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(StaticReceiver.RECEIVER_ACTION);
+            filter.setPriority(150);
 
-			LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-			localReceiver = new LocalReceiver();
-			lbm.registerReceiver(localReceiver, filter);
-		}
-	}
+            LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+            localReceiver = new LocalReceiver();
+            lbm.registerReceiver(localReceiver, filter);
+        }
+    }
 
-	/**
-	 * 注销广播(包含本地广播)
-	 */
-	private void unregisterReceiver() {
-		if (receiver != null) {
-			unregisterReceiver(receiver);
-			receiver = null;
-		}
-		if (localReceiver != null) {
-			LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-			lbm.unregisterReceiver(localReceiver);
-			localReceiver = null;
-		}
-	}
+    /**
+     * 注销广播(包含本地广播)
+     */
+    private void unregisterReceiver() {
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+            receiver = null;
+        }
+        if (localReceiver != null) {
+            LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+            lbm.unregisterReceiver(localReceiver);
+            localReceiver = null;
+        }
+    }
 
-	/**
-	 * 发送普通广播
-	 */
-	private void onSendBroadcast() {
-		Intent intent = new Intent();
-		intent.setAction(StaticReceiver.RECEIVER_ACTION);
-		intent.putExtra(StaticReceiver.KEY_EXPLAIN, "发送普通广播");
-		// sendBroadcast(intent);
-		sendBroadcast(intent, StaticReceiver.PERMISSION);
-	}
+    /**
+     * 发送普通广播
+     */
+    private void onSendBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(StaticReceiver.RECEIVER_ACTION);
+        intent.putExtra(StaticReceiver.KEY_EXPLAIN, "发送普通广播");
+        // sendBroadcast(intent);
+        sendBroadcast(intent, StaticReceiver.PERMISSION);
+    }
 
-	/**
-	 * 发送有序广播
-	 */
-	private void onSendOrderedBroadcast() {
-		sendOrderedBroadcast(StaticReceiver.RECEIVER_ACTION, "第一次有序广播", false);
-		sendOrderedBroadcast(StaticReceiver.RECEIVER_ACTION, "第二次有序广播", true);
-	}
+    /** q``
+     * 发送有序广播
+     */
+    private void onSendOrderedBroadcast() {
+        sendOrderedBroadcast(StaticReceiver.RECEIVER_ACTION, "第一次有序广播", false);
+        sendOrderedBroadcast(StaticReceiver.RECEIVER_ACTION, "第二次有序广播", true);
+    }
 
-	/**
-	 * 发送有序广播
-	 */
-	private void sendOrderedBroadcast(String action, String explain, boolean intercept) {
-		Intent intent = new Intent();
-		intent.setAction(action);
-		intent.putExtra(StaticReceiver.KEY_EXPLAIN, explain);
-		intent.putExtra(StaticReceiver.KEY_INTERCEPT, intercept);
-		// sendOrderedBroadcast(intent, null);
-		sendOrderedBroadcast(intent, StaticReceiver.PERMISSION);
-	}
+    /**
+     * 发送有序广播
+     */
+    private void sendOrderedBroadcast(String action, String explain, boolean intercept) {
+        Intent intent = new Intent();
+        intent.setAction(action);
+        intent.putExtra(StaticReceiver.KEY_EXPLAIN, explain);
+        intent.putExtra(StaticReceiver.KEY_INTERCEPT, intercept);
+        // sendOrderedBroadcast(intent, null);
+        sendOrderedBroadcast(intent, StaticReceiver.PERMISSION);
+    }
 
-	/**
-	 * 发送本地广播
-	 */
-	private void onSendLocalBroadcast() {
-		Intent intent = new Intent();
-		intent.setAction(StaticReceiver.RECEIVER_ACTION);
+    /**
+     * 发送本地广播
+     */
+    private void onSendLocalBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(StaticReceiver.RECEIVER_ACTION);
 
-		LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-		lbm.sendBroadcast(intent);
-	}
+        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+        lbm.sendBroadcast(intent);
+    }
 }

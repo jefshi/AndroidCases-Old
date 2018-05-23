@@ -35,7 +35,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/item_card"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/item_card"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -262,15 +262,6 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
 
-        <!--监听app的安装和卸载-->
-        <receiver android:name=".activity.system.AppReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
-
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

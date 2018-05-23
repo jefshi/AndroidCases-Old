@@ -17,20 +17,19 @@ import com.csp.utils.android.log.LogCat;
  * @since AndroidCases 1.0.0
  */
 public class AppReceiver extends BroadcastReceiver {
-    private static final String PACKAGE_ADDED = "android.intent.action.PACKAGE_ADDED";
-    private static final String PACKAGE_REMOVED = "android.intent.action.PACKAGE_REMOVED";
-    private static final String PACKAGE_REPLACED = "android.intent.action.PACKAGE_REPLACED";
 
     /**
      * 注册广播监听器
+     * filter.addDataScheme("package")：默认 android:scheme 假定为 content: 或 file:，所以无法匹配出结果
      */
     public static AppReceiver registerReceiver(Context context) {
         AppReceiver receiver = new AppReceiver();
 
         IntentFilter filter = new IntentFilter();
-        filter.addAction(PACKAGE_ADDED);
-        filter.addAction(PACKAGE_REMOVED);
-        filter.addAction(PACKAGE_REPLACED);
+        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        filter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+        filter.addDataScheme("package");
         context.registerReceiver(receiver, filter);
         return receiver;
     }
@@ -46,11 +45,19 @@ public class AppReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+        if (action == null)
+            return;
 
-        String packageName = null;
-        if (intent.getData() != null)
-            packageName = intent.getData().getSchemeSpecificPart();
+        switch (action) {
+            case Intent.ACTION_PACKAGE_ADDED:
+            case Intent.ACTION_PACKAGE_REMOVED:
+            case Intent.ACTION_PACKAGE_REPLACED:
+                String packageName = null;
+                if (intent.getData() != null)
+                    packageName = intent.getData().getSchemeSpecificPart();
 
-        LogCat.e(action + ", 包名为 : " + packageName);
+                LogCat.e(action + ", 包名为: " + packageName + ", Uri: " + intent.getDataString());
+                break;
+        }
     }
 }
