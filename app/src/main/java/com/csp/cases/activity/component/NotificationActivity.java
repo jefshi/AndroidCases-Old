@@ -3,14 +3,15 @@ package com.csp.cases.activity.component;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.csp.cases.MainActivity;
 import com.csp.cases.R;
-import com.csp.cases.base.dto.ItemInfo;
 import com.csp.cases.base.activity.BaseGridActivity;
+import com.csp.cases.base.dto.ItemInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class NotificationActivity extends BaseGridActivity {
         List<ItemInfo> items = new ArrayList<>();
         items.add(new ItemInfo("状态栏通知：通知", "notification01", ""));
         items.add(new ItemInfo("状态栏通知：自定义View", "notification02", ""));
+        items.add(new ItemInfo("状态栏通知：官方", "notification03", ""));
 
         return items;
     }
@@ -85,5 +87,38 @@ public class NotificationActivity extends BaseGridActivity {
         Notification notification = builder.build();
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.notify(2, notification);
+    }
+
+    private static int mId = 0;
+
+    private void notification03() {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.item_card)
+                .setContentTitle("My notification")
+                .setContentText("Hello World!")
+                .setPriority(NotificationCompat.PRIORITY_MAX);
+
+        Intent resultIntent = new Intent(this, MainActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MainActivity.class);
+
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+                0,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        if (nManager != null)
+            nManager.notify(mId++, mBuilder.build());
     }
 }

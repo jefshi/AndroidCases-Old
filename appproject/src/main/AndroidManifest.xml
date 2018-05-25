@@ -142,9 +142,6 @@
         </service>
 
         <activity
-            android:name="com.project.tools.ActivityTools"
-            android:label="@string/pro_tools"></activity>
-        <activity
             android:name="com.project.day0928.exam.Activity0928_Exam"
             android:label="@string/pro0928_exam"></activity>
         <activity
@@ -177,9 +174,6 @@
         <activity
             android:name="com.project.day1013.drawerlayout.Activity1013_DrawerLayout"
             android:label="@string/pro1013_drawer_layout"></activity>
-        <activity
-            android:name="com.project.day1014.viewpaint.Activity1014_SelfView"
-            android:label="@string/pro1014_view_paint"></activity>
         <activity
             android:name="com.project.day1017.animation.Activity1017_Animation"
             android:label="@string/pro1017_animation"></activity>
