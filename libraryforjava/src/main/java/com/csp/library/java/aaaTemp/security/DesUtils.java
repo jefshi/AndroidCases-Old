@@ -1,10 +1,11 @@
-package com.csp.library.java.security;
+package com.csp.library.java.aaaTemp.security;
+
+import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-import java.security.SecureRandom;
 
 public final class DesUtils {
     private static final String DES = "DES";
