@@ -11,11 +11,11 @@ import java.security.MessageDigest;
 
 /**
  * Description: 当前应用信息
- * <p>Create Date: 2018/04/09
- * <p>Modify Date: nothing
+ * <p>Create Date: 2017/04/09
+ * <p>Modify Date: 2018/06/07
  *
  * @author csp
- * @version 1.0.0
+ * @version 1.0.2
  * @since AndroidUtils 1.0.0
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -43,10 +43,10 @@ public class AppInfoUtils {
     }
 
     /**
-     * @see #getPackageInfo(Context, String)
+     * @see #getPackageInfo(Context, String, int)
      */
     public static PackageInfo getPackageInfo(Context context) {
-        return getPackageInfo(context, context.getPackageName());
+        return getPackageInfo(context, context.getPackageName(), 0);
     }
 
     /**
@@ -81,6 +81,16 @@ public class AppInfoUtils {
      */
     public static String getVersionName(Context context) {
         return getVersionName(context, context.getPackageName());
+    }
+
+    /**
+     * 获取应用最近安装（或更新）时间
+     *
+     * @param packageInfo 应用信息
+     * @return 应用最近安装（或更新）时间
+     */
+    public static long getLastInstallTime(PackageInfo packageInfo) {
+        return Math.max(packageInfo.firstInstallTime, packageInfo.lastUpdateTime);
     }
 
     /**

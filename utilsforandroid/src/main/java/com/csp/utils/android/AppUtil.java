@@ -1,5 +1,6 @@
 package com.csp.utils.android;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -19,31 +20,75 @@ import java.util.List;
 
 /**
  * Description: 应用包管理
- * <p>Create Date: 2018/04/23
- * <p>Modify Date: 2018/05/23
+ * <p>Create Date: 2017/04/23
+ * <p>Modify Date: 2018/06/13
  *
  * @author csp
- * @version 1.0.3
+ * @version 1.0.5
  * @since AndroidUtils 1.0.0
  */
 public class AppUtil {
 
     /**
-     * 扫描手机内的非系统应用
+     * 获取包名集合
+     *
+     * @param packageInfos 应用信息集合
+     * @return 包名集合
+     */
+    public static List<String> getPackageNames(List<PackageInfo> packageInfos) {
+        if (packageInfos == null)
+            return new ArrayList<>();
+
+        List<String> packageNames = new ArrayList<>();
+        for (PackageInfo packageInfo : packageInfos)
+            packageNames.add(packageInfo.packageName);
+
+        return packageNames;
+    }
+
+    /**
+     * 应用扫描(只有非系统应用)
      *
      * @param context context
      * @return 手机内的非系统应用
      */
-    public static List<String> getPackageNames(Context context) {
+    public static List<PackageInfo> getAppNotSystem(Context context) {
         PackageManager pManager = context.getPackageManager();
-        List<PackageInfo> packages = pManager.getInstalledPackages(0);
-        List<String> packageNames = new ArrayList<>();
-        for (PackageInfo packageInfo : packages) {
-            ApplicationInfo info = packageInfo.applicationInfo;
-            if ((info.flags & ApplicationInfo.FLAG_SYSTEM) == 0)
-                packageNames.add(packageInfo.packageName);
+        List<PackageInfo> packageInfos = pManager.getInstalledPackages(0);
+        int position = packageInfos == null ? -1 : (packageInfos.size() - 1);
+        for (int i = position; i > -1; i--) {
+            ApplicationInfo info = packageInfos.get(i).applicationInfo;
+            if ((info.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
+                packageInfos.remove(i);
         }
-        return packageNames;
+        return packageInfos;
+    }
+
+    /**
+     * 应用扫描(含系统应用)
+     *
+     * @param context context
+     * @return 手机内的非系统应用
+     */
+    public static List<ResolveInfo> getAppSystem(Context context) {
+        PackageManager pManager = context.getPackageManager();
+        Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        return pManager.queryIntentActivities(mainIntent, 0);
+    }
+
+    /**
+     * 应用扫描(含系统进程)
+     *
+     * @param context context
+     * @return 手机内的非系统应用
+     */
+    @SuppressLint("WrongConstant")
+    public static List<ApplicationInfo> getAppSystemProcess(Context context) {
+        PackageManager pManager = context.getPackageManager();
+        return pManager.getInstalledApplications(
+                PackageManager.GET_UNINSTALLED_PACKAGES |
+                        PackageManager.GET_DISABLED_COMPONENTS);
     }
 
     /**
@@ -54,13 +99,14 @@ public class AppUtil {
      * @return null: 不存在指定的应用
      */
     public static ResolveInfo searchApplication(Context context, String packageName) {
-        // 创建一个类别为CATEGORY_LAUNCHER的该包名的Intent
-        Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
-        resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        resolveIntent.setPackage(packageName);
+        if (EmptyUtil.isBank(packageName))
+            return null;
+
+        Intent searchIntent = new Intent(Intent.ACTION_MAIN, null);
+        searchIntent.setPackage(packageName);
 
         PackageManager pManager = context.getPackageManager();
-        List<ResolveInfo> resolveInfos = pManager.queryIntentActivities(resolveIntent, 0);
+        List<ResolveInfo> resolveInfos = pManager.queryIntentActivities(searchIntent, 0);
         return EmptyUtil.isEmpty(resolveInfos) ? null : resolveInfos.get(0);
     }
 
