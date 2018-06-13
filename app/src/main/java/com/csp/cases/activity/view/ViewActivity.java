@@ -21,6 +21,7 @@ import com.csp.cases.activity.view.arcmenu.ArcAdapter;
 import com.csp.cases.activity.view.arcmenu.ArcMenu;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
+import com.csp.utils.android.log.LogCat;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -106,7 +107,7 @@ public class ViewActivity extends BaseListActivity {
         // 6.保存到SD卡中
         File sdcard = Environment.getExternalStorageDirectory();
         File file = new File(sdcard, Environment.DIRECTORY_PICTURES + "/AndroidCases_View.png");
-        logError("[文件保存路径]: ", file.getAbsolutePath());
+        LogCat.e("[文件保存路径]: ", file.getAbsolutePath());
 
         FileOutputStream fos = null;
         try {
@@ -157,7 +158,7 @@ public class ViewActivity extends BaseListActivity {
         // 6.保存到SD卡中
         File sdcard = Environment.getExternalStorageDirectory();
         File file = new File(sdcard, Environment.DIRECTORY_PICTURES + "/AndroidCases_Circle.png");
-        logError("[文件保存路径]: ", file.getAbsolutePath());
+        LogCat.e("[文件保存路径]: ", file.getAbsolutePath());
 
         FileOutputStream fos = null;
         try {

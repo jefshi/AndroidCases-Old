@@ -46,7 +46,7 @@ public class ThreadActivity extends BaseGridActivity {
 		// final CustomThread work = new CustomThread(this.getClass().getSimpleName());
 		final HandlerThread work = new HandlerThread(this.getClass().getSimpleName());
 		work.start();
-		logError("线程开始，线程名：" + work.getName() + "：线程ID：" + work.getThreadId());
+		LogCat.e("线程开始，线程名：" + work.getName() + "：线程ID：" + work.getThreadId());
 
 		// 创建Handler，主线程：getMainLooper()
 		// [Handler]绑定线程, 线程绑定[Looper], [Looper]死循环, 故使用静态内部类，防止内存泄漏
@@ -63,7 +63,7 @@ public class ThreadActivity extends BaseGridActivity {
 			@Override
 			public void run() {
 				work.quit();
-				logError("线程结束，线程名：" + work.getName() + "：线程ID：" + work.getThreadId());
+				LogCat.e("线程结束，线程名：" + work.getName() + "：线程ID：" + work.getThreadId());
 			}
 		}, 0);
 	}

@@ -3,6 +3,7 @@ package com.csp.cases.activity.activity;
 import android.os.Bundle;
 
 import com.csp.cases.base.activity.BaseListActivity;
+import com.csp.utils.android.log.LogCat;
 
 /**
  * Description:
@@ -24,41 +25,41 @@ public abstract class LifeCycleActivity extends BaseListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		logError(toString() + "生命周期：onCreate");
+		LogCat.e(toString() + "生命周期：onCreate");
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
 
-		logError(toString() + "生命周期：onStart");
+		LogCat.e(toString() + "生命周期：onStart");
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
-		logError(toString() + "生命周期：onResume");
+		LogCat.e(toString() + "生命周期：onResume");
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 
-		logError(toString() + "生命周期：onPause");
+		LogCat.e(toString() + "生命周期：onPause");
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
 
-		logError(toString() + "生命周期：onStop");
+		LogCat.e(toString() + "生命周期：onStop");
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 
-		logError(toString() + "生命周期：onDestroy");
+		LogCat.e(toString() + "生命周期：onDestroy");
 	}
 }

@@ -99,7 +99,6 @@ public class SystemActivity extends BaseListActivity {
         showAppList(appInfos);
     }
 
-    @SuppressLint("WrongConstant")
     private void scanApple02() {
         PackageManager pManager = this.getPackageManager();
         List<ApplicationInfo> applications = pManager.getInstalledApplications(
@@ -134,14 +133,15 @@ public class SystemActivity extends BaseListActivity {
     @SuppressLint("WrongConstant")
     private void scanApple03() {
         PackageManager pManager = this.getPackageManager();
-        List<PackageInfo> packages = pManager.getInstalledPackages(0);
+//        List<PackageInfo> packages = pManager.getInstalledPackages(0);
 
+        List<PackageInfo> packages = AppUtil.getAppNotSystem(this);
         List<AppInfo> apps = new ArrayList<>(packages.size());
         for (int i = 0; i < packages.size(); i++) {
             PackageInfo packageInfo = packages.get(i);
             ApplicationInfo info = packageInfo.applicationInfo;
-            if (!((info.flags & ApplicationInfo.FLAG_SYSTEM) == 0))
-                continue;
+//            if (!((info.flags & ApplicationInfo.FLAG_SYSTEM) == 0))
+//                continue;
 
             AppInfo app = new AppInfo();
             app.setPackageName(packageInfo.packageName);

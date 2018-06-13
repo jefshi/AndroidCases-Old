@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.csp.cases.activity.activity.LifeCycleActivity;
 import com.csp.cases.base.dto.ItemInfo;
+import com.csp.utils.android.log.LogCat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,31 +19,33 @@ import java.util.List;
  * @since AndroidCases 1.0.0
  */
 public class LauchModeActivity extends LifeCycleActivity {
-	@Override
-	public List<ItemInfo> getItemInfos() {
-		List<ItemInfo> itemInfos = new ArrayList<>();
-		itemInfos.add(new ItemInfo("Standard", LauchModeActivity.class, "[Standard]模式，注意生命周期"));
-		itemInfos.add(new ItemInfo("SingleTop", SingleTopActivity.class, "[SingleTop]模式，注意生命周期"));
-		itemInfos.add(new ItemInfo("SingleTask", SingleTaskActivity.class, "[SingleTask]模式，注意生命周期"));
-		itemInfos.add(new ItemInfo("SingleInstance", SingleInstanceActivity.class, "[SingleInstance]模式，注意生命周期"));
-		return itemInfos;
-	}
+    @Override
+    public List<ItemInfo> getItemInfos() {
+        List<ItemInfo> itemInfos = new ArrayList<>();
+        itemInfos.add(new ItemInfo("Standard", LauchModeActivity.class, "[Standard]模式，注意生命周期"));
+        itemInfos.add(new ItemInfo("SingleTop", SingleTopActivity.class, "[SingleTop]模式，注意生命周期"));
+        itemInfos.add(new ItemInfo("SingleTask", SingleTaskActivity.class, "[SingleTask]模式，注意生命周期"));
+        itemInfos.add(new ItemInfo("SingleInstance", SingleInstanceActivity.class, "[SingleInstance]模式，注意生命周期"));
+        return itemInfos;
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-		String msg = this.getClass().getSimpleName()
-				+ "{hashCode = " + hashCode()
-				+ ", stackId = " + getTaskId()
-				+ '}';
-		logError(true, msg);
-	}
+        String msg = this.getClass().getSimpleName()
+                + "{hashCode = " + hashCode()
+                + ", stackId = " + getTaskId()
+                + '}';
 
-	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
+        txtItem.setText(String.valueOf(msg));
+        LogCat.e(msg);
+    }
 
-		logError("当前调用方法：onNewIntent");
-	}
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        LogCat.e("当前调用方法：onNewIntent");
+    }
 }

@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 
 import com.csp.library.android.interfaces.InitialUi;
 
-import java.util.Collection;
-
 /**
  * Description: 用于 Fragment 继承
  * <p>Create Date: 2016-12-15
@@ -57,21 +55,6 @@ public abstract class BaseLibraryFragment extends Fragment implements InitialUi,
     @SuppressWarnings({"unchecked", "ConstantConditions"})
     public <T extends View> T findView(int resId) {
         return (T) getView().findViewById(resId);
-    }
-
-    @Override
-    public boolean isEmpty(String str) {
-        return str == null || str.trim().isEmpty();
-    }
-
-    @Override
-    public boolean isEmpty(Collection collection) {
-        return collection == null || collection.isEmpty();
-    }
-
-    @Override
-    public boolean isEmpty(Object[] array) {
-        return array == null || array.length == 0;
     }
 
     // ========================================

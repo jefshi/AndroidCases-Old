@@ -74,15 +74,15 @@ public class RetrofitActivity extends BaseListActivity {
 			public void onResponse(Call<NetwokData.User> call, Response<NetwokData.User> response) {
 				NetwokData.User body = response.body();
 				if (response.isSuccessful() && body != null) {
-					logError("访问成功：", "当前线程：" + Thread.currentThread() + "，返回：" + body.toString());
+					LogCat.e("访问成功：", "当前线程：" + Thread.currentThread() + "，返回：" + body.toString());
 				} else {
-					logError("访问失败：" + "当前线程：" + Thread.currentThread() + "，返回：" + response);
+					LogCat.e("访问失败：" + "当前线程：" + Thread.currentThread() + "，返回：" + response);
 				}
 			}
 
 			@Override
 			public void onFailure(Call<NetwokData.User> call, Throwable throwable) {
-				logError("访问失败：" + "当前线程：" + Thread.currentThread());
+				LogCat.e("访问失败：" + "当前线程：" + Thread.currentThread());
 				LogCat.printStackTrace(new Exception(throwable));
 			}
 		};

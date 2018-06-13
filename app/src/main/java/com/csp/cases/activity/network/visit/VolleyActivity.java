@@ -61,14 +61,14 @@ public class VolleyActivity extends BaseListActivity {
 		stringListener = new Response.Listener<String>() {
 			@Override
 			public void onResponse(String response) {
-				logError("访问成功：", response);
+				LogCat.e("访问成功：", response);
 			}
 		};
 
 		bitmapListener = new Response.Listener<Bitmap>() {
 			@Override
 			public void onResponse(Bitmap response) {
-				logError("图片加载成功");
+				LogCat.e("图片加载成功");
 				imgItem.setImageBitmap(response);
 			}
 		};
@@ -198,7 +198,7 @@ public class VolleyActivity extends BaseListActivity {
 
 					@Override
 					public void onResponse(NetwokData.User response) {
-						logError(response);
+						LogCat.e(response);
 					}
 				},
 				errorListener);

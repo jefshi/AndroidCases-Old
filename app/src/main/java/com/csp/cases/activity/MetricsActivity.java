@@ -137,6 +137,6 @@ public class MetricsActivity extends BaseGridActivity {
         int dip = 55;
         int unit = TypedValue.COMPLEX_UNIT_SP;
         float px = TypedValue.applyDimension(unit, dip, metrics);
-        logError(dip + " px = " + px + " px");
+        LogCat.e(dip + " px = " + px + " px");
     }
 }

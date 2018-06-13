@@ -13,8 +13,9 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 
 import com.csp.cases.R;
-import com.csp.cases.base.dto.ItemInfo;
 import com.csp.cases.base.activity.BaseGridActivity;
+import com.csp.cases.base.dto.ItemInfo;
+import com.csp.utils.android.log.LogCat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -81,7 +82,7 @@ public class DialogActivity extends BaseGridActivity {
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                logError("Dialog.OnCancelListener");
+                LogCat.e("Dialog.OnCancelListener");
             }
         });
 
@@ -98,7 +99,7 @@ public class DialogActivity extends BaseGridActivity {
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        logError("选中: ", items[which]);
+                        LogCat.e("选中: ", items[which]);
                         dialog.dismiss();
                     }
                 })
@@ -113,7 +114,7 @@ public class DialogActivity extends BaseGridActivity {
                 .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        logError("选中: ", items[which]);
+                        LogCat.e("选中: ", items[which]);
                         dialog.dismiss();
                     }
                 })
@@ -128,7 +129,7 @@ public class DialogActivity extends BaseGridActivity {
                 new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        logError("选中: ", items[which] + ", " + isChecked);
+                        LogCat.e("选中: ", items[which] + ", " + isChecked);
                     }
                 };
 

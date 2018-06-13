@@ -3,6 +3,7 @@ package com.csp.cases.activity.network.visit;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.library.java.string.StringUtil;
+import com.csp.utils.android.log.LogCat;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -75,9 +76,9 @@ public class NetworkVisitActivity extends BaseGridActivity {
         int state = connection.getResponseCode();
         if (state == 200) {
             InputStream is = connection.getInputStream();
-            logError("访问成功：", StringUtil.toString(is));
+            LogCat.e("访问成功：", StringUtil.toString(is));
         } else {
-            logError("访问失败：响应码：" + state + "，URL：" + NetwokData.STRING_URL);
+            LogCat.e("访问失败：响应码：" + state + "，URL：" + NetwokData.STRING_URL);
         }
 
         connection.disconnect();
@@ -118,9 +119,9 @@ public class NetworkVisitActivity extends BaseGridActivity {
         int state = connection.getResponseCode();
         if (state == 200) {
             InputStream is = connection.getInputStream();
-            logError("访问成功：", StringUtil.toString(is));
+            LogCat.e("访问成功：", StringUtil.toString(is));
         } else {
-            logError("访问失败：响应码：" + state + "，URL：" + NetwokData.STRING_URL);
+            LogCat.e("访问失败：响应码：" + state + "，URL：" + NetwokData.STRING_URL);
         }
 
         connection.disconnect();
@@ -217,12 +218,12 @@ public class NetworkVisitActivity extends BaseGridActivity {
         // 访问结果
         int status = response.getStatusLine().getStatusCode();
         if (status == 200) {
-            logError("[GET]方式访问成功");
+            LogCat.e("[GET]方式访问成功");
 
             HttpEntity result = response.getEntity();
-            logError(EntityUtils.toString(result));
+            LogCat.e(EntityUtils.toString(result));
         } else {
-            logError("访问失败：响应码：" + status + "，URL：" + NetwokData.STRING_URL);
+            LogCat.e("访问失败：响应码：" + status + "，URL：" + NetwokData.STRING_URL);
         }
     }
 
@@ -248,12 +249,12 @@ public class NetworkVisitActivity extends BaseGridActivity {
         // 访问结果
         int status = response.getStatusLine().getStatusCode();
         if (status == 200) {
-            logError("[POST]方式访问成功");
+            LogCat.e("[POST]方式访问成功");
 
             HttpEntity result = response.getEntity();
-            logError(EntityUtils.toString(result));
+            LogCat.e(EntityUtils.toString(result));
         } else {
-            logError("访问失败：响应码：" + status + "，URL：" + NetwokData.STRING_URL);
+            LogCat.e("访问失败：响应码：" + status + "，URL：" + NetwokData.STRING_URL);
         }
     }
 }

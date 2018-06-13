@@ -1,8 +1,8 @@
 package com.csp.cases.activity;
 
-import com.csp.cases.R;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
+import com.csp.utils.android.AppInfoUtils;
 import com.csp.utils.android.log.LogCat;
 import com.csp.utils.android.phone.PhoneHardwareUtils;
 
@@ -29,19 +29,7 @@ public class TestActivity extends BaseListActivity {
     }
 
     private void appInfoUtils() {
-        int[] intArray = getResources().getIntArray(R.array.intArray);
-        for (int datum : intArray) {
-            LogCat.e(datum);
-
-            imgItem.setImageResource(datum);
-
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                LogCat.printStackTrace(e);
-            }
-        }
-
+        LogCat.e(AppInfoUtils.getLastInstallTime(AppInfoUtils.getPackageInfo(this)));
 
 //        LogCat.e(AppInfoUtils.getVersionName(this));
 //
@@ -58,5 +46,4 @@ public class TestActivity extends BaseListActivity {
         LogCat.e(PhoneHardwareUtils.getDeviceBrand());
         LogCat.e(PhoneHardwareUtils.getIMEI(this));
     }
-
 }

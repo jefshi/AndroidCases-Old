@@ -50,7 +50,7 @@ public class OkHttpActivity extends BaseListActivity {
 		callback = new Callback() {
 			@Override
 			public void onFailure(Call call, IOException e) {
-				logError("访问失败：" + "当前线程：" + Thread.currentThread());
+				LogCat.e("访问失败：" + "当前线程：" + Thread.currentThread());
 				LogCat.printStackTrace(e);
 			}
 
@@ -58,9 +58,9 @@ public class OkHttpActivity extends BaseListActivity {
 			public void onResponse(Call call, Response response) throws IOException {
 				ResponseBody body = response.body();
 				if (response.isSuccessful() && body != null) {
-					logError("访问成功：", "当前线程：" + Thread.currentThread() + "，返回：" + body.string());
+					LogCat.e("访问成功：", "当前线程：" + Thread.currentThread() + "，返回：" + body.string());
 				} else {
-					logError("访问失败：" + "当前线程：" + Thread.currentThread() + "，返回：" + response);
+					LogCat.e("访问失败：" + "当前线程：" + Thread.currentThread() + "，返回：" + response);
 				}
 			}
 		};
@@ -79,9 +79,9 @@ public class OkHttpActivity extends BaseListActivity {
 
 		ResponseBody body = response.body();
 		if (response.isSuccessful() && body != null) {
-			logError(body.string());
+			LogCat.e(body.string());
 		} else {
-			logError("访问失败：" + response);
+			LogCat.e("访问失败：" + response);
 		}
 	}
 
@@ -105,9 +105,9 @@ public class OkHttpActivity extends BaseListActivity {
 
 		ResponseBody body = response.body();
 		if (response.isSuccessful() && body != null) {
-			logError(body.string());
+			LogCat.e(body.string());
 		} else {
-			logError("访问失败：" + response);
+			LogCat.e("访问失败：" + response);
 		}
 	}
 

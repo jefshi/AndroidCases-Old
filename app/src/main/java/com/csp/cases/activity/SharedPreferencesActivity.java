@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.cases.constants.SystemConstant;
+import com.csp.utils.android.log.LogCat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,6 @@ public class SharedPreferencesActivity extends BaseGridActivity {
 		String msg = "user = " + user
 				+ "\npassword = " + password
 				+ "\nisRemember = " + isRemember;
-		logError(msg);
+		LogCat.e(msg);
 	}
 }

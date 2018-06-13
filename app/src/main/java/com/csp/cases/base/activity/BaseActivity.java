@@ -3,7 +3,6 @@ package com.csp.cases.base.activity;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -13,9 +12,7 @@ import android.widget.TextView;
 
 import com.csp.cases.base.adapter.ItemAdapter;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.cases.constants.SystemConstant;
 import com.csp.library.android.base.BaseLibraryActivity;
-import com.csp.utils.android.log.LogCat;
 
 import java.util.List;
 
@@ -65,18 +62,6 @@ public abstract class BaseActivity extends BaseLibraryActivity implements ItemIn
 
     @Override
     public void onRefresh() {
-    }
-
-    @Override
-    public void logError(Object message) {
-        if (SystemConstant.LOG_DEBUG)
-            LogCat.log(Log.ERROR, 2, null, message);
-    }
-
-    @Override
-    public void logError(String explain, Object message) {
-        if (SystemConstant.LOG_DEBUG)
-            LogCat.log(Log.ERROR, 2, explain, message);
     }
 
     @Override

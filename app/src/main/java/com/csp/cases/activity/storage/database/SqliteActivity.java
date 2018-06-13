@@ -116,7 +116,7 @@ public class SqliteActivity extends BaseListActivity {
 			new File(path).delete();
 			// deleteDatabase(DB_NAME);
 
-			logError(msg);
+			LogCat.e(msg);
 		} finally {
 			// 关闭数据库
 			if (sdb != null)

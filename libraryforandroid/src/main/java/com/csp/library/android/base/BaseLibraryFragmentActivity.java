@@ -8,8 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.csp.library.android.interfaces.InitialUi;
+import com.csp.library.java.EmptyUtil;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -61,7 +61,7 @@ public abstract class BaseLibraryFragmentActivity extends FragmentActivity imple
      */
     protected void setFragments(List<FragmentInfo> fragments, int containerViewId) {
         FragmentInfo[] frgs = null;
-        if (!isEmpty(fragments)) {
+        if (!EmptyUtil.isEmpty(fragments)) {
             frgs = new FragmentInfo[fragments.size()];
             for (int i = 0; i < frgs.length; i++) {
                 frgs[i] = fragments.get(i);
@@ -143,20 +143,5 @@ public abstract class BaseLibraryFragmentActivity extends FragmentActivity imple
     @Override
     public View getView() {
         return getWindow().getDecorView();
-    }
-
-    @Override
-    public boolean isEmpty(String str) {
-        return str == null || str.trim().isEmpty();
-    }
-
-    @Override
-    public boolean isEmpty(Collection collection) {
-        return collection == null || collection.isEmpty();
-    }
-
-    @Override
-    public boolean isEmpty(Object[] array) {
-        return array == null || array.length == 0;
     }
 }

@@ -51,7 +51,7 @@ public class ProcessActivity extends BaseGridActivity {
                 + "进程已获得内存(已占用操作系统内存的大小)：" + totalMemory + " KB\n"
                 + "进程空闲内存(已获得的内存中未使用的内存大小)：" + freeMemory + " KB\n";
 
-        logError(msg);
+        LogCat.e(msg);
     }
 
     /**
@@ -80,7 +80,7 @@ public class ProcessActivity extends BaseGridActivity {
 
             msg += "\nPS[" + i + "]：" + processName + ", " + pid + ", " + uid + ", " + memory + "KB";
         }
-        logError(msg);
+        LogCat.e(msg);
     }
 
     private void exeCMD() {

@@ -10,6 +10,7 @@ import com.csp.cases.activity.storage.database.SqliteActivity;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.cases.constants.SystemConstant;
+import com.csp.utils.android.log.LogCat;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class StorageActivity extends BaseGridActivity {
             path = file != null ? file.getAbsolutePath() : null;
             msg += "\n(Root)应用资源目录(Android 7.0以上): " + path;
         }
-        logError(msg);
+        LogCat.e(msg);
     }
 
     /**
@@ -121,6 +122,6 @@ public class StorageActivity extends BaseGridActivity {
         msg += total + " : " + available + " : " + free;
         msg += "\ntotal(GB) : available(GB) : free(GB) = ";
         msg += total / switchToGB + " : " + available / switchToGB + " : " + free / switchToGB;
-        logError(msg);
+        LogCat.e(msg);
     }
 }
