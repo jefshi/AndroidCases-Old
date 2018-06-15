@@ -262,6 +262,9 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
 
+        <activity android:name=".activity.OtherCaseActivity"
+        android:configChanges="orientation|keyboardHidden"
+        android:screenOrientation="landscape" />
     </application>
 
 </manifest>

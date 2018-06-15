@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.csp.cases.activity.AnimationActivity;
 import com.csp.cases.activity.MetricsActivity;
+import com.csp.cases.activity.OtherCaseActivity;
 import com.csp.cases.activity.ProcessActivity;
 import com.csp.cases.activity.SettingActivity;
 import com.csp.cases.activity.TestActivity;
@@ -55,6 +56,7 @@ public class MainActivity extends BaseGridActivity {
         items.add(new ItemInfo("Thread", ThreadActivity.class, "线程管理案例"));
         items.add(new ItemInfo("View", ViewActivity.class, "View 案例"));
         items.add(new ItemInfo("WindowManager", WindowManagerActivity.class, "[WindowManager]案例"));
+        items.add(new ItemInfo("OtherCase", OtherCaseActivity.class, "[其他]案例"));
         return items;
     }
 }

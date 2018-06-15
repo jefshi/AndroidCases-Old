@@ -106,21 +106,20 @@ public class AnimationActivity extends BaseListActivity {
     @SuppressWarnings({"ConstantConditions", "deprecation"})
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void onFrameAnimation() {
-        Drawable drawable = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        Drawable drawable;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             drawable = getDrawable(R.drawable.aniamtion_frame);
-        else
+        } else {
             drawable = getResources().getDrawable(R.drawable.aniamtion_frame);
+        }
+        if (drawable == null)
+            return;
 
         imgItem.setImageDrawable(drawable);
         final AnimationDrawable animDraw = (AnimationDrawable) drawable;
         animDraw.start();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                animDraw.stop();
-            }
-        }, 2000);
+
+        new Handler().postDelayed(animDraw::stop, 2000);
     }
 
     /**

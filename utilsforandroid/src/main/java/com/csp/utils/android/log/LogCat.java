@@ -107,7 +107,6 @@ public class LogCat {
      * @param throwable 异常错误对象
      * @return 异常栈信息
      */
-    @SuppressWarnings("EmptyCatchBlock")
     private static String getStackTrace(Throwable throwable) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(baos);
@@ -121,34 +120,23 @@ public class LogCat {
     /**
      * 打印异常信息
      *
-     * @param stackId   异常栈序号, 用于获取日志标签
      * @param explain   异常说明
      * @param throwable 异常错误对象
      */
-    public static void printStackTrace(int stackId, String explain, Throwable throwable) {
-        String log = explain == null ? "" : explain;
-        if (throwable != null)
-            log += '\n' + getStackTrace(throwable);
+    public static void printStackTrace(String explain, Throwable throwable) {
+        if (throwable == null)
+            return;
 
-        String tag = getTag(throwable != null
-                ? throwable.getStackTrace()[0]
-                : new Throwable().getStackTrace()[DEFAULT_STACK_ID - 1]);
-
+        String tag = getTag(throwable.getStackTrace()[0]);
+        String log = (explain == null ? "" : explain) + '\n' + getStackTrace(throwable);
         printLog(tag, log, Log.ERROR);
     }
 
     /**
-     * @see #printStackTrace(int, String, Throwable)
-     */
-    public static void printStackTrace(String explain, Throwable throwable) {
-        printStackTrace(DEFAULT_STACK_ID - 1, explain, throwable);
-    }
-
-    /**
-     * @see #printStackTrace(int, String, Throwable)
+     * @see #printStackTrace(String, Throwable)
      */
     public static void printStackTrace(Throwable throwable) {
-        printStackTrace(DEFAULT_STACK_ID - 1, null, throwable);
+        printStackTrace(null, throwable);
     }
 
     /**
