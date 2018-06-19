@@ -69,14 +69,6 @@ public class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         mViewHolderManager = new SparseArray<>();
     }
 
-    public MultiItemAdapter(Context context, int layoutId) {
-        mContext = context;
-        mInflater = LayoutInflater.from(context);
-        mData = new ArrayList<>();
-
-        mViewHolderManager = new SparseArray<>();
-    }
-
     @Override
     public int getItemCount() {
         return mData.size();
@@ -87,10 +79,10 @@ public class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         int layoutId = mViewHolderManager.get(viewType).getLayoutId();
         View view = mInflater.inflate(layoutId, parent, false);
-        ViewHolder viewHolder = ViewHolder.createViewHolder(mContext, view);
-        onCreateViewHolder(viewHolder);
-        setOnClickListener(parent, viewHolder);
-        return viewHolder;
+        ViewHolder holder = ViewHolder.createViewHolder(mContext, view);
+        onCreateViewHolder(holder);
+        setOnClickListener(parent, holder);
+        return holder;
     }
 
     @Override
