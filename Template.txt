@@ -1,0 +1,7 @@
+/**
+ * RecyclerView 适配器
+ * Created by csp on 2018/06/19.
+ * Modified by csp on 2018/06/19.
+ *
+ * @version 1.0.1
+ */
