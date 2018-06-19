@@ -1,4 +1,4 @@
-package com.csp.library.android.base.adapter;
+package com.csp.library.android.base.adapter.recycle;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -24,7 +24,7 @@ import java.util.List;
  * @version 1.0.0
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
+public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     protected Context mContext;
     protected LayoutInflater mInflater;
     protected List<T> mData;
@@ -67,6 +67,7 @@ public class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         mData = new ArrayList<>();
 
         mViewHolderManager = new SparseArray<>();
+        addMultiViewHolders();
     }
 
     @Override
@@ -134,4 +135,11 @@ public class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
         void onItemLongClick(ViewGroup parent, View view, RecyclerView.ViewHolder viewHolder, int position, long id);
     }
+
+    /**
+     * 添加布局
+     *
+     * @see #addViewHolder(int, IViewHolder)
+     */
+    public abstract void addMultiViewHolders();
 }

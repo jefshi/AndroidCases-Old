@@ -1,4 +1,4 @@
-package com.csp.library.android.base.adapter;
+package com.csp.library.android.base.adapter.recycle;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
