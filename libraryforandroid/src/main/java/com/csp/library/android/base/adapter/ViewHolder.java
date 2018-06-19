@@ -53,6 +53,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     /**
      * 通过viewId获取控件
      */
+    @SuppressWarnings("unchecked")
     public <T extends View> T getView(int viewId) {
         View view = mViews.get(viewId);
         if (view == null) {
@@ -66,16 +67,10 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         return mConvertView;
     }
 
+    // ==========
+    // 以下为辅助方法
+    // ==========
 
-    /****以下为辅助方法*****/
-
-    /**
-     * 设置TextView的值
-     *
-     * @param viewId
-     * @param text
-     * @return
-     */
     public ViewHolder setText(int viewId, String text) {
         TextView tv = getView(viewId);
         tv.setText(text);

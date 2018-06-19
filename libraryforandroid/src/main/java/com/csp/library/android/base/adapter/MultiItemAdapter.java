@@ -56,7 +56,7 @@ public class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         mOnItemLongClickListener = listener;
     }
 
-    public MultiItemAdapter addViewHolder(int viewType, IViewHolder viewHolder) {
+    public MultiItemAdapter addViewHolder(int viewType, IViewHolder<T> viewHolder) {
         mViewHolderManager.put(viewType, viewHolder);
         return this;
     }
@@ -94,6 +94,7 @@ public class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
         IViewHolder viewHolder = mViewHolderManager.get(viewType);
