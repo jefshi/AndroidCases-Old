@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * RecyclerView.Adapter
+ * RecyclerView.Adapter - 多布局
  * Created by csp on 2018/06/19.
  * Modified by csp on 2018/06/19.
  *
@@ -34,6 +34,12 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
 
     private SparseArray<IViewHolder> mViewHolderManager;
 
+    /**
+     * 追加数据源
+     *
+     * @param data   数据
+     * @param append false: 重置数据
+     */
     public void addData(Collection<T> data, boolean append) {
         if (!append)
             mData.clear();
@@ -44,10 +50,16 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
         mData.addAll(data);
     }
 
+    /**
+     * @see AdapterView#setOnItemClickListener(AdapterView.OnItemClickListener)
+     */
     public void setOnItemClickListener(@Nullable OnItemClickListener listener) {
         mOnItemClickListener = listener;
     }
 
+    /**
+     * @see AdapterView#setOnItemLongClickListener(AdapterView.OnItemLongClickListener)
+     */
     public void setOnItemLongClickListener(@Nullable OnItemLongClickListener listener) {
         // ViewGroup parent = null;
         // if (!parent.isLongClickable()) {
@@ -56,7 +68,12 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
         mOnItemLongClickListener = listener;
     }
 
-    public MultiItemAdapter addViewHolder(int viewType, IViewHolder<T> viewHolder) {
+    /**
+     * 追加布局
+     *
+     * @see #onBindViewHolder(ViewHolder, int)
+     */
+    protected MultiItemAdapter addViewHolder(int viewType, IViewHolder<T> viewHolder) {
         mViewHolderManager.put(viewType, viewHolder);
         return this;
     }
@@ -106,23 +123,31 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
     protected void setOnClickListener(final ViewGroup parent, final ViewHolder viewHolder) {
         final int position = viewHolder.getAdapterPosition();
 
-        if (mOnItemClickListener != null) {
-            viewHolder.getConvertView().setOnClickListener((view) ->
-                    mOnItemClickListener.onItemClick(parent, view, viewHolder, position, -1)
-            );
-        }
+        viewHolder.getConvertView().setOnClickListener((view) -> {
+            if (mOnItemClickListener != null)
+                mOnItemClickListener.onItemClick(parent, view, viewHolder, position, -1);
+        });
 
-        if (mOnItemLongClickListener != null) {
-            viewHolder.getConvertView().setOnClickListener((view) ->
-                    mOnItemLongClickListener.onItemLongClick(parent, view, viewHolder, position, -1)
-            );
-        }
+        viewHolder.getConvertView().setOnClickListener((view) -> {
+            if (mOnItemLongClickListener != null)
+                mOnItemLongClickListener.onItemLongClick(parent, view, viewHolder, position, -1);
+        });
     }
 
     public interface IViewHolder<T> {
 
+        /**
+         * @return ViewHolder 对应布局
+         */
         int getLayoutId();
 
+        /**
+         * ViewHolder 数据填充
+         *
+         * @param holder ViewHolder
+         * @param datum  对应数据
+         * @param offset 数据偏移量
+         */
         void convert(ViewHolder holder, T datum, int offset);
     }
 
@@ -147,5 +172,5 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
      *
      * @see #addViewHolder(int, IViewHolder)
      */
-    public abstract void addMultiViewHolders();
+    protected abstract void addMultiViewHolders();
 }

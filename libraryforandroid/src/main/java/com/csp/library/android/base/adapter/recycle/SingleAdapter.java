@@ -4,6 +4,14 @@ import android.content.Context;
 
 import java.util.Collection;
 
+/**
+ * RecyclerView.Adapter - 单布局
+ * Created by csp on 2018/06/19.
+ * Modified by csp on 2018/06/19.
+ *
+ * @version 1.0.0
+ */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class SingleAdapter<T> extends MultiItemAdapter<T> {
     private int mLayoutId;
 
@@ -21,7 +29,7 @@ public abstract class SingleAdapter<T> extends MultiItemAdapter<T> {
     }
 
     @Override
-    public void addMultiViewHolders() {
+    protected void addMultiViewHolders() {
         addViewHolder(0, new IViewHolder<T>() {
             @Override
             public int getLayoutId() {
@@ -35,5 +43,17 @@ public abstract class SingleAdapter<T> extends MultiItemAdapter<T> {
         });
     }
 
-    public abstract void convert(ViewHolder holder, T datum, int offset);
+    /**
+     * @see android.widget.Adapter#getItem(int)
+     */
+    public T getItem(int position) {
+        return mData.get(position);
+    }
+
+    /**
+     * {@link IViewHolder#convert(ViewHolder, Object, int)}
+     *
+     * @param position 对应数据在列表中的位置
+     */
+    protected abstract void convert(ViewHolder holder, T datum, int position);
 }
