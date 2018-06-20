@@ -76,6 +76,11 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
         addData(data, false);
     }
 
+    @Override
+    public int getItemCount() {
+        return mData.size();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
