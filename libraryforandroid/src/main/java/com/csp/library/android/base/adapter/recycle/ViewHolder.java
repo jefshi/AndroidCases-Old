@@ -1,6 +1,6 @@
 package com.csp.library.android.base.adapter.recycle;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 /**
  * RecyclerView.ViewHolder
- * Created by zhy on 2016/4/9.
+ * Created by zhy on 2016/04/09.
  * Modified by csp on 2018/06/19.
  *
  * @version 1.0.1
@@ -31,11 +31,9 @@ import android.widget.TextView;
 public class ViewHolder extends RecyclerView.ViewHolder {
     private SparseArray<View> mViews;
     private View mConvertView;
-    private Context mContext;
 
     public ViewHolder(Context context, View itemView) {
         super(itemView);
-        mContext = context;
         mConvertView = itemView;
         mViews = new SparseArray<>();
     }
@@ -65,6 +63,10 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public View getConvertView() {
         return mConvertView;
+    }
+
+    public Context getContext() {
+        return mConvertView.getContext();
     }
 
     // ==========
@@ -115,11 +117,12 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public ViewHolder setTextColorRes(int viewId, int textColorRes) {
         TextView view = getView(viewId);
-        view.setTextColor(mContext.getResources().getColor(textColorRes));
+        Context context = view.getContext();
+        view.setTextColor(context.getResources().getColor(textColorRes));
         return this;
     }
 
-    @SuppressLint("NewApi")
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public ViewHolder setAlpha(int viewId, float value) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             getView(viewId).setAlpha(value);

@@ -12,7 +12,7 @@ import java.util.Collection;
  * @version 1.0.0
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-public abstract class SingleAdapter<T> extends MultiItemAdapter<T> {
+public abstract class SingleAdapter<T> extends MultipleAdapter<T> {
     private int mLayoutId;
 
     public SingleAdapter(Context context, int layoutId) {
@@ -29,16 +29,21 @@ public abstract class SingleAdapter<T> extends MultiItemAdapter<T> {
     }
 
     @Override
-    protected void addMultiViewHolders() {
-        addViewHolder(0, new IViewHolder<T>() {
+    public int getItemCount() {
+        return mData.size();
+    }
+
+    @Override
+    protected void addMultiViewFills() {
+        addViewFill(0, new IViewFill<T>() {
             @Override
             public int getLayoutId() {
                 return mLayoutId;
             }
 
             @Override
-            public void convert(ViewHolder holder, T datum, int offset) {
-                SingleAdapter.this.convert(holder, datum, offset);
+            public void onBind(ViewHolder holder, T datum, int offset) {
+                SingleAdapter.this.onBind(holder, datum, offset);
             }
         });
     }
@@ -51,9 +56,9 @@ public abstract class SingleAdapter<T> extends MultiItemAdapter<T> {
     }
 
     /**
-     * {@link IViewHolder#convert(ViewHolder, Object, int)}
+     * {@link IViewFill#onBind(ViewHolder, Object, int)}
      *
      * @param position 对应数据在列表中的位置
      */
-    protected abstract void convert(ViewHolder holder, T datum, int position);
+    protected abstract void onBind(ViewHolder holder, T datum, int position);
 }

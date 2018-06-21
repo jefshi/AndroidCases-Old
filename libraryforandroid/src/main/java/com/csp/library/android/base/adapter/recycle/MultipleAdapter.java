@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import com.csp.library.java.EmptyUtil;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,10 +19,11 @@ import java.util.List;
  * Created by csp on 2018/06/19.
  * Modified by csp on 2018/06/19.
  *
+ * @param <T> 数据对象
  * @version 1.0.0
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
+public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     protected Context mContext;
     protected LayoutInflater mInflater;
     protected List<T> mData;
@@ -32,23 +31,7 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
     private OnItemClickListener mOnItemClickListener;
     private OnItemLongClickListener mOnItemLongClickListener;
 
-    private SparseArray<IViewHolder> mViewHolderManager;
-
-    /**
-     * 追加数据源
-     *
-     * @param data   数据
-     * @param append false: 重置数据
-     */
-    public void addData(Collection<T> data, boolean append) {
-        if (!append)
-            mData.clear();
-
-        if (EmptyUtil.isEmpty(data))
-            return;
-
-        mData.addAll(data);
-    }
+    private SparseArray<IViewFill> mViewFillManager;
 
     /**
      * @see AdapterView#setOnItemClickListener(AdapterView.OnItemClickListener)
@@ -68,40 +51,109 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
         mOnItemLongClickListener = listener;
     }
 
-    /**
-     * 追加布局
-     *
-     * @see #onBindViewHolder(ViewHolder, int)
-     */
-    protected MultiItemAdapter addViewHolder(int viewType, IViewHolder<T> viewHolder) {
-        mViewHolderManager.put(viewType, viewHolder);
-        return this;
-    }
-
-    public MultiItemAdapter(Context context) {
+    public MultipleAdapter(Context context) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
         mData = new ArrayList<>();
 
-        mViewHolderManager = new SparseArray<>();
-        addMultiViewHolders();
+        mViewFillManager = new SparseArray<>();
+        addMultiViewFills();
     }
 
-    public MultiItemAdapter(Context context, Collection<T> data) {
+    public MultipleAdapter(Context context, Collection<T> data) {
         this(context);
 
         addData(data, false);
     }
 
-    @Override
-    public int getItemCount() {
-        return mData.size();
+    /**
+     * @see #addData(int, Collection, boolean)
+     */
+    public void addData(Collection<T> data, boolean append) {
+        addData(-1, data, append);
+    }
+
+    /**
+     * @see #addData(int, Collection, boolean)
+     */
+    public void addData(T datum, boolean append) {
+        addData(-1, datum, append);
+    }
+
+    /**
+     * 追加数据源
+     *
+     * @param position 添加位置, -1: 添加在末尾
+     * @param data     数据
+     * @param append   false: 重置数据
+     */
+    public void addData(int position, Collection<T> data, boolean append) {
+        if (!append)
+            mData.clear();
+
+        if (data == null || data.isEmpty())
+            return;
+
+        if (position < 0)
+            mData.addAll(data);
+        else
+            mData.addAll(position, data);
+    }
+
+    /**
+     * @see #addData(int, Collection, boolean)
+     */
+    public void addData(int position, T datum, boolean append) {
+        if (!append)
+            mData.clear();
+
+        if (datum == null)
+            return;
+
+        if (position < 0)
+            mData.add(datum);
+        else
+            mData.add(position, datum);
+    }
+
+    /**
+     * @see Collection#remove(Object)
+     */
+    public void removeData(T datum) {
+        mData.remove(datum);
+    }
+
+    /**
+     * 追加布局
+     *
+     * @see #onBindViewHolder(ViewHolder, int)
+     */
+    protected MultipleAdapter addViewFill(int viewType, IViewFill viewHolder) {
+        mViewFillManager.put(viewType, viewHolder);
+        return this;
+    }
+
+    /**
+     * @return 获取布局
+     * @see #onBindViewHolder(ViewHolder, int)
+     */
+    protected IViewFill getViewFill(int viewType) {
+        return mViewFillManager.get(viewType);
+    }
+
+    /**
+     * @return 获取布局
+     * @see #getItemViewType(int)
+     * @see #getViewFill(int)
+     */
+    protected IViewFill getViewFillByPosition(int position) {
+        return getViewFill(getItemViewType(position));
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layoutId = mViewHolderManager.get(viewType).getLayoutId();
+        int layoutId = mViewFillManager.get(viewType).getLayoutId();
         View view = mInflater.inflate(layoutId, parent, false);
         ViewHolder holder = ViewHolder.createViewHolder(mContext, view);
         onCreateViewHolder(holder);
@@ -112,9 +164,8 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
     @Override
     @SuppressWarnings("unchecked")
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int viewType = getItemViewType(position);
-        IViewHolder viewHolder = mViewHolderManager.get(viewType);
-        viewHolder.convert(holder, mData.get(position), position);
+        IViewFill viewFill = getViewFillByPosition(position);
+        viewFill.onBind(holder, mData.get(position), position);
     }
 
     protected void onCreateViewHolder(ViewHolder holder) {
@@ -134,7 +185,12 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
         });
     }
 
-    public interface IViewHolder<T> {
+    /**
+     * ViewHolder 数据填充（规则）
+     *
+     * @param <E> 数据对象
+     */
+    public interface IViewFill<E> {
 
         /**
          * @return ViewHolder 对应布局
@@ -142,13 +198,13 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
         int getLayoutId();
 
         /**
-         * ViewHolder 数据填充
+         * ViewHolder 数据绑定
          *
          * @param holder ViewHolder
          * @param datum  对应数据
          * @param offset 数据偏移量
          */
-        void convert(ViewHolder holder, T datum, int offset);
+        void onBind(ViewHolder holder, E datum, int offset);
     }
 
     /**
@@ -170,7 +226,7 @@ public abstract class MultiItemAdapter<T> extends RecyclerView.Adapter<ViewHolde
     /**
      * 添加布局
      *
-     * @see #addViewHolder(int, IViewHolder)
+     * @see #addViewFill(int, IViewFill)
      */
-    protected abstract void addMultiViewHolders();
+    protected abstract void addMultiViewFills();
 }
