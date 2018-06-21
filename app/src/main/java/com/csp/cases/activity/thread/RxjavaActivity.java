@@ -33,65 +33,94 @@ import io.reactivex.schedulers.Schedulers;
  * @since AndroidCases 1.0.0
  */
 public class RxjavaActivity extends BaseListActivity {
-	@Override
-	public List<ItemInfo> getItemInfos() {
-		List<ItemInfo> itemInfos = new ArrayList<>();
-		itemInfos.add(new ItemInfo("简单的Demo", "sampleDemo", ""));
-		return itemInfos;
-	}
+    @Override
+    public List<ItemInfo> getItemInfos() {
+        List<ItemInfo> itemInfos = new ArrayList<>();
+        itemInfos.add(new ItemInfo("简单的Demo", "sampleDemo", ""));
+        itemInfos.add(new ItemInfo("TakeLast", "takeLast", ""));
+        return itemInfos;
+    }
 
-	private void sampleDemo() {
-		Observable
-				.create(new ObservableOnSubscribe<File>() {
-					@Override
-					public void subscribe(@NonNull ObservableEmitter<File> emitter) throws Exception {
-						LogCat.e("subscribe");
-						File pictureDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-						LogCat.e(pictureDir);
-						File[] pictures = pictureDir.listFiles();
-						LogCat.e("", pictures);
-						for (File picture : pictures) {
-							if (picture.getName().endsWith("png")) {
-								emitter.onNext(picture);
-								TimeUnit.SECONDS.sleep(2);
-							}
-						}
-						emitter.onComplete();
-					}
-				}).subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
-				.map(new Function<File, Bitmap>() {
-					@Override
-					public Bitmap apply(@NonNull File file) throws Exception {
-						LogCat.e("map");
-						return BitmapFactory.decodeFile(file.getAbsolutePath());
-					}
-				})
-				.subscribe(new Observer<Bitmap>() {
-					private Disposable disposable;
+    private void sampleDemo() {
+        Observable
+                .create(new ObservableOnSubscribe<File>() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter<File> emitter) throws Exception {
+                        LogCat.e("subscribe");
+                        File pictureDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                        LogCat.e(pictureDir);
+                        File[] pictures = pictureDir.listFiles();
+                        LogCat.e("", pictures);
+                        for (File picture : pictures) {
+                            if (picture.getName().endsWith("png")) {
+                                emitter.onNext(picture);
+                                TimeUnit.SECONDS.sleep(2);
+                            }
+                        }
+                        emitter.onComplete();
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Function<File, Bitmap>() {
+                    @Override
+                    public Bitmap apply(@NonNull File file) throws Exception {
+                        LogCat.e("map");
+                        return BitmapFactory.decodeFile(file.getAbsolutePath());
+                    }
+                })
+                .subscribe(new Observer<Bitmap>() {
+                    private Disposable disposable;
 
-					@Override
-					public void onSubscribe(@NonNull Disposable disposable) {
-						LogCat.e("onSubscribe");
-						this.disposable = disposable;
-					}
+                    @Override
+                    public void onSubscribe(@NonNull Disposable disposable) {
+                        LogCat.e("onSubscribe");
+                        this.disposable = disposable;
+                    }
 
-					@Override
-					public void onNext(@NonNull Bitmap bitmap) {
-						LogCat.e("onNext");
-						imgItem.setImageBitmap(bitmap);
-					}
+                    @Override
+                    public void onNext(@NonNull Bitmap bitmap) {
+                        LogCat.e("onNext");
+                        imgItem.setImageBitmap(bitmap);
+                    }
 
-					@Override
-					public void onError(@NonNull Throwable throwable) {
-						LogCat.e("onError");
-					}
+                    @Override
+                    public void onError(@NonNull Throwable throwable) {
+                        LogCat.e("onError");
+                    }
 
-					@Override
-					public void onComplete() {
-						LogCat.e("onComplete");
-						disposable.dispose();
-					}
-				});
-	}
+                    @Override
+                    public void onComplete() {
+                        LogCat.e("onComplete");
+                        disposable.dispose();
+                    }
+                });
+    }
+
+    private Observable<Integer> observable;
+
+    private void takeLast() {
+        if (observable == null) {
+            observable = Observable.create(new ObservableOnSubscribe<Integer>() {
+                @Override
+                public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
+                    LogCat.e("subscribe begin");
+                    emitter.onNext(1);
+                    emitter.onComplete();
+                    LogCat.e("subscribe end");
+                }
+            });
+        }
+
+        observable.takeLast(1)
+                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(integer -> {
+                            LogCat.e("Begin");
+                            Thread.sleep(5000);
+                            LogCat.e("End");
+                        },
+                        LogCat::printStackTrace,
+                        () -> LogCat.e("Sequence complete"))
+                .dispose();
+    }
 }
