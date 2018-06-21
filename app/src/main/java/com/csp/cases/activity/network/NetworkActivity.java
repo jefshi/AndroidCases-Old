@@ -15,7 +15,7 @@ import com.csp.cases.activity.network.visit.NetworkVisitActivity;
 import com.csp.cases.activity.network.vpn.VpnActivity;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.utils.android.NetWorkUtils;
+import com.csp.utils.android.NetworkUtils;
 import com.csp.utils.android.log.LogCat;
 
 import java.util.ArrayList;
@@ -84,8 +84,8 @@ public class NetworkActivity extends BaseListActivity {
      */
     private void networkConnected() {
         new Thread(() -> {
-            boolean connected = NetWorkUtils.isConnected(NetworkActivity.this)
-                    && !NetWorkUtils.isPortalWifi();
+            boolean connected = NetworkUtils.isConnected(NetworkActivity.this)
+                    && !NetworkUtils.isPortalWifi();
 
             LogCat.e("网络连通检测：" + connected);
         }).start();
@@ -95,7 +95,7 @@ public class NetworkActivity extends BaseListActivity {
      * NetworkInfo
      */
     private void networkInfo() {
-        NetworkInfo networkInfo = NetWorkUtils.getActiveNetworkInfo(this);
+        NetworkInfo networkInfo = NetworkUtils.getActiveNetworkInfo(this);
         LogCat.e("NetworkInfo：", networkInfo);
 
         if (networkInfo == null)
@@ -119,7 +119,7 @@ public class NetworkActivity extends BaseListActivity {
             @Override
             public void run() {
                 LogCat.e("当前 wifi 是否需要 Portal 验证：",
-                        NetWorkUtils.isPortalWifi());
+                        NetworkUtils.isPortalWifi());
             }
         }).start();
     }
@@ -138,7 +138,7 @@ public class NetworkActivity extends BaseListActivity {
     private void networkStatusReceiver() {
         if (receiver == null) {
             receiver = NetworkStatusReceiver.registerReceiver(this);
-            NetworkStatusReceiver.sendCheckoutBroadcast(this);
+            NetworkStatusReceiver.checkNetworkConnected(this);
         } else {
             NetworkStatusReceiver.unregisterReceiver(this, receiver);
             receiver = null;

@@ -24,7 +24,7 @@ import java.net.URL;
  * @version 1.0.0
  * @since AndroidUtils 1.0.0
  */
-public class NetWorkUtils {
+public class NetworkUtils {
 
     /**
      * 获取  NetworkInfo 对象

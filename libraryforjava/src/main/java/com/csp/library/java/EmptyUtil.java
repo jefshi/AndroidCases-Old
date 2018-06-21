@@ -11,7 +11,7 @@ import java.util.Collection;
  * @version 1.0.2
  * @since JavaLibrary 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class EmptyUtil {
     /**
      * 字符串是否为空

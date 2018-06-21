@@ -1,6 +1,7 @@
 package com.csp.cases;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.csp.utils.android.log.LogCat;
 
@@ -15,10 +16,16 @@ import com.csp.utils.android.log.LogCat;
  * @since AndroidCases 1.0.0
  */
 public class CaseApp extends Application {
+    private static Context sContext;
+
+    public static Context getContext() {
+        return sContext;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        sContext = getApplicationContext();
 
         LogCat.e("Application.onCreate");
     }

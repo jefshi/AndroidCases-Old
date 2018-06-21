@@ -9,7 +9,8 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Parcelable;
 
-import com.csp.utils.android.NetWorkUtils;
+import com.csp.cases.CaseApp;
+import com.csp.utils.android.NetworkUtils;
 import com.csp.utils.android.log.LogCat;
 
 /**
@@ -27,12 +28,19 @@ import com.csp.utils.android.log.LogCat;
  * @since AndroidCases 1.0.0
  */
 public class NetworkStatusReceiver extends BroadcastReceiver {
-    private static final String NETWORK_CONNECTED_TEST = "NETWORK_CONNECTED_TEST";
     private static boolean connected;
 
     private static boolean enablaWifi = false;
     private static boolean wifi = false;
     private static boolean mobile = false;
+
+    private static PortalWifiRunnable sRunnable;
+    private static boolean sConnected;
+    private static boolean sPortalWifi;
+
+    static {
+        sConnected = NetworkUtils.isConnected(CaseApp.getContext());
+    }
 
     /**
      * 注册广播监听器
@@ -53,7 +61,6 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        filter.addAction(NETWORK_CONNECTED_TEST);
         context.registerReceiver(receiver, filter);
         return receiver;
     }
@@ -66,12 +73,23 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
             context.unregisterReceiver(receiver);
     }
 
+
     /**
-     * 发送检测网络连通性广播
+     * 检测网络连通性
      */
-    public static void sendCheckoutBroadcast(Context context) {
-        context.sendBroadcast(
-                new Intent(NetworkStatusReceiver.NETWORK_CONNECTED_TEST));
+    public static void checkNetworkConnected(final Context context) {
+        sConnected = NetworkUtils.isConnected(context);
+        if (sConnected) {
+            synchronized (NetworkStatusReceiver.class) {
+                if (sRunnable != null)
+                    sRunnable.invalidate();
+
+                sRunnable = new PortalWifiRunnable();
+                new Thread(sRunnable).start();
+            }
+        } else {
+            notifyConnectedChanged();
+        }
     }
 
     @Override
@@ -79,12 +97,11 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
         String action = intent.getAction();
 
         // 网路连通性监测
-        if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action)
-                || NETWORK_CONNECTED_TEST.equals(action)) {
+        if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action)) {
             new Thread(() -> {
                 // TODO Portal wifi 已登录检测
-                connected = NetWorkUtils.isConnected(context)
-                        && !NetWorkUtils.isPortalWifi();
+                connected = NetworkUtils.isConnected(context)
+                        && !NetworkUtils.isPortalWifi();
 
                 // 发送网络状态变化广播
                 // EventBus.getDefault().post(Constant.Network.CONNECTED_CHANGE);
@@ -109,14 +126,50 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
         }
 
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action)) {
-            NetworkInfo networkInfo = NetWorkUtils.getActiveNetworkInfo(context);
-            boolean connected = NetWorkUtils.isConnected(context);
+            NetworkInfo networkInfo = NetworkUtils.getActiveNetworkInfo(context);
+            boolean connected = NetworkUtils.isConnected(context);
             if (networkInfo != null && connected) {
                 int type = networkInfo.getType();
                 wifi = type == ConnectivityManager.TYPE_WIFI;
                 mobile = type == ConnectivityManager.TYPE_MOBILE;
             } else {
                 wifi = mobile = false;
+            }
+        }
+    }
+
+    public static void notifyConnectedChanged() {
+        LogCat.e("网络状态变化, sConnected = " + sConnected);
+    }
+
+    private static class PortalWifiRunnable implements Runnable {
+        boolean mInvalidate;
+
+        private void invalidate() {
+            mInvalidate = true;
+        }
+
+        @Override
+        public void run() {
+            if (!mInvalidate && sConnected) {
+                // TODO Portal wifi 已登录检测
+                boolean portalWifi = NetworkUtils.isPortalWifi();
+                synchronized (NetworkStatusReceiver.class) {
+                    if (!mInvalidate && sConnected) {
+                        sPortalWifi = portalWifi;
+                        sConnected = sConnected && !sPortalWifi;
+                    }
+                }
+            }
+
+            if (!mInvalidate)
+                notifyConnectedChanged();
+
+            if (sRunnable == this) {
+                synchronized (NetworkStatusReceiver.class) {
+                    if (sRunnable == this)
+                        sRunnable = null;
+                }
             }
         }
     }
