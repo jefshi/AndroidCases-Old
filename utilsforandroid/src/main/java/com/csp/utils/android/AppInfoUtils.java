@@ -10,13 +10,11 @@ import com.csp.utils.android.log.LogCat;
 import java.security.MessageDigest;
 
 /**
- * Description: 当前应用信息
- * <p>Create Date: 2017/04/09
- * <p>Modify Date: 2018/06/07
+ * 当前应用信息
+ * Created by csp on 2017/04/09.
+ * Modified by csp on 2018/06/22.
  *
- * @author csp
- * @version 1.0.2
- * @since AndroidUtils 1.0.0
+ * @version 1.0.3
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class AppInfoUtils {
@@ -64,6 +62,16 @@ public class AppInfoUtils {
      */
     public static int getVersionCode(Context context) {
         return getVersionCode(context, context.getPackageName());
+    }
+
+    /**
+     * 判断指定应用是否是最新版
+     *
+     * @param latestVersionCode 最新版本号
+     * @return true: 不是最新版
+     */
+    public static boolean isNotLatestVersion(Context context, String packageName, int latestVersionCode) {
+        return latestVersionCode > getVersionCode(context, packageName);
     }
 
     /**
