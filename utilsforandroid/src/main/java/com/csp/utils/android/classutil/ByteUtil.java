@@ -6,13 +6,11 @@ import android.graphics.drawable.Drawable;
 import java.io.ByteArrayOutputStream;
 
 /**
- * Description: Byte 操作工具类
- * <p>Create Date: 2018/04/17
- * <p>Modify Date: 无
+ * Byte 操作工具类
+ * Created by csp on 2018/04/17.
+ * Modified by csp on 2018/04/17.
  *
- * @author csp
  * @version 1.0.0
- * @since AndroidUtils 1.0.0
  */
 @SuppressWarnings({"unused", "WeakerAccess", "SameParameterValue"})
 public class ByteUtil {

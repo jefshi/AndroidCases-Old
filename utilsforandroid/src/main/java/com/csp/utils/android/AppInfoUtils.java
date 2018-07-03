@@ -68,7 +68,7 @@ public class AppInfoUtils {
      * 判断指定应用是否是最新版
      *
      * @param latestVersionCode 最新版本号
-     * @return true: 不是最新版
+     * @return true: 不是最新版，或者指定应用不存在
      */
     public static boolean isNotLatestVersion(Context context, String packageName, int latestVersionCode) {
         return latestVersionCode > getVersionCode(context, packageName);

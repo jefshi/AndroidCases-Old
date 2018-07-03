@@ -1,28 +1,29 @@
 package com.csp.utils.android.log;
 
+
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import com.csp.utils.android.BuildConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Description: 日志打印
- * <p>Create Date: 2017/07/14
- * <p>Modify Date: 2018/05/18
+ * 日志打印
+ * Created by csp on 2017/07/14.
+ * Modified by csp on 2018/07/03.
  *
- * @author csp
- * @version 1.0.4
- * @since AndroidUtils 1.0.0
+ * @version 1.0.5
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class LogCat {
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
     private final static int LOG_MAX_LENGTH = 3072; // Android 能够打印的最大日志长度
     public final static int DEFAULT_STACK_ID = 2;
 
@@ -51,7 +52,7 @@ public class LogCat {
 
         String part;
         int index;
-        Collection<String> list = new ArrayList<>();
+        List<String> list = new ArrayList<>();
         while (true) {
             if (message.length() <= LOG_MAX_LENGTH) {
                 list.add(message);
@@ -61,7 +62,7 @@ public class LogCat {
             part = message.substring(0, LOG_MAX_LENGTH);
             index = part.lastIndexOf('\n');
             if (index > -1)
-                part = message.substring(0, index);
+                part = message.substring(0, index + 1);
 
             list.add(part);
             message = message.substring(part.length());
@@ -74,28 +75,30 @@ public class LogCat {
     /**
      * 打印日志
      *
-     * @param tag     日志标签
-     * @param message 日志内容
-     * @param level   日志优先级
+     * @param tag       日志标签
+     * @param message   日志内容
+     * @param throwable 异常
+     * @param level     日志等级
      */
-    private static void printLog(String tag, String message, int level) {
+
+    private static void printLog(String tag, String message, Throwable throwable, int level) {
         String[] messages = divideMessages(message);
         for (String msg : messages) {
             switch (level) {
                 case Log.ERROR:
-                    Log.e(tag, msg);
+                    Log.e(tag, msg, throwable);
                     break;
                 case Log.WARN:
-                    Log.w(tag, msg);
+                    Log.w(tag, msg, throwable);
                     break;
                 case Log.INFO:
-                    Log.i(tag, msg);
+                    Log.i(tag, msg, throwable);
                     break;
                 case Log.DEBUG:
-                    Log.d(tag, msg);
+                    Log.d(tag, msg, throwable);
                     break;
                 default:
-                    Log.v(tag, msg);
+                    Log.v(tag, msg, throwable);
                     break;
             }
         }
@@ -120,23 +123,30 @@ public class LogCat {
     /**
      * 打印异常信息
      *
+     * @param level     日志等级
      * @param explain   异常说明
      * @param throwable 异常错误对象
      */
-    public static void printStackTrace(String explain, Throwable throwable) {
-        if (throwable == null)
-            return;
-
-        String tag = getTag(throwable.getStackTrace()[0]);
-        String log = (explain == null ? "" : explain) + '\n' + getStackTrace(throwable);
-        printLog(tag, log, Log.ERROR);
+    public static void printStackTrace(int level, String explain, Throwable throwable) {
+        if (throwable != null) {
+            String tag = getTag(new Exception().getStackTrace()[DEFAULT_STACK_ID]);
+            String log = (explain == null ? "" : explain); //  + '\n' + getStackTrace(throwable);
+            printLog(tag, log, throwable, level);
+        }
     }
 
     /**
-     * @see #printStackTrace(String, Throwable)
+     * @see #printStackTrace(int, String, Throwable)
+     */
+    public static void printStackTrace(String explain, Throwable throwable) {
+        printStackTrace(Log.ERROR, explain, throwable);
+    }
+
+    /**
+     * @see #printStackTrace(int, String, Throwable)
      */
     public static void printStackTrace(Throwable throwable) {
-        printStackTrace(null, throwable);
+        printStackTrace(Log.ERROR, null, throwable);
     }
 
     /**
@@ -145,7 +155,7 @@ public class LogCat {
      * @param explain 日志说明
      * @param message 日志内容
      */
-    public static String formatLog(@NonNull final String explain, Object message) {
+    private static String formatLog(@NonNull final String explain, Object message) {
         String log;
         if (message instanceof Map) {
             log = formatLog(explain, (Map) message);
@@ -166,15 +176,16 @@ public class LogCat {
      * @param explain  日志说明
      * @param messages 日志内容
      */
-    public static String formatLog(@NonNull final String explain, @NonNull Object[] messages) {
+    private static String formatLog(@NonNull final String explain, @NonNull Object[] messages) {
         StringBuilder log = new StringBuilder();
         String tip;
         if (messages.length == 0) {
             log.append(explain.length() == 0 ? "is empty" : explain + ": is empty");
         } else {
-            for (int i = 0; i < messages.length; i++) {
+            int i = 0;
+            for (Object message : messages) {
                 tip = explain + "[" + i + "]: ";
-                log.append('\n').append(formatLog(tip, messages[i]));
+                log.append('\n').append(formatLog(tip, message));
             }
             log.deleteCharAt(0);
         }
@@ -193,10 +204,11 @@ public class LogCat {
         if (messages.isEmpty()) {
             log.append(explain.length() == 0 ? "is empty" : explain + ": is empty");
         } else {
-            Iterator iterator = messages.iterator();
-            for (int i = 0; iterator.hasNext(); i++) {
+            int i = 0;
+            for (Object message : messages) {
                 tip = explain + "[" + i + "]: ";
-                log.append('\n').append(formatLog(tip, iterator.next()));
+                log.append('\n').append(formatLog(tip, message));
+                i++;
             }
             log.deleteCharAt(0);
         }
@@ -209,7 +221,7 @@ public class LogCat {
      * @param explain  日志说明
      * @param messages 日志内容
      */
-    public static String formatLog(@NonNull final String explain, @NonNull Map messages) {
+    private static String formatLog(@NonNull final String explain, @NonNull Map messages) {
         StringBuilder log = new StringBuilder();
         String tip;
         if (messages.isEmpty()) {
@@ -235,31 +247,16 @@ public class LogCat {
      * @param message 日志内容
      * @param level   日志优先级
      */
-    @SuppressWarnings("ConstantConditions")
     public static void log(int level, int stackId, String explain, Object message) {
         if (!DEBUG)
             return;
 
-        explain = explain == null ? "" : explain;
-        message = message == null ? "null" : message;
-        String log = formatLog(explain, message);
+        String log = formatLog(
+                explain == null ? "" : explain,
+                message == null ? "null" : message);
 
         String tag = getTag(new Exception().getStackTrace()[stackId]);
-        printLog(tag, log, level);
-    }
-
-    /**
-     * @see #log(int, int, String, Object)
-     */
-    public static void log(int level, String explain, Object message) {
-        log(level, DEFAULT_STACK_ID, explain, message);
-    }
-
-    /**
-     * @see #log(int, int, String, Object)
-     */
-    public static void log(int level, Object message) {
-        log(level, DEFAULT_STACK_ID, null, message);
+        printLog(tag, log, null, level);
     }
 
     /**
