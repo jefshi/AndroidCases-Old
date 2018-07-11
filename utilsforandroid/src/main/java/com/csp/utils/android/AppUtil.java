@@ -167,4 +167,16 @@ public class AppUtil {
         context.startActivity(intent);
         return true;
     }
+
+    /**
+     * 卸载应用
+     *
+     * @param context     context
+     * @param packageName 包名
+     */
+    public static void uninstallApp(Context context, String packageName) {
+        Uri uri = Uri.parse("package:" + packageName);
+        Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+        context.startActivity(intent);
+    }
 }
