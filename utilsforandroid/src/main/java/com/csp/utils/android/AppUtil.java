@@ -19,13 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Description: 应用包管理
- * <p>Create Date: 2017/04/23
- * <p>Modify Date: 2018/06/13
+ * 应用包管理
+ * Created by csp on 2017/04/23.
+ * Modified by csp on 2018/06/13.
  *
- * @author csp
  * @version 1.0.5
- * @since AndroidUtils 1.0.0
  */
 public class AppUtil {
 

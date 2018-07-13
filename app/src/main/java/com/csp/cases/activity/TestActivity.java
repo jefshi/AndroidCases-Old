@@ -24,6 +24,7 @@ public class TestActivity extends BaseListActivity {
         List<ItemInfo> items = new ArrayList<>();
         items.add(new ItemInfo("AppInfoUtils", "appInfoUtils", ""));
         items.add(new ItemInfo("PhoneHardwareUtils", "phoneHardwareUtils", ""));
+        items.add(new ItemInfo("ToolBarActivity", ToolBarActivity.class, ""));
 
         return items;
     }

@@ -16,13 +16,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Description: 网络工具类
- * <p>Create Date: 2018/04/11
- * <p>Modify Date: 无
+ * 网络工具类
+ * Created by csp on 2018/04/11.
+ * Modified by csp on 2018/04/11.
  *
- * @author csp
  * @version 1.0.0
- * @since AndroidUtils 1.0.0
  */
 public class NetworkUtils {
 

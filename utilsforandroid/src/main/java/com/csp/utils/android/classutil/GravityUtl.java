@@ -4,13 +4,11 @@ import android.annotation.SuppressLint;
 import android.view.Gravity;
 
 /**
- * Description: Gravity 工具类
- * <p>Create Date: 2018/05/11
- * <p>Modify Date: nothing
+ * Gravity 操作工具类
+ * Created by csp on 2017/05/11.
+ * Modified by csp on 2017/05/11.
  *
- * @author csp
  * @version 1.0.0
- * @since AndroidUtils 1.0.0
  */
 @SuppressWarnings("unused")
 public class GravityUtl {

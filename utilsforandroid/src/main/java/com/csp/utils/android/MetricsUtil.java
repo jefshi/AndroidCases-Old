@@ -7,13 +7,11 @@ import android.util.TypedValue;
 import java.lang.reflect.Field;
 
 /**
- * Description: 测量工具类
- * <p>Create Date: 2018/04/09
- * <p>Modify Date: nothing
+ * 测量工具类
+ * Created by csp on 2017/03/09.
+ * Modified by csp on 2017/09/11.
  *
- * @author csp
- * @version 1.0.0
- * @since AndroidUtils 1.0.0
+ * @version 1.0.1
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class MetricsUtil {

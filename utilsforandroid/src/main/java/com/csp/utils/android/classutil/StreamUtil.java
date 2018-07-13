@@ -9,15 +9,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Description: 流操作工具类
- * <p>Create Date: 2017/09/11
- * <p>Modify Date: 无
+ * Stream 操作工具类
+ * Created by csp on 2017/04/17.
+ * Modified by csp on 2017/04/17.
  *
- * @author csp
  * @version 1.0.0
- * @since AndroidUtils 1.0.0
  */
-
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class StreamUtil extends com.csp.library.java.stream.StreamUtil {
 

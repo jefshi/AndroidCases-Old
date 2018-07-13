@@ -11,13 +11,11 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 /**
- * Description: 字符串应用类
- * <p>Create Date: 2016/09/04
- * <p>Modify Date: 2018/05/17
+ * String 操作工具类
+ * Created by csp on 2016/09/04.
+ * Modified by csp on 2018/05/17.
  *
- * @author csp
  * @version 1.0.2
- * @since JavaLibrary 1.0.0
  */
 @SuppressWarnings("unused")
 public class StringUtil {

@@ -7,13 +7,11 @@ import android.graphics.drawable.Drawable;
 import java.io.InputStream;
 
 /**
- * Description: Byte 操作工具类
- * <p>Create Date: 2018/04/17
- * <p>Modify Date: 无
+ * Drawable 操作工具类
+ * Created by csp on 2017/04/17.
+ * Modified by csp on 2017/04/17.
  *
- * @author csp
  * @version 1.0.0
- * @since AndroidUtils 1.0.0
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class DrawableUtil {
