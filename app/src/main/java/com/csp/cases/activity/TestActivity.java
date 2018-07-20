@@ -2,7 +2,7 @@ package com.csp.cases.activity;
 
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.utils.android.AppInfoUtils;
+import com.csp.utils.android.Utils;
 import com.csp.utils.android.log.LogCat;
 import com.csp.utils.android.phone.PhoneHardwareUtils;
 
@@ -30,7 +30,10 @@ public class TestActivity extends BaseListActivity {
     }
 
     private void appInfoUtils() {
-        LogCat.e(AppInfoUtils.getLastInstallTime(AppInfoUtils.getPackageInfo(this)));
+        LogCat.e(Utils.getApp());
+
+        LogCat.e(Utils.isAppForeground());
+        // LogCat.e(AppInfoUtils.getLastInstallTime(AppInfoUtils.getPackageInfo(this)));
 
 //        LogCat.e(AppInfoUtils.getVersionName(this));
 //

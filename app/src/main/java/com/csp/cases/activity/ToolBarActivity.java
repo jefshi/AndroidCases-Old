@@ -22,7 +22,7 @@ public class ToolBarActivity extends Activity {
         // toolbar.setLogo(R.mipmap.item_card);
         //title
         toolbar.setTitle("Material Design ToolBar");
-        toolbar.setTitleTextAppearance();
+        // toolbar.setTitleTextAppearance();
         //sub title
         // toolbar.setSubtitle("  ToolBar subtitle");
 

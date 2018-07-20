@@ -1,6 +1,7 @@
 package com.csp.utils.android;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,29 @@ import java.util.List;
  * @version 1.0.5
  */
 public class AppUtil {
+
+    private AppUtil() {
+        throw new UnsupportedOperationException("u can't instantiate me...");
+    }
+
+    /**
+     * 当前应用是否处在前台
+     *
+     * @return true: 是
+     */
+    public static boolean isAppForeground() {
+        ActivityManager am =
+                (ActivityManager) Utils.getApp().getSystemService(Context.ACTIVITY_SERVICE);
+        if (am == null) return false;
+        List<ActivityManager.RunningAppProcessInfo> info = am.getRunningAppProcesses();
+        if (info == null || info.size() == 0) return false;
+        for (ActivityManager.RunningAppProcessInfo aInfo : info) {
+            if (aInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                return aInfo.processName.equals(Utils.getApp().getPackageName());
+            }
+        }
+        return false;
+    }
 
     /**
      * 获取包名集合

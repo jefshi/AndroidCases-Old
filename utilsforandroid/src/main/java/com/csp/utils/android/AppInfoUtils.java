@@ -115,7 +115,7 @@ public class AppInfoUtils {
     }
 
     /**
-     * 将签名字符串转换成需要的32位签名
+     * TODO 将签名字符串转换成需要的32位签名
      *
      * @param paramArrayOfByte 签名byte数组
      * @return 32位签名字符串
