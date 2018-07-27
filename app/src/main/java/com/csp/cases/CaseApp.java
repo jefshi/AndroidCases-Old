@@ -3,6 +3,7 @@ package com.csp.cases;
 import android.app.Application;
 import android.content.Context;
 
+import com.csp.utils.android.Utils;
 import com.csp.utils.android.log.LogCat;
 
 
@@ -26,6 +27,7 @@ public class CaseApp extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = getApplicationContext();
+        Utils.init(sContext);
 
         LogCat.e("Application.onCreate");
     }

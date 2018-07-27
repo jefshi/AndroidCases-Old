@@ -18,13 +18,11 @@ import java.util.Collection;
 import java.util.HashMap;
 
 /**
- * Description: 动态权限获取
- * <p>Create Date: 2017/7/5 005
- * <p>Modify Date: 2018/03/27
+ * 动态权限获取
+ * Created by csp on 2017/07/05.
+ * Modified by csp on 2018/03/27.
  *
- * @author csp
- * @version 1.0.0
- * @since AndroidUtils 1.0.0
+ * @version 1.0.1
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public final class PermissionUtil {

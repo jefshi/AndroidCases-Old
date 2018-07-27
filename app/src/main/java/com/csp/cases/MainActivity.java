@@ -33,7 +33,8 @@ public class MainActivity extends BaseGridActivity {
         // 获取权限
         String[] permissions = {
                 Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA
         };
         PermissionUtil.requestPermissions(this, permissions, 1000);
     }
@@ -45,7 +46,7 @@ public class MainActivity extends BaseGridActivity {
         items.add(new ItemInfo("Activity", ActivityActivity.class, "[Activity]案例"));
         items.add(new ItemInfo("Animation", AnimationActivity.class, "动画案例"));
         items.add(new ItemInfo("Component", ComponentActivity.class, "组件/控件案例"));
-        items.add(new ItemInfo("Intent", IntentActivity.class, "数据传输案例"));
+        items.add(new ItemInfo("Intent", IntentActivity.class, "意图案例"));
         items.add(new ItemInfo("Metrics", MetricsActivity.class, "度量以及屏幕参数案例"));
         items.add(new ItemInfo("Network", NetworkActivity.class, "网络案例"));
         items.add(new ItemInfo("Permission", PermissionActivity.class, "权限案例"));

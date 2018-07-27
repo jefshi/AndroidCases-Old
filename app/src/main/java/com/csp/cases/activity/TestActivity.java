@@ -32,7 +32,6 @@ public class TestActivity extends BaseListActivity {
     private void appInfoUtils() {
         LogCat.e(Utils.getApp());
 
-        LogCat.e(Utils.isAppForeground());
         // LogCat.e(AppInfoUtils.getLastInstallTime(AppInfoUtils.getPackageInfo(this)));
 
 //        LogCat.e(AppInfoUtils.getVersionName(this));

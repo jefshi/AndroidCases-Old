@@ -170,6 +170,7 @@ public class AppUtil {
      * @param file    apk 文件路径
      * @return true: 成功
      */
+    // @RequiresPermission(Manifest.permission.REQUEST_INSTALL_PACKAGES)
     public static boolean installApk(Context context, File file) {
         if (!file.exists())
             return false;

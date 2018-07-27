@@ -33,7 +33,7 @@ public class ByteUtil {
      * @param drawable Drawable
      * @return byte[]
      */
-    public static byte[] Drawable2Bytes(Drawable drawable) {
+    public static byte[] toBytes(Drawable drawable) {
         return toBytes(BitmapUtil.toBitmap(drawable), 100);
     }
 }
