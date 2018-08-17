@@ -26,8 +26,8 @@ public class CaseApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Utils.init(this);
         sContext = getApplicationContext();
-        Utils.init(sContext);
 
         LogCat.e("Application.onCreate");
     }

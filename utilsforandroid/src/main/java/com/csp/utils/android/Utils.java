@@ -13,8 +13,9 @@ import java.lang.reflect.InvocationTargetException;
  * utils about initialization
  * Created by Blankj on 2016/12/08.
  * Modified by csp on 2018/03/02 just delete something
+ * Modified by csp on 2018/03/10
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 public final class Utils {
 
@@ -42,9 +43,8 @@ public final class Utils {
      * @param app application
      */
     public static void init(@NonNull final Application app) {
-        if (sApplication == null) {
+        if (sApplication == null)
             Utils.sApplication = app;
-        }
     }
 
     /**
@@ -76,5 +76,13 @@ public final class Utils {
             LogCat.printStackTrace(e);
         }
         throw new NullPointerException("u should init first");
+    }
+
+    /**
+     * @return {@link #getApp()}, {@link Application#getApplicationContext()}
+     */
+    public static Context getAppContext() {
+        Application app = getApp();
+        return app == null ? null : app.getApplicationContext();
     }
 }

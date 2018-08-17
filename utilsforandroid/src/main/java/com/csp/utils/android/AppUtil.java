@@ -116,12 +116,12 @@ public class AppUtil {
     /**
      * 是否存在指定的应用
      *
-     * @param context     context
      * @param packageName 包名
      * @return null: 不存在指定的应用
      */
-    public static ResolveInfo searchApplication(Context context, String packageName) {
-        if (EmptyUtil.isBank(packageName))
+    public static ResolveInfo searchApplication(String packageName) {
+        Context context = Utils.getAppContext();
+        if (EmptyUtil.isBank(packageName) || context == null)
             return null;
 
         Intent searchIntent = new Intent(Intent.ACTION_MAIN, null);
@@ -135,13 +135,13 @@ public class AppUtil {
     /**
      * 通过包名启动 App
      *
-     * @param context     context
      * @param packageName 包名
      * @return true: 成功
      */
-    public static boolean startAppByPackageName(Context context, String packageName) {
-        ResolveInfo resolveInfo = searchApplication(context, packageName);
-        if (resolveInfo == null)
+    public static boolean startAppByPackageName(String packageName) {
+        Context context = Utils.getAppContext();
+        ResolveInfo resolveInfo = searchApplication(packageName);
+        if (resolveInfo == null || context == null)
             return false;
 
         // 这个就是我们要找的该APP的LAUNCHER的Activity[组织形式：packagename.mainActivityname]
@@ -164,15 +164,18 @@ public class AppUtil {
      * 通过隐式意图调用系统安装程序安装APK
      * step 1: 见代码
      * step 2: AndroidManifest.xml 文件下 <provider> 标签
-     * step 3: res/xml 下 file_provider_paths.xml 文件
+     * step 3: res/xml 下 <provider><meta-data> 指定的 XML 文件
      *
-     * @param context context
-     * @param file    apk 文件路径
+     * @param file apk 文件路径
      * @return true: 成功
      */
     // @RequiresPermission(Manifest.permission.REQUEST_INSTALL_PACKAGES)
-    public static boolean installApk(Context context, File file) {
+    public static boolean installApk(File file) {
         if (!file.exists())
+            return false;
+
+        Context context = Utils.getAppContext();
+        if (context == null)
             return false;
 
         Intent intent = new Intent(Intent.ACTION_VIEW);

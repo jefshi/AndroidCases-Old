@@ -1,6 +1,9 @@
 package com.csp.cases.activity.system;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
@@ -8,7 +11,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.telecom.TelecomManager;
+import android.telephony.TelephonyManager;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
@@ -52,6 +59,7 @@ public class SystemActivity extends BaseListActivity {
         items.add(new ItemInfo("应用安装卸载监听", "appInstallListen", ""));
         items.add(new ItemInfo("安装应用", "installApp", ""));
         items.add(new ItemInfo("通过包名启动应用", "startApp", ""));
+        items.add(new ItemInfo("获取设备硬件信息", "getHardInfo", ""));
         return items;
     }
 
@@ -199,5 +207,15 @@ public class SystemActivity extends BaseListActivity {
         if (!AppUtil.startAppByPackageName(this, packageName)) {
             throw new Exception("可能是应用不存在导致失败，包名: " + packageName);
         }
+    }
+
+    /**
+     * 获取设备硬件信息
+     */
+    @SuppressLint("MissingPermission")
+    private void getHardInfo() {
+        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String phoneNum = manager.getLine1Number();
+        LogCat.e(phoneNum);
     }
 }
