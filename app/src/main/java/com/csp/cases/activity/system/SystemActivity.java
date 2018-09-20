@@ -1,8 +1,6 @@
 package com.csp.cases.activity.system;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -11,10 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -193,7 +188,7 @@ public class SystemActivity extends BaseListActivity {
     private void installApp() throws Exception {
         File file = Environment.getExternalStorageDirectory();
         file = new File(file, "/APK/app-debug.apk");
-        if (!AppUtil.installApk(this, file)) {
+        if (!AppUtil.installApk(file)) {
             throw new Exception("可能是文件不存在导致失败，文件: " + file.getAbsolutePath());
         }
     }
@@ -204,7 +199,7 @@ public class SystemActivity extends BaseListActivity {
     private void startApp() throws Exception {
         // 360 浏览器
         String packageName = "com.qihoo.browser";
-        if (!AppUtil.startAppByPackageName(this, packageName)) {
+        if (!AppUtil.startAppByPackageName(packageName)) {
             throw new Exception("可能是应用不存在导致失败，包名: " + packageName);
         }
     }

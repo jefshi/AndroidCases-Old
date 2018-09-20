@@ -1,12 +1,19 @@
 package com.csp.utils.android.phone;
 
-import android.Manifest;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 
+import com.csp.library.java.ByteUtil;
+import com.csp.utils.android.Utils;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 
 /**
@@ -76,5 +83,63 @@ public class PhoneHardwareUtils {
                 (TelephonyManager) context.getSystemService(Activity.TELEPHONY_SERVICE);
 
         return tManager == null ? null : tManager.getDeviceId();
+    }
+
+//    public static boolean isFeatures() {
+//        return Build.FINGERPRINT.startsWith("generic")
+//                || Build.FINGERPRINT.toLowerCase().contains("vbox")
+//                || Build.FINGERPRINT.toLowerCase().contains("test-keys")
+//                || Build.MODEL.contains("google_sdk")
+//                || Build.MODEL.contains("Emulator")
+//                || Build.MODEL.contains("Android SDK built for x86")
+//                || Build.MANUFACTURER.contains("Genymotion")
+//                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+//                || "google_sdk".equals(Build.PRODUCT);
+//    }
+
+    /**
+     * @return true: 存在蓝牙
+     */
+    public static boolean existBlueTooth() {
+        BluetoothAdapter bluetooth = BluetoothAdapter.getDefaultAdapter();
+        return bluetooth != null && !TextUtils.isEmpty(bluetooth.getName());
+    }
+
+    /**
+     * @return true: 存在光传感器（可用于判断是否是模拟器）
+     */
+    public static Boolean existLightSensor() {
+        Context context = Utils.getAppContext();
+        if (context == null)
+            return false;
+
+        SensorManager manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        return manager != null && manager.getDefaultSensor(Sensor.TYPE_LIGHT) != null;
+    }
+
+    /**
+     * @return 获取 CPU 信息
+     */
+    @NonNull
+    public static String getCpuInfo() {
+        InputStream is = null;
+        try {
+            String[] args = {"/system/bin/cat", "/proc/cpuinfo"};
+            ProcessBuilder cmd = new ProcessBuilder(args);
+
+            Process process = cmd.start();
+            is = process.getInputStream();
+            byte[] bytes = ByteUtil.toBytes(is);
+            return new String(bytes, "utf-8");
+        } catch (IOException ignored) {
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+        return "";
     }
 }

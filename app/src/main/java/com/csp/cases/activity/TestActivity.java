@@ -2,7 +2,6 @@ package com.csp.cases.activity;
 
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.utils.android.Utils;
 import com.csp.utils.android.log.LogCat;
 import com.csp.utils.android.phone.PhoneHardwareUtils;
 
@@ -30,15 +29,61 @@ public class TestActivity extends BaseListActivity {
     }
 
     private void appInfoUtils() {
-        LogCat.e(Utils.getApp());
 
-        // LogCat.e(AppInfoUtils.getLastInstallTime(AppInfoUtils.getPackageInfo(this)));
+//        try {
+////            Class cls = Class.forName("com.android.launcher3.compat.AlphabeticIndexCompat2");
+////            Method method = cls.getDeclaredMethod("computeSectionName");
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        }
 
-//        LogCat.e(AppInfoUtils.getVersionName(this));
+//        Method method = context.getClass().getDeclaredMethod(methodName);
+//        method.setAccessible(true);
+//        method.invoke(context);
+
+
+//        boolean running = true;
 //
-//        LogCat.e(AppInfoUtils.getVersionCode(this));
+//        // 第一种方法
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (running) {
+//                    LogCat.e("请求一次网络");
 //
-//        LogCat.e(AppInfoUtils.getSign(this, getPackageName()));
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException ignored) {
+//                    }
+//                }
+//            }
+//        }).start();
+//
+//        // 第二种方法
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                LogCat.e("Handler：请求一次网络");
+//
+//                if (running)
+//                    handler.postDelayed(this, 1000);
+//            }
+//        }, 1000);
+
+
+//        LogCat.e(PhoneHardUtils.existBlueTooth());
+//        LogCat.e(PhoneHardUtils.existLightSensor());
+//        LogCat.e(Build.FINGERPRINT);
+//        LogCat.e(Build.MODEL);
+//        LogCat.e(Build.MANUFACTURER);
+//        LogCat.e(Build.BRAND);
+//        LogCat.e(Build.DEVICE);
+//        LogCat.e(Build.PRODUCT);
+//        LogCat.e(PhoneHardUtils.readCpuInfo());
+//        LogCat.e(PhoneHardUtils.checkIsNotRealPhone());
     }
 
     private void phoneHardwareUtils() {
