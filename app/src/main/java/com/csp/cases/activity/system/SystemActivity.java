@@ -18,6 +18,7 @@ import com.csp.cases.activity.system.appinfo.AppInfo;
 import com.csp.cases.activity.system.appinfo.AppInfoAdapter;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
+import com.csp.utils.android.AppInfoUtils;
 import com.csp.utils.android.AppUtil;
 import com.csp.utils.android.log.LogCat;
 
@@ -118,6 +119,9 @@ public class SystemActivity extends BaseListActivity {
             app.setPackageName(info.packageName);
             app.setLabel(info.loadLabel(getPackageManager()).toString());
             app.setIcon(info.loadIcon(pManager));
+
+            int versionCode = AppInfoUtils.getVersionCode(this, info.packageName);
+            app.setVersionCode(versionCode);
             apps.add(app);
         }
 

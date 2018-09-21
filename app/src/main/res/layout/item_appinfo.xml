@@ -18,14 +18,21 @@
         android:id="@+id/txtLable"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/txtPackagename"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="3"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:id="@+id/txtVersionCode"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center_vertical" />
 
 </LinearLayout>
