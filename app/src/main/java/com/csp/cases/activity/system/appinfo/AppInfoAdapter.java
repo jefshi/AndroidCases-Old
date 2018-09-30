@@ -27,7 +27,7 @@ public class AppInfoAdapter extends BaseListAdapter<AppInfo> {
         vHolder.imgIcon.setImageDrawable(appInfo.getIcon());
         vHolder.txtLable.setText(appInfo.getLabel());
         vHolder.txtPackagename.setText(appInfo.getPackageName());
-        vHolder.txtVersionCode.setText(appInfo.getVersionCode());
+//        vHolder.txtVersionCode.setText(appInfo.getVersionCode());
     }
 
     private void setViewEvent(final ViewHolder vHolder) {
@@ -40,7 +40,7 @@ public class AppInfoAdapter extends BaseListAdapter<AppInfo> {
         private ImageView imgIcon;
         private TextView txtLable;
         private TextView txtPackagename;
-        private TextView txtVersionCode;
+//        private TextView txtVersionCode;
 
         private ViewHolder(View view) {
             super(view);
@@ -51,7 +51,7 @@ public class AppInfoAdapter extends BaseListAdapter<AppInfo> {
             imgIcon = findViewById(R.id.imgIcon);
             txtLable = findViewById(R.id.txtLable);
             txtPackagename = findViewById(R.id.txtPackagename);
-            txtVersionCode = findViewById(R.id.txtVersionCode);
+//            txtVersionCode = findViewById(R.id.txtVersionCode);
         }
 
         @Override
