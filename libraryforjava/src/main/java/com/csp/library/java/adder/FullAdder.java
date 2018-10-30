@@ -1,5 +1,7 @@
 package com.csp.library.java.adder;
 
+import java.util.Arrays;
+
 /**
  * 全加器
  * 用 0x00 - 0xFF 表示 n 进制的位数值
@@ -89,6 +91,30 @@ public class FullAdder {
         return value & reset | STATUS_CARRY;
     }
 
+    public static int[] toArray(long value) {
+        int[] array = new int[7];
+        array[0] = (int) ((value & 0x00FF000000000000L) >> 48);
+        array[1] = (int) ((value & 0x0000FF0000000000L) >> 40);
+        array[2] = (int) ((value & 0x000000FF00000000L) >> 32);
+        array[3] = (int) ((value & 0x00000000FF000000L) >> 24);
+        array[4] = (int) ((value & 0x0000000000FF0000L) >> 16);
+        array[5] = (int) ((value & 0x000000000000FF00L) >> 8);
+        array[6] = (int) (value & 0x00000000000000FFL);
+        return array;
+    }
+
+    public static int[] toTArray(long value) {
+        int[] array = new int[7];
+        array[0] = (int) (value & 0x00000000000000FFL);
+        array[1] = (int) ((value & 0x000000000000FF00L) >> 8);
+        array[2] = (int) ((value & 0x0000000000FF0000L) >> 16);
+        array[3] = (int) ((value & 0x00000000FF000000L) >> 24);
+        array[4] = (int) ((value & 0x000000FF00000000L) >> 32);
+        array[5] = (int) ((value & 0x0000FF0000000000L) >> 40);
+        array[6] = (int) ((value & 0x00FF000000000000L) >> 48);
+        return array;
+    }
+
     public static void main(String[] args) {
         int system = 8;
         FullAdder adder = new FullAdder(system, -1);
@@ -98,6 +124,7 @@ public class FullAdder {
                 throw new RuntimeException("数据太大，已溢出");
 
             System.out.format("0x%016x ", adder.getValue());
+            System.out.println(Arrays.toString(FullAdder.toArray(adder.getValue())));
             if ((i + 1) % system == 0)
                 System.out.println();
         }
