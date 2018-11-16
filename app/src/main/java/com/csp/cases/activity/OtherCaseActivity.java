@@ -15,6 +15,7 @@ public class OtherCaseActivity extends BaseListActivity {
     public List<ItemInfo> getItemInfos() {
         List<ItemInfo> items = new ArrayList<>();
         items.add(new ItemInfo("轮播", "carousel", "轮播（RecycleView）"));
+        items.add(new ItemInfo("流式布局：", "flowLayout", "使用 RecyclerView.LayoutManager 完成流式布局"));
         return items;
     }
 
@@ -22,6 +23,10 @@ public class OtherCaseActivity extends BaseListActivity {
 //        if (Build.VERSION.SDK_INT > 22) {
 //            // RecyclerView view;
 //        }
+
+    }
+
+    private void flowLayout() {
 
     }
 }

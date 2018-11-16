@@ -141,4 +141,47 @@ public class AppInfoUtils {
             return null;
         }
     }
+
+    /**
+     * 版本名称对比，支持以下类型对比：
+     * 1. 1.2.0 < 1.10.3
+     * 2. aba_abc < abx_abc
+     * 3. 2.24_126 < 2.132_92
+     *
+     * @return < 0: version1 < version2
+     */
+    public static int compareVersion(String version1, String version2) {
+        if (version1.equals(version2)) {
+            return 0;
+        }
+
+        String[] v1Array = version1.split("[^\\d]");
+        String[] v2Array = version2.split("[^\\d]");
+
+        int minLen = Math.min(v1Array.length, v2Array.length);
+        int diff = 0;
+
+        for (int i = 0; i < minLen; i++) {
+            int v1;
+            int v2;
+            try {
+                v1 = Integer.parseInt(v1Array[i]);
+                v2 = Integer.parseInt(v2Array[i]);
+            } catch (Exception e) {
+                v1 = 0;
+                v2 = 0;
+            }
+
+            if ((diff = v1 - v2) != 0)
+                break;
+        }
+
+        if (minLen == 0) {
+            if (v1Array.length == v2Array.length && v1Array.length == 0)
+                return version1.compareTo(version2);
+            else
+                return v2Array.length == 0 ? 1 : -1;
+        } else
+            return diff;
+    }
 }
