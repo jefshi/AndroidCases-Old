@@ -1,17 +1,24 @@
 package com.csp.cases.activity.animation;
 
+import android.animation.ObjectAnimator;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 
 import com.csp.cases.R;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
+import com.csp.utils.android.MetricsUtil;
+import com.csp.utils.android.coordinate.CartesianCoordinate;
 import com.csp.utils.android.log.LogCat;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,12 +108,21 @@ public class GestureDetectorActivity extends BaseListActivity implements
         LogCat.e("OnGestureListener.onLongPress，回调");
     }
 
+    private float mbegin = 0;
+
     /**
      * 手指滑动的时候执行的回调（接收到MOVE事件，且位移大于一定距离），e1,e2分别是之前DOWN事件和当前的MOVE事件，distanceX和distanceY就是当前MOVE事件和上一个MOVE事件的位移量。
      */
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         LogCat.e(String.format("OnGestureListener.onScroll: x 轴距离 %s，y 轴距离 %s", distanceX, distanceY));
+
+//        double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+//        begin
+//
+//        ObjectAnimator rotation = ObjectAnimator.ofFloat(imgItem, "rotation", 0f, 360f);
+//        rotation.setDuration(15);
+//        rotatio
         return false;
     }
 
@@ -116,6 +132,31 @@ public class GestureDetectorActivity extends BaseListActivity implements
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         LogCat.e(String.format("OnGestureListener.onFling: x 轴速率 %s，y 轴速率 %s", velocityX, velocityY));
+
+        // 顺时针、逆时针判定
+        Point center =  CartesianCoordinate.toPoint(getView());
+        Point begin = CartesianCoordinate.toPoint(e1);
+        Point end = CartesianCoordinate.toPoint(e2);
+
+
+
+
+
+
+        double velocity = Math.sqrt(Math.pow(velocityX, 2) + Math.pow(velocityY, 2));
+        int duration = (int) (velocity);
+        float increment = (float) (velocity / 1000 * 360);
+        LogCat.e(String.format("动画初始速率 %s，时间 %s", velocity, duration));
+
+
+        imgItem.clearAnimation();
+        ObjectAnimator rotation = ObjectAnimator.ofFloat(imgItem, "rotation", mbegin, mbegin + increment);
+        rotation.setInterpolator(new DecelerateInterpolator());
+        rotation.setDuration(duration);
+        rotation.start();
+
+        mbegin += increment;
+        // begin = begin - begin / 360 * 360;
         return false;
     }
 
