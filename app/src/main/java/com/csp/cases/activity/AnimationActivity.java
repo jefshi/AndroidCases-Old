@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.annotation.TargetApi;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
@@ -237,6 +238,7 @@ public class AnimationActivity extends BaseListActivity {
 
         // 旋转
         ObjectAnimator rotation = ObjectAnimator.ofFloat(imgItem, "rotation", 0f, 360f, 0f);
+        rotation.setInterpolator(new DecelerateInterpolator());
 
         // 平移
         ObjectAnimator translationX = ObjectAnimator.ofFloat(imgItem, "translationX", 0f, 300f);

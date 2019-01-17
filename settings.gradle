@@ -1,5 +1,5 @@
 include ':app', ':libraryforandroid', ':libraryforjava', ':utilsforandroid'
-include ':customview', ':appwidget'
+include ':customview'
 
 // 第三方集成测试：
 include ':appintegrate'
