@@ -3,7 +3,7 @@ package com.csp.cases;
 import android.Manifest;
 import android.os.Bundle;
 
-import com.csp.cases.activity.AnimationActivity;
+import com.csp.cases.activity.animation.AnimationActivity;
 import com.csp.cases.activity.MetricsActivity;
 import com.csp.cases.activity.OtherCaseActivity;
 import com.csp.cases.activity.ProcessActivity;

@@ -108,7 +108,17 @@
             android:screenOrientation="landscape" />
 
         <activity
-            android:name=".activity.AnimationActivity"
+            android:name=".activity.animation.AnimationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".activity.animation.VelocityTrackerActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".activity.animation.GestureDetectorActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
 
