@@ -1,8 +1,5 @@
 include ':app', ':libraryforandroid', ':libraryforjava', ':utilsforandroid'
 include ':customview'
 
-// 第三方集成测试：
-include ':appintegrate'
-
 // 无用的 Module
 include ':appproject', ':eclipselibrary', ':lazylibrary', ':sourceofkitkat'
