@@ -14,13 +14,6 @@ import android.view.View;
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class CartesianCoordinate {
 
-    public static boolean is(Point center, Point begin, Point end) {
-
-
-
-        return false;
-    }
-
     public static Point toPoint(MotionEvent e) {
         return new Point((int) e.getX(), (int) e.getY());
     }
@@ -31,5 +24,14 @@ public class CartesianCoordinate {
         int width = v.getWidth();
         int height = v.getHeight();
         return new Point(top + width / 2, left + height / 2);
+    }
+
+    /**
+     * 极坐标 -> 笛卡尔坐标
+     */
+    public static Point toPoint(Point center, Polar polar) {
+        int x = (int) (polar.radius * Math.cos(polar.theta));
+        int y = (int) (polar.radius * Math.sin(polar.theta));
+        return new Point(center.x + x, center.y + y);
     }
 }

@@ -16,6 +16,7 @@ import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.utils.android.MetricsUtil;
 import com.csp.utils.android.coordinate.CartesianCoordinate;
+import com.csp.utils.android.coordinate.PolarCoordinate;
 import com.csp.utils.android.log.LogCat;
 
 import java.lang.reflect.Method;
@@ -134,23 +135,26 @@ public class GestureDetectorActivity extends BaseListActivity implements
         LogCat.e(String.format("OnGestureListener.onFling: x 轴速率 %s，y 轴速率 %s", velocityX, velocityY));
 
         // 顺时针、逆时针判定
-        Point center =  CartesianCoordinate.toPoint(getView());
+        Point center = CartesianCoordinate.toPoint(getView());
         Point begin = CartesianCoordinate.toPoint(e1);
         Point end = CartesianCoordinate.toPoint(e2);
 
-
-
-
+        boolean isClockwise = PolarCoordinate.isClockwise(center, begin, end);
 
 
         double velocity = Math.sqrt(Math.pow(velocityX, 2) + Math.pow(velocityY, 2));
         int duration = (int) (velocity);
         float increment = (float) (velocity / 1000 * 360);
+        if (isClockwise)
+            increment = -increment;
+
         LogCat.e(String.format("动画初始速率 %s，时间 %s", velocity, duration));
 
 
         imgItem.clearAnimation();
-        ObjectAnimator rotation = ObjectAnimator.ofFloat(imgItem, "rotation", mbegin, mbegin + increment);
+        imgItem.setPivotX(-100);
+        imgItem.setPivotY(-100);
+        ObjectAnimator rotation = ObjectAnimator.ofFloat(imgItem, "rotation", increment);
         rotation.setInterpolator(new DecelerateInterpolator());
         rotation.setDuration(duration);
         rotation.start();
