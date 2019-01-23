@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
 public class MetricsUtil {
 
     /**
-     * 获取 DisplayMetrics 对象
+     * 获取屏幕参数
      *
      * @param context context
      * @return DisplayMetrics
