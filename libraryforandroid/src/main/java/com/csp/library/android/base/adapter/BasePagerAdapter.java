@@ -6,143 +6,135 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
- * Description: ViewPager 适配器
- * Create Date: 2016-10-31
- * Modify Date: 2017-06-13
+ * ViewPager 适配器
+ * Created by csp on 2016/10/31.
+ * Modified by csp on 2018/06/19.
  *
- * @author csp
- * @version 1.0.1
- * @since AndroidLibrary 1.0.0
+ * @version 1.0.3
  */
 @SuppressWarnings("unused")
 public abstract class BasePagerAdapter<T> extends PagerAdapter {
-	private Context context;
-	private List<T> objects;    // 数据源
-
-	// ========================================
-	// 构造方法，Getter，Setter
-	// ========================================
-	public BasePagerAdapter(Context context, List<T> objects) {
-		this.context = context;
-		this.objects = new ArrayList<>();
-
-		addObject(-1, objects, false);
-	}
+	protected Context mContext;
+	protected List<T> mData;    // 数据源
 
 	public Context getContext() {
-		return context;
+		return mContext;
 	}
 
-	public List<T> getObjects() {
-		return objects;
+	@Deprecated
+	public List<T> getData() {
+		return mData;
 	}
 
-	// ========================================
-	// 数据源操作方法
-	// ========================================
+	public BasePagerAdapter(Context context, List<T> data) {
+		mContext = context;
+		mData = new ArrayList<>();
+
+		addData(data, false);
+	}
 
 	/**
-	 * 追加数据源(不刷新UI)
+	 * @see #addData(int, Collection, boolean)
+	 */
+	public void addData(Collection<T> data, boolean append) {
+		addData(-1, data, append);
+	}
+
+	/**
+	 * @see #addData(int, Collection, boolean)
+	 */
+	public void addData(T[] data, boolean append) {
+		List<T> dataList = Arrays.asList(data);
+		addData(-1, dataList, append);
+	}
+
+	/**
+	 * @see #addData(int, Collection, boolean)
+	 */
+	public void addData(T datum, boolean append) {
+		addData(-1, datum, append);
+	}
+
+	/**
+	 * 追加数据源
 	 *
 	 * @param position 添加位置, -1: 添加在末尾
-	 * @param objects  数据
-	 * @param clear    true: 清空数据后，再设置数据源
+	 * @param data     数据
+	 * @param append   是否追加到列表末尾。false: 重置数据
 	 */
-	public void addObject(int position, List<T> objects, boolean clear) {
-		if (clear)
-			this.objects.clear();
+	public void addData(int position, Collection<T> data, boolean append) {
+		if (!append)
+			mData.clear();
 
-		if (objects == null || objects.isEmpty())
-			return;
-
-		if (position < 0)
-			this.objects.addAll(objects);
-		else
-			this.objects.addAll(position, objects);
+		if (data != null && !data.isEmpty()) {
+			if (position < 0)
+				mData.addAll(data);
+			else
+				mData.addAll(position, data);
+		}
+		onDataChanged();
 	}
 
 	/**
-	 * @see #addObject(int, List, boolean)
+	 * @see #addData(int, Collection, boolean)
 	 */
-	public void addObject(List<T> objects, boolean clear) {
-		addObject(-1, objects, clear);
+	public void addData(int position, T datum, boolean append) {
+		if (!append)
+			mData.clear();
+
+		if (datum != null) {
+			if (position < 0)
+				mData.add(datum);
+			else
+				mData.add(position, datum);
+		}
+		onDataChanged();
 	}
 
 	/**
-	 * @see #addObject(int, List, boolean)
+	 * @see Collection#remove(Object)
 	 */
-	public void addObject(int position, T object, boolean clear) {
-		if (clear)
-			this.objects.clear();
-
-		if (object == null)
-			return;
-
-		if (position < 0)
-			this.objects.add(object);
-		else
-			this.objects.add(position, object);
+	public void removeData(T datum) {
+		mData.remove(datum);
+		onDataChanged();
 	}
 
 	/**
-	 * @see #addObject(int, Object, boolean)
+	 * @see Collection#clear()
 	 */
-	public void addObject(T object) {
-		addObject(-1, object, false);
+	public void clearData() {
+		mData.clear();
+		onDataChanged();
 	}
 
 	/**
-	 * 删除数据源
+	 * 数据变化时回调
 	 */
-	public void removeObject(T object) {
-		objects.remove(object);
-	}
-
-	/**
-	 * 清空数据源
-	 */
-	public void clearObject() {
-		objects.clear();
+	public void onDataChanged() {
 	}
 
 	/**
 	 * @see android.widget.BaseAdapter#getItem(int)
 	 */
 	public T getItem(int position) {
-		return objects.get(position);
+		return mData.get(position);
 	}
 
-	// ========================================
-	// instantiateItem(), 以[key / valuew], 形式存储数据
-	// ========================================
+	@Override
+	public int getCount() {
+		return mData.size();
+	}
 
-	/**
-	 * 判断是否显示[item]，true: 表示[item]与[key]为同一键值对，显示该[item]
-	 *
-	 * @param view [item]对象
-	 * @param key  [item]的[key]
-	 * @return boolean true: 显示[item]
-	 */
 	@Override
 	public boolean isViewFromObject(View view, Object key) {
 		return key == view;
 	}
 
-	@Override
-	public int getCount() {
-		return objects.size();
-	}
-
-	/**
-	 * 创建[item/value], 并添加到[ViewPager], 同时返回[key]
-	 *
-	 * @param container 指[ViewPager]
-	 * @param position  [item]的位置
-	 * @return Object [item]的[key]
-	 */
 	@Override
 	public Object instantiateItem(ViewGroup container, int position) {
 		View view = getView(container, position);
@@ -150,13 +142,6 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
 		return view;
 	}
 
-	/**
-	 * 销毁[item]
-	 *
-	 * @param container 指[ViewPager]
-	 * @param position  当前[item]的位置
-	 * @param key       当前[item]的Key
-	 */
 	@Override
 	public void destroyItem(ViewGroup container, int position, Object key) {
 		container.removeView((View) key);
@@ -164,6 +149,10 @@ public abstract class BasePagerAdapter<T> extends PagerAdapter {
 
 	/**
 	 * 创建[item]对象
+	 *
+	 * @param container 指 ViewPager
+	 * @param position  当前 item 的位置
+	 * @return item 对象
 	 */
 	protected abstract View getView(ViewGroup container, int position);
 }

@@ -15,7 +15,7 @@ public class PolarCoordinate {
         int dy = end.y - begin.y;
 
         double radius = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-        double theta = Math.atan(dy / dx);
+        double theta = Math.atan(dx / dy);
         return new Polar(radius, theta);
     }
 
