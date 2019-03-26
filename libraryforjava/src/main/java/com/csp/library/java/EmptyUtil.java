@@ -24,7 +24,7 @@ public class EmptyUtil {
     }
 
     /**
-     * 字符串内容是否为空
+     * 字符串内容是否为空（会去掉左右空白字符后再判断）
      *
      * @param str 字符串
      * @return true: 是
