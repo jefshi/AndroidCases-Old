@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.csp.demo.R;
+
 
 public class MainActivity extends Activity implements View.OnClickListener {
 

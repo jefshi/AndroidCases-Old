@@ -134,9 +134,9 @@ public class MetricsActivity extends BaseGridActivity {
     private void unitConversion() {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
 
-        int dip = 55;
+        int sp = 55;
         int unit = TypedValue.COMPLEX_UNIT_SP;
-        float px = TypedValue.applyDimension(unit, dip, metrics);
-        LogCat.e(dip + " px = " + px + " px");
+        float px = TypedValue.applyDimension(unit, sp, metrics);
+        LogCat.e(" dx = " + sp + " px = " + px);
     }
 }

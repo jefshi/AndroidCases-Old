@@ -1,5 +1,6 @@
 package com.csp.cases.activity;
 
+import com.csp.cases.activity.other.TabActivity;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
 
@@ -16,6 +17,7 @@ public class OtherCaseActivity extends BaseListActivity {
         List<ItemInfo> items = new ArrayList<>();
         items.add(new ItemInfo("轮播", "carousel", "轮播（RecycleView）"));
         items.add(new ItemInfo("流式布局：", "flowLayout", "使用 RecyclerView.LayoutManager 完成流式布局"));
+        items.add(new ItemInfo("tablayout", TabActivity.class, "[其他]案例"));
         return items;
     }
 

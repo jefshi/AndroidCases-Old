@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.csp.demo.R;
+
 public class FlexboxActivity extends Activity {
 
     public static void launch(Context context) {
