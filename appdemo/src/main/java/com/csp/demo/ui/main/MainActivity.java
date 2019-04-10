@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.csp.demo.R;
+import com.csp.demo.project.flexbox.FlexboxActivity;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -20,7 +21,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_01:
-
+                FlexboxActivity.launch(this);
                 break;
         }
     }

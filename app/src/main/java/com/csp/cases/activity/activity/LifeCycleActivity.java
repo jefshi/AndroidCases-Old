@@ -62,4 +62,11 @@ public abstract class LifeCycleActivity extends BaseListActivity {
 
 		LogCat.e(toString() + "生命周期：onDestroy");
 	}
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+
+		LogCat.e(toString() + "生命周期：onRestart");
+	}
 }

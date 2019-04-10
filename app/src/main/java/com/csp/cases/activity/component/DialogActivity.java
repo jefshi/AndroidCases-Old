@@ -50,6 +50,41 @@ public class DialogActivity extends BaseGridActivity {
         return items;
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        LogCat.e(toString() + "生命周期：onRestart");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        LogCat.e(toString() + "生命周期：onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        LogCat.e(toString() + "生命周期：onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        LogCat.e(toString() + "生命周期：onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        LogCat.e(toString() + "生命周期：onStop");
+    }
+
     /**
      * 警告对话框：普通
      */
