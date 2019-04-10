@@ -1,6 +1,7 @@
 include ':app', ':libraryforandroid', ':libraryforjava', ':utilsforandroid'
 include ':appdemo'
 include ':customview'
+include ':lib-adapter-recyclerview'
 
 // 无用的 Module
 include ':appproject', ':eclipselibrary', ':lazylibrary', ':sourceofkitkat'

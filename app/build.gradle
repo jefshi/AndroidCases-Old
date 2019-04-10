@@ -63,6 +63,7 @@ dependencies {
     implementation project(':libraryforandroid')
     implementation project(':libraryforjava')
     implementation project(':utilsforandroid')
+    implementation project(':lib-adapter-recyclerview')
 
     compile files('libs/network/gson-2.8.0.jar')
     compile files('libs/network/volley.jar')
