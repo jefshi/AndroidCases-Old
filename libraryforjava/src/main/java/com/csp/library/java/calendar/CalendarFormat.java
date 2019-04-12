@@ -23,42 +23,54 @@ public class CalendarFormat {
     public final static String TIME_FORMAT_1 = "HH:mm:ss";
     public final static String WEEK_FORMAT_1 = "yyyy-MM-dd HH:mm:ss E"; // 自动匹配，中国：2019-04-12 09:39:56 星期五
 
-    // ===================================================
-    // 时间字符串 -> 时间(Calendar)
-    // ===================================================
-
     /**
-     * 本地时间(字符串) -> 本地时间(Calendar)
+     * 本地时间(字符串) -> 本地时间(Date)
      *
      * @param dateStr 本地时间(字符串)
      * @param format  上述时间字符串格式
-     * @return Calendar 本地时间(Calendar)
-     * @throws ParseException 日期解析异常
      */
-    public static Calendar getCalendar(String dateStr, String format) throws ParseException {
+    public static Date getDate(String dateStr, String format) {
         // 根据时间字符串，获取相应时间
         final SimpleDateFormat SDF = new SimpleDateFormat(format);
-        Date date = SDF.parse(dateStr);
+        Date date;
+        try {
+            date = SDF.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace(); // TODO printStackTrace
+            return null;
+        }
+        return date;
+    }
 
-        // 根据时间，返回相应的 Calendar
+    /**
+     * @see #getDate(String, String)
+     */
+    public static Calendar getCalendar(String dateStr, String format) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        calendar.setTime(getDate(dateStr, format));
         return calendar;
     }
 
     /**
-     * 本地时间(字符串) -> UTC时间(Calendar)
+     * 本地时间(毫秒) -> UTC时间(Calendar)
      *
-     * @param dateStr 本地时间(字符串)
-     * @param format  上述时间字符串格式
-     * @return Calendar UTC时间(Calendar)
-     * @throws ParseException 日期解析异常
+     * @param time 单位：毫秒
      */
-    public static Calendar getUTCCalendar(String dateStr, String format) throws ParseException {
-        Calendar calendar = getCalendar(dateStr, format);
+    public static Calendar getUTCCalendar(long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+
         TimeZone timeZone = TimeZone.getDefault();
         calendar.add(Calendar.MILLISECOND, -timeZone.getRawOffset());
         return calendar;
+    }
+
+    /**
+     * {@link #getDate(String, String)}
+     */
+    public static Calendar getUTCCalendar(String dateStr, String format) {
+        Date date = getDate(dateStr, format);
+        return date == null ? null : getUTCCalendar(date.getTime());
     }
 
     // ===================================================
@@ -66,7 +78,7 @@ public class CalendarFormat {
     // ===================================================
 
     /**
-     * 日期(Date) -> 日期字符串
+     * 时间(Date) -> 时间字符串
      *
      * @param date   指定日期
      * @param format 指定日期字符串的格式
@@ -78,14 +90,17 @@ public class CalendarFormat {
     }
 
     /**
-     * 日期(long) -> 日期字符串
-     *
-     * @param time   指定日期
-     * @param format 指定日期字符串的格式
-     * @return String 日期字符串
+     * @see #getDateFormat(Date, String)
      */
     public static String getDateFormat(long time, String format) {
         return getDateFormat(new Date(time), format);
+    }
+
+    /**
+     * @see #getDateFormat(Date, String)
+     */
+    public static String getDateFormat(Calendar calendar, String format) {
+        return getDateFormat(calendar.getTime(), format);
     }
 
     /**

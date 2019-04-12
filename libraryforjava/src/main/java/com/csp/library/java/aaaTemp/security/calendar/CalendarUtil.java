@@ -10,6 +10,7 @@ import java.util.Date;
  * <p style='font-weight:bold'>Date:</p> 2016-5-15 1:30:22
  * <p style='font-weight:bold'>AlterDate:</p> 2016-11-03 11:21:00
  */
+@Deprecated
 public class CalendarUtil {
 	public final static long	oneDay	= 86400000l;	// 一天的时间
 	public final static long	oneWeek	= 604800000l;	// 一周的时间
