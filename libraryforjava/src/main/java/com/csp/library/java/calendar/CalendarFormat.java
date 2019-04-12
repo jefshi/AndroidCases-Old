@@ -8,19 +8,20 @@ import java.util.TimeZone;
 
 /**
  * 日期时间格式转换类
- * Created by csp on 2016-5-15.
- * Modified by csp on 2016-5-15.
+ * Created by csp on 2019/05/15.
+ * Modified by csp on 2019/04/11.
  *
- * @version 1.0.0
+ * @version 1.0.2
  */
 public class CalendarFormat {
     // 以下域禁止变更
-    public final static String datetimeFormat_1 = "yyyy-MM-dd HH:mm:ss";
-    public final static String datetimeFormat_2 = "yyyy/MM/dd HH:mm:ss";
-    public final static String datetimeFormat_3 = "yyyyMMdd_HHmmss";
-    public final static String dateFormat_1 = "yyyy-MM-dd";
-    public final static String dateFormat_2 = "yyyy/MM/dd";
-    public final static String timeFormat = "HH:mm:ss";
+    public final static String DATETIME_FORMAT_1 = "yyyy-MM-dd HH:mm:ss";
+    public final static String DATETIME_FORMAT_2 = "yyyy/MM/dd HH:mm:ss";
+    public final static String DATETIME_FORMAT_3 = "yyyyMMdd_HHmmss";
+    public final static String DATE_FORMAT_1 = "yyyy-MM-dd";
+    public final static String DATE_FORMAT_2 = "yyyy/MM/dd";
+    public final static String TIME_FORMAT_1 = "HH:mm:ss";
+    public final static String WEEK_FORMAT_1 = "yyyy-MM-dd HH:mm:ss E"; // 自动匹配，中国：2019-04-12 09:39:56 星期五
 
     // ===================================================
     // 时间字符串 -> 时间(Calendar)
@@ -103,6 +104,6 @@ public class CalendarFormat {
      * @return String 日期字符串(格式为: "yyyy-MM-dd HH:mm:ss")
      */
     public static String getNowDateFormat() {
-        return getDateFormat(new Date(), datetimeFormat_1);
+        return getDateFormat(new Date(), DATETIME_FORMAT_1);
     }
 }
