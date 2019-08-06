@@ -22,9 +22,18 @@ public class ByteUtil {
      * @return byte[]
      */
     public static byte[] toBytes(Bitmap bitmap, int quality) {
+        if (bitmap == null)
+            return new byte[0];
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, quality, baos);
-        return baos.toByteArray();
+        byte[] bytes = baos.toByteArray();
+        try {
+            baos.close();
+        } catch (IOException e) {
+            LogCat.printStackTrace(e);
+        }
+        return bytes;
     }
 
     /**

@@ -31,9 +31,10 @@ public class FlexboxActivity extends Activity {
 
         FlexboxAdapter adapter = new FlexboxAdapter(this);
 
-        RecyclerView recyclerView = findViewById(R.id.rcv_content);
+        RecyclerView recyclerView = findViewById(R.id.rcv_group);
 //        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
         List<String> data = new ArrayList<>();

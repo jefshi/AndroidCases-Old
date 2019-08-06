@@ -4,9 +4,9 @@ package com.csp.demo.project.flexbox;
 import android.content.Context;
 import android.view.View;
 
+import com.csp.adapter.recyclerview.SingleAdapter;
+import com.csp.adapter.recyclerview.ViewHolder;
 import com.csp.demo.R;
-import com.csp.library.android.base.adapter.recycle.SingleAdapter;
-import com.csp.library.android.base.adapter.recycle.ViewHolder;
 
 public class FlexboxAdapter extends SingleAdapter<String> {
 

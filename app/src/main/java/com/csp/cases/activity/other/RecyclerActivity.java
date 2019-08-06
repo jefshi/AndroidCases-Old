@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.csp.cases.R;
 import com.csp.utils.android.MetricsUtil;
+import com.csp.utils.android.widget.TabLayoutUtil;
 
 /**
  * Created by chensp01 on 2019/3/29.
@@ -31,7 +32,7 @@ public class RecyclerActivity extends Activity {
         findViewById(R.id.btn_teset).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fixTabLayoutIndicatorWidth(tabIndicator, 34);
+                TabLayoutUtil.fixTabLayoutIndicatorWidth(tabIndicator, 34);
             }
         });
 
@@ -41,7 +42,7 @@ public class RecyclerActivity extends Activity {
         tabIndicator.addTab(tabIndicator.newTab().setText("支出"));
         tabIndicator.addTab(tabIndicator.newTab().setText("收入"));
 
-        fixTabLayoutIndicatorWidth(tabIndicator, 34);
+        TabLayoutUtil.fixTabLayoutIndicatorWidth(tabIndicator, 34);
 
     }
 }

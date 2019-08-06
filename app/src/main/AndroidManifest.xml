@@ -281,11 +281,6 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
 
-        <activity
-            android:name=".activity.OtherCaseActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape" />
-
         <activity android:name=".activity.ToolBarActivity" />
 
         <activity android:name=".activity.other.TabActivity" />

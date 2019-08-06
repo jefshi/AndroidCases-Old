@@ -21,7 +21,7 @@ public class TabLayoutUtil {
      *
      * @param marginDp 指示器和指示器之间的距离（不用除以 2）
      */
-    private static void fixTabLayoutIndicatorWidth(TabLayout tabLayout, float marginDp) {
+    public static void fixTabLayoutIndicatorWidth(TabLayout tabLayout, float marginDp) {
         View view = tabLayout.getChildAt(0);
         if (!(view instanceof LinearLayout))
             return;
