@@ -1,0 +1,13 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        app:key="notifications_part"
+        app:title="部分 Preference" />
+
+    <Preference
+        app:fragment="com.csp.cases.guides.user_interface.settings.SettingsFragment"
+        app:key="setting_fragment"
+        app:title="Launch SettingsFragment" />
+
+</PreferenceScreen>

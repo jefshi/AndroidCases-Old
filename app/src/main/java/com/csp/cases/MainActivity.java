@@ -21,6 +21,7 @@ import com.csp.cases.activity.view.ViewActivity;
 import com.csp.cases.activity.windowmanager.WindowManagerActivity;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
+import com.csp.cases.guides.GuidesActivity;
 import com.csp.utils.android.permissions.PermissionUtil;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class MainActivity extends BaseGridActivity {
     @Override
     public List<ItemInfo> getItemInfos() {
         List<ItemInfo> items = new ArrayList<>();
+        items.add(new ItemInfo("Guides", GuidesActivity.class, "官方 Android 开发指南"));
         items.add(new ItemInfo("Test", TestActivity.class, ""));
         items.add(new ItemInfo("Activity", ActivityActivity.class, "[Activity]案例"));
         items.add(new ItemInfo("Animation", AnimationActivity.class, "动画案例"));

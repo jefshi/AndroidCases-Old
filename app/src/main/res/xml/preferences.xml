@@ -1,0 +1,98 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- organize-your-settings -->
+    <!-- Build a hierarchy in code -->
+
+
+    <!-- organize-your-settings -->
+    <!-- customize-your-settings -->
+    <PreferenceCategory
+        app:key="notifications_category"
+        app:title="请注意看 LogCat">
+
+        <EditTextPreference
+            app:isPreferenceVisible="false"
+            app:key="signature"
+            app:summary="Report technical issues or suggest new features"
+            app:title="输入框：signature" />
+
+        <Preference
+            app:key="signature_click"
+            app:summary="通过 SharedPreferences 读取值"
+            app:title="signature 的点击事件" />
+
+        <Preference
+            app:key="signature_click_02"
+            app:summary="通过 SharedPreferences 设置值"
+            app:title="signature 的点击事件02" />
+
+        <EditTextPreference
+            app:key="counting"
+            app:summary="Report technical issues or suggest new features"
+            app:title="输入框：Counting" />
+
+        <Preference
+            app:key="counting_click"
+            app:summary="通过 PreferenceDataStore 读取值"
+            app:title="counting 的点击事件" />
+
+        <Preference
+            app:key="counting_click_02"
+            app:summary="通过 PreferenceDataStore 设置值"
+            app:title="counting 的点击事件02" />
+
+        <!-- 官方动态更新摘要 begin -->
+        <!--<EditTextPreference-->
+        <!--app:key="counting"-->
+        <!--app:title="Counting preference"-->
+        <!--app:useSimpleSummaryProvider="true" />-->
+        <!-- 官方动态更新摘要 end -->
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="help_category"
+        app:title="Help">
+
+        <Preference
+            app:fragment="com.csp.cases.guides.user_interface.settings.SettingByJavaFragment"
+            app:key="setting_by_java_fragment"
+            app:title="Launch Fragment（纯 java 写的） by xml" />
+
+        <Preference
+            app:fragment="com.csp.cases.guides.user_interface.settings.SettingPartFragment"
+            app:key="setting_part_fragment"
+            app:title="Launch Fragment（仅部分是 Preference） by xml" />
+
+        <Preference
+            app:key="activitybyjava"
+            app:title="Launch activity by java" />
+
+        <Preference
+            app:key="activity"
+            app:title="Launch activity by xml">
+            <intent
+                android:targetClass="com.csp.cases.MainActivity"
+                android:targetPackage="com.csp.cases">
+                <extra
+                    android:name="example_key"
+                    android:value="example_value" />
+            </intent>
+        </Preference>
+
+        <Preference
+            app:key="webpagebyjava"
+            app:title="View webpage by java" />
+
+        <Preference
+            app:key="webpage"
+            app:title="View webpage by xml">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://www.baidu.com" />
+        </Preference>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

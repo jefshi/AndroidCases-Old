@@ -6,7 +6,24 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="preferenceTheme">@style/YourTheme.PreferenceThemeOverlay</item>-->
+    </style>
 
+    <!-- AndroidX Car Library 自带主题，可以为汽车设备提供更好的支持。 -->
+    <!-- 启用汽车主题会自动扩充 PagedListView ，可以提供专为汽车设备优化的滚动体验。 -->
+    <!-- 在汽车主题中，指定汽车首选项主题。 示例如下： -->
+    <!--<style name="AppTheme" parent="Theme.Car.Light.NoActionBar">-->
+        <!--<item name="preferenceTheme">@style/PreferenceThemeOverlayCar</item>-->
+    <!--</style>-->
+
+    <!-- TODO 设置的布局 -->
+    <style name="YourTheme" parent="AppTheme">
+        <!-- ... -->
+        <item name="preferenceTheme">@style/YourTheme.PreferenceThemeOverlay</item>
+    </style>
+
+    <style name="YourTheme.PreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay">
+        <item name="android:layout">@layout/fg_setting</item>
     </style>
 
     <style name="tab_marketing_incentive" parent="Base.Widget.Design.TabLayout">

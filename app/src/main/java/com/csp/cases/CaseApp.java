@@ -1,5 +1,6 @@
 package com.csp.cases;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
@@ -17,17 +18,36 @@ import com.csp.utils.android.log.LogCat;
  * @since AndroidCases 1.0.0
  */
 public class CaseApp extends Application {
-    private static Context sContext;
+
+    private volatile static CaseApp sApplication;
+    private volatile static Context sContext;
 
     public static Context getContext() {
-        return sContext;
+        return sContext != null ? sContext : getApplication().getApplicationContext();
+    }
+
+    public static CaseApp getApplication() {
+        if (sApplication != null)
+            return sApplication;
+
+        try {
+            @SuppressLint("PrivateApi")
+            Class<?> activityThread = Class.forName("android.app.ActivityThread");
+            Object at = activityThread.getMethod("currentActivityThread").invoke(null);
+            Object app = activityThread.getMethod("getApplication").invoke(at);
+            sApplication = (CaseApp) app;
+        } catch (Exception e) {
+            LogCat.printStackTrace(e);
+        }
+        return sApplication;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Utils.init(this);
+        sApplication = this;
         sContext = getApplicationContext();
+        Utils.init(this);
 
         LogCat.e("Application.onCreate");
     }
@@ -36,6 +56,8 @@ public class CaseApp extends Application {
     public void onTerminate() {
         LogCat.e("Application.onTerminate");
 
+        sApplication = null;
+        sContext = null;
         super.onTerminate();
     }
 

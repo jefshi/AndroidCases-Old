@@ -1,21 +1,15 @@
- apply plugin: 'com.android.application'
-//if(isModule.toBoolean()){
-//    apply plugin: 'com.android.application'
-//}else{
-//    apply plugin: 'com.android.library'
-//}
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.csp.demo"
+        applicationId "com.csp.guides"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
         multiDexEnabled true
-        // testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -34,15 +28,10 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
 //    implementation 'com.android.support:multidex:1.0.3'
-//    implementation "com.google.guava:guava:23.0"
 
     implementation project(':libraryforandroid')
     implementation project(':libraryforjava')
     implementation project(':utilsforandroid')
-
-//    implementation 'com.github.1002326270xc:LayoutManager-FlowLayout:v1.8'
-//    implementation 'com.google.android:flexbox:1.0.0'
-
-    // testCompile 'junit:junit:4.12'
 }

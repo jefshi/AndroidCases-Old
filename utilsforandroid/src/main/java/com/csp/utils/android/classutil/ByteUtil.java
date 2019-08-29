@@ -3,7 +3,10 @@ package com.csp.utils.android.classutil;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
+import com.csp.utils.android.log.LogCat;
+
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * Byte 操作工具类
