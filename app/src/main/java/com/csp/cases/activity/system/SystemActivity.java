@@ -14,6 +14,7 @@ import android.telephony.TelephonyManager;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.csp.cases.BuildConfig;
 import com.csp.cases.activity.system.appinfo.AppInfo;
 import com.csp.cases.activity.system.appinfo.AppInfoAdapter;
 import com.csp.cases.base.activity.BaseListActivity;
@@ -49,6 +50,7 @@ public class SystemActivity extends BaseListActivity {
     @Override
     public List<ItemInfo> getItemInfos() {
         List<ItemInfo> items = new ArrayList<>();
+        items.add(new ItemInfo("当前应用的 ApplicationInfo 信息", "showApplicationInfo", ""));
         items.add(new ItemInfo("应用扫描(含系统应用)", "scanApple01", "速度慢是显示列表慢，并不是扫描慢"));
         items.add(new ItemInfo("应用扫描(含系统进程)", "scanApple02", "速度慢是显示列表慢，并不是扫描慢"));
         items.add(new ItemInfo("应用扫描(只有非系统应用)", "scanApple03", "速度慢是显示列表慢，并不是扫描慢"));
@@ -65,6 +67,17 @@ public class SystemActivity extends BaseListActivity {
         receiver = null;
 
         super.onDestroy();
+    }
+
+    private void showApplicationInfo() {
+        try {
+            PackageManager pManager = getPackageManager();
+            ApplicationInfo appInfo = pManager.getApplicationInfo(BuildConfig.APPLICATION_ID, 0);
+            LogCat.e("当前应用的 apk 安装包目录", appInfo.sourceDir);
+            LogCat.e("当前应用的 apk 安装包目录", appInfo.publicSourceDir);
+        } catch (PackageManager.NameNotFoundException e) {
+            LogCat.printStackTrace(e);
+        }
     }
 
     private void showAppList(List<AppInfo> appInfos) {

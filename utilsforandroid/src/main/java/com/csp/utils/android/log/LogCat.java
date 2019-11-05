@@ -17,15 +17,24 @@ import java.util.Set;
 /**
  * 日志打印
  * Created by csp on 2017/07/14.
- * Modified by csp on 2018/07/03.
+ * Modified by csp on 2019/09/29.
  *
  * @version 1.0.5
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class LogCat {
-    private final static boolean DEBUG = BuildConfig.DEBUG;
     private final static int LOG_MAX_LENGTH = 3072; // Android 能够打印的最大日志长度
     public final static int DEFAULT_STACK_ID = 2;
+
+    private static boolean sDebug = BuildConfig.DEBUG;
+
+    public static boolean isDebug() {
+        return sDebug;
+    }
+
+    public static void setDebug(boolean debug) {
+        sDebug = debug;
+    }
 
     /**
      * 获取日志标签, 例: --[类名][方法名]
@@ -37,7 +46,7 @@ public class LogCat {
         String className = element.getClassName();
         String methodName = element.getMethodName();
         String simpleClassName = className.substring(className.lastIndexOf('.') + 1);
-        return "--[" + simpleClassName + "][" + methodName + ']';
+        return "(" + simpleClassName + "." + methodName + ')';
     }
 
     /**
@@ -121,7 +130,37 @@ public class LogCat {
     }
 
     /**
-     * 打印异常信息
+     * 打印异常信息，仅 release 版本也显示
+     *
+     * @param level     日志等级
+     * @param explain   异常说明
+     * @param throwable 异常错误对象
+     */
+    public static void printStackTraceForDebug(int level, String explain, Throwable throwable) {
+        if (!sDebug || throwable == null)
+            return;
+
+        String tag = getTag(new Exception().getStackTrace()[DEFAULT_STACK_ID]);
+        String log = (explain == null ? "" : explain); //  + '\n' + getStackTrace(throwable);
+        printLog(tag, log, throwable, level);
+    }
+
+    /**
+     * @see #printStackTraceForDebug(int, String, Throwable)
+     */
+    public static void printStackTraceForDebug(String explain, Throwable throwable) {
+        printStackTraceForDebug(Log.ERROR, explain, throwable);
+    }
+
+    /**
+     * @see #printStackTraceForDebug(int, String, Throwable)
+     */
+    public static void printStackTraceForDebug(Throwable throwable) {
+        printStackTraceForDebug(Log.ERROR, null, throwable);
+    }
+
+    /**
+     * 打印异常信息，release 版本也显示
      *
      * @param level     日志等级
      * @param explain   异常说明
@@ -157,16 +196,15 @@ public class LogCat {
      */
     private static String formatLog(@NonNull final String explain, Object message) {
         String log;
-        if (message instanceof Map) {
+        if (message instanceof Map)
             log = formatLog(explain, (Map) message);
-        } else if (message instanceof Collection) {
+        else if (message instanceof Collection)
             log = formatLog(explain, (Collection) message);
-        } else if (message.getClass().isArray()) {
+        else if (message != null && message.getClass().isArray())
             log = formatLog(explain, (Object[]) message);
-        } else {
-            log = (explain.length() == 0 ? "" : explain + ": ")
-                    + String.valueOf(message);
-        }
+        else
+            log = (explain.length() == 0 ? "" : explain + ": ") + message;
+
         return log;
     }
 
@@ -242,19 +280,26 @@ public class LogCat {
     /**
      * 打印日志(生成[Message])
      *
-     * @param stackId 异常栈序号, 用于获取日志标签
-     * @param explain 日志说明
-     * @param message 日志内容
-     * @param level   日志优先级
+     * @param stackId  异常栈序号, 用于获取日志标签
+     * @param explain  日志说明
+     * @param messages 日志内容
+     * @param level    日志优先级
      */
-    public static void log(int level, int stackId, String explain, Object message) {
-        if (!DEBUG)
+    public static void log(int level, int stackId, String explain, Object... messages) {
+        if (!sDebug)
             return;
 
-        String log = formatLog(
-                explain == null ? "" : explain,
-                message == null ? "null" : message);
+        // 适配 String.format("explain %s", messages)
+        explain = explain == null ? "" : explain;
+        Object message;
+        if (messages != null && messages.length == 1 && !explain.contains("%s"))
+            message = messages[0];
+        else {
+            message = String.format(explain, messages);
+            explain = "";
+        }
 
+        String log = formatLog(explain, message == null ? "null" : message);
         String tag = getTag(new Exception().getStackTrace()[stackId]);
         printLog(tag, log, null, level);
     }
@@ -262,8 +307,8 @@ public class LogCat {
     /**
      * @see #log(int, int, String, Object)
      */
-    public static void e(String explain, Object message) {
-        log(Log.ERROR, DEFAULT_STACK_ID, explain, message);
+    public static void e(String explain, Object... messages) {
+        log(Log.ERROR, DEFAULT_STACK_ID, explain, messages);
     }
 
     /**
@@ -276,8 +321,8 @@ public class LogCat {
     /**
      * @see #log(int, int, String, Object)
      */
-    public static void w(String explain, Object message) {
-        log(Log.WARN, DEFAULT_STACK_ID, explain, message);
+    public static void w(String explain, Object... messages) {
+        log(Log.WARN, DEFAULT_STACK_ID, explain, messages);
     }
 
     /**
@@ -290,8 +335,8 @@ public class LogCat {
     /**
      * @see #log(int, int, String, Object)
      */
-    public static void i(String explain, Object message) {
-        log(Log.INFO, DEFAULT_STACK_ID, explain, message);
+    public static void i(String explain, Object... messages) {
+        log(Log.INFO, DEFAULT_STACK_ID, explain, messages);
     }
 
     /**
@@ -304,8 +349,8 @@ public class LogCat {
     /**
      * @see #log(int, int, String, Object)
      */
-    public static void d(String explain, Object message) {
-        log(Log.DEBUG, DEFAULT_STACK_ID, explain, message);
+    public static void d(String explain, Object... messages) {
+        log(Log.DEBUG, DEFAULT_STACK_ID, explain, messages);
     }
 
     /**
@@ -318,8 +363,8 @@ public class LogCat {
     /**
      * @see #log(int, int, String, Object)
      */
-    public static void v(String explain, Object message) {
-        log(Log.VERBOSE, DEFAULT_STACK_ID, explain, message);
+    public static void v(String explain, Object... messages) {
+        log(Log.VERBOSE, DEFAULT_STACK_ID, explain, messages);
     }
 
     /**
