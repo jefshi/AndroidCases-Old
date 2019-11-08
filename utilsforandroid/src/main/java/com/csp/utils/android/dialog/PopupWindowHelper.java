@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Checkable;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -69,7 +68,7 @@ public class PopupWindowHelper {
         }
     }
 
-    public static class HPopupWindow extends PopupWindow {
+    public static class HPopupWindow extends PopupWindowOptimize {
 
         private HPopupWindow(@NonNull Context context, PopupWindowHelper.Builder builder) {
             super(builder.mWidth, builder.mHeight);
@@ -86,11 +85,6 @@ public class PopupWindowHelper {
 
             //设置是否允许PopupWindow的范围超过屏幕范围
             setClippingEnabled(false);
-        }
-
-        public void showBashOfAnchor(View anchor, PopupWindowLayoutGravity layoutGravity, int xoff, int yoff) {
-            int[] offset = layoutGravity.getOffset(anchor, this);
-            showAsDropDown(anchor, offset[0] + xoff, offset[1] + yoff);
         }
 
         // @Nullable

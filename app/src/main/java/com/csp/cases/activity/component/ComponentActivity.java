@@ -21,7 +21,7 @@ public class ComponentActivity extends BaseGridActivity {
     public List<ItemInfo> getItemInfos() {
         List<ItemInfo> items = new ArrayList<>();
         items.add(new ItemInfo("Broadcast", BroadcastActivity.class, "广播案例"));
-        items.add(new ItemInfo("Dialog", DialogActivity.class, "对话框案例"));
+        items.add(new ItemInfo("Dialog", DialogActivity.class, "对话框、PopWindow 案例"));
         items.add(new ItemInfo("Notification", NotificationActivity.class, "状态栏通知案例"));
         items.add(new ItemInfo("Toast", ToastActivity.class, "Toast 通知案例"));
         return items;

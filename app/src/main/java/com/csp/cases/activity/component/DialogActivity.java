@@ -5,16 +5,24 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TimePicker;
 
 import com.csp.cases.R;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
+import com.csp.utils.android.dialog.PopupWindowHelper;
+import com.csp.utils.android.dialog.PopupWindowLayoutGravity;
 import com.csp.utils.android.log.LogCat;
 
 import java.util.ArrayList;
@@ -47,6 +55,10 @@ public class DialogActivity extends BaseGridActivity {
         items.add(new ItemInfo("日期对话框", "datePickerDialog01", ""));
         items.add(new ItemInfo("时间对话框", "timePickerDialog01", ""));
         items.add(new ItemInfo("进度对话框", "progressDialog01", ""));
+        items.add(new ItemInfo("-----", "", ""));
+
+        items.add(new ItemInfo("PopupWindow 指定锚点方位", "showPopupWindow", ""));
+
         return items;
     }
 
@@ -276,5 +288,36 @@ public class DialogActivity extends BaseGridActivity {
         // 设置进度的有效条件：条状样式，setIndeterminate(false)，show()之后
         dialog.setProgress(50);
         dialog.incrementProgressBy(10);
+    }
+
+    private void showPopupWindow() {
+//        Context context = this;
+//        final PopupWindowLayoutGravity layoutGravity = new PopupWindowLayoutGravity(
+//                PopupWindowLayoutGravity.ALIGN_RIGHT | PopupWindowLayoutGravity.TO_BOTTOM);
+//
+//        final PopupWindow hPopupWindow = new PopupWindowHelper.Builder()
+//                .setView(new RecyclerView(context))
+//                .setWidth(WindowManager.LayoutParams.WRAP_CONTENT)
+//                .setHeight(WindowManager.LayoutParams.WRAP_CONTENT)
+//                .create(context)
+//                .showBashOfAnchor(mTxtOilMeasure, layoutGravity, 0, 0);
+//
+//        // PopupWindow 内容
+//        List<EverydayRecord.DataBean.OilTypeListBean> oilTypeList = getPresenter().getOilTypes();
+//        ListSimpleAdapter<EverydayRecord.DataBean.OilTypeListBean> adapter = new ListSimpleAdapter<>(context);
+//        adapter.addData(oilTypeList, false);
+//
+//        RecyclerView rcv = (RecyclerView) hPopupWindow.getContentView();
+//        rcv.setLayoutManager(new LinearLayoutManager(context));
+//        rcv.setAdapter(adapter);
+//
+//        adapter.setOnItemClickListener(new MultipleAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(ViewGroup parent, View view, ItemViewHolder holder, int position) {
+//                getPresenter().setOilTypeIndex(position);
+//                refreshOilType();
+//                hPopupWindow.dismiss();
+//            }
+//        });
     }
 }
