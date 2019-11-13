@@ -3,4 +3,4 @@ include ':appdemo'
 include ':customview'
 
 // 无用的 Module
-// include ':appproject', ':eclipselibrary', ':lazylibrary', ':sourceofkitkat'
+include ':appproject', ':eclipselibrary', ':lazylibrary', ':sourceofkitkat'
