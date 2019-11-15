@@ -53,12 +53,12 @@ public class ChronometerFormatListener implements Chronometer.OnChronometerTickL
      * 测试代码 Begin
      */
     private void testFormat(final Chronometer chronometer) {
-        Handler handler = new Handler();
-        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 + 2000), 5100);
-        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 * 10 + 2000), 12100);
-        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 * 24 + 2000), 19100);
-        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 + 2000), 24100);
-        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 * 10 + 2000), 31100);
-        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 * 24 + 2000), 38100);
+//        Handler handler = new Handler();
+//        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 + 2000), 5100);
+//        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 * 10 + 2000), 12100);
+//        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 * 24 + 2000), 19100);
+//        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 + 2000), 24100);
+//        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 * 10 + 2000), 31100);
+//        handler.postDelayed(() -> chronometer.setBase(DateUtil.getNowClock() - 3600_000 * 24 + 2000), 38100);
     }
 }

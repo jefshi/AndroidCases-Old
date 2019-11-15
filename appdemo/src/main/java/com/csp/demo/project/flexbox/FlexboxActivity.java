@@ -29,13 +29,13 @@ public class FlexboxActivity extends Activity {
 //        layoutManager.setFlexDirection(FlexDirection.COLUMN);
 //        layoutManager.setJustifyContent(JustifyContent.FLEX_END);
 
-        FlexboxAdapter adapter = new FlexboxAdapter(this);
+//        FlexboxAdapter adapter = new FlexboxAdapter(this);
 
         RecyclerView recyclerView = findViewById(R.id.rcv_group);
 //        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+//        recyclerView.setAdapter(adapter);
 
         List<String> data = new ArrayList<>();
         data.add("王立龙");
@@ -51,6 +51,6 @@ public class FlexboxActivity extends Activity {
         data.add("李国伟");
         data.add("燕飞");
 
-        adapter.addData(data, false);
+//        adapter.addData(data, false);
     }
 }
