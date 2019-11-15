@@ -24,6 +24,9 @@ public class ComponentActivity extends BaseGridActivity {
         items.add(new ItemInfo("Dialog", DialogActivity.class, "对话框、PopWindow 案例"));
         items.add(new ItemInfo("Notification", NotificationActivity.class, "状态栏通知案例"));
         items.add(new ItemInfo("Toast", ToastActivity.class, "Toast 通知案例"));
+        items.add(new ItemInfo("Camera 2", Camera2Activity.class, "Camera2Activity 通知案例"));
+        items.add(new ItemInfo("Camera 1", CameraActivity.class, "Camera 案例"));
+        items.add(new ItemInfo("Camera 2-diy", Camera3Activity.class, "Camera 案例"));
         return items;
     }
 }
