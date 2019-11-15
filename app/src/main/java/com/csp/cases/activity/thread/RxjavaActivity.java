@@ -6,6 +6,7 @@ import android.os.Environment;
 
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
+import com.csp.cases.util.GsonUtil;
 import com.csp.utils.android.log.LogCat;
 
 import java.io.File;
@@ -50,7 +51,7 @@ public class RxjavaActivity extends BaseListActivity {
                         File pictureDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
                         LogCat.e(pictureDir);
                         File[] pictures = pictureDir.listFiles();
-                        LogCat.e("", pictures);
+                        LogCat.e("", GsonUtil.toJson(pictures));
                         for (File picture : pictures) {
                             if (picture.getName().endsWith("png")) {
                                 emitter.onNext(picture);
