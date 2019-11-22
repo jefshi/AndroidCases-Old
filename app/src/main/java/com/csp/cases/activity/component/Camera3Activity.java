@@ -1,6 +1,7 @@
 package com.csp.cases.activity.component;
 
 import android.app.Activity;
+import android.hardware.camera2.CameraCharacteristics;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -17,7 +18,7 @@ import com.csp.cases.activity.component.camera2.Camera2Util;
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class Camera3Activity extends Activity {
 
-    Camera2Util mCamera2Util = new Camera2Util();
+    Camera2Util mCamera2Util;
 
 //    /**
 //     * 相机预览的 View
@@ -36,12 +37,17 @@ public class Camera3Activity extends Activity {
         AutoFitTextureView mTextureView = new AutoFitTextureView(this);
         cameraPreview.addView(mTextureView);
 
-        mCamera2Util.setTextureView(mTextureView);
+        mCamera2Util = new Camera2Util.Builder()
+                .setLensFacing(CameraCharacteristics.LENS_FACING_FRONT)
+                .setTextureView(mTextureView)
+                .build();
+
+//        mCamera2Util.setTextureView(mTextureView);
 
         findViewById(R.id.camera_photobutton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                takePicture();
+                mCamera2Util.takePicture();
             }
         });
     }
