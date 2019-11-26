@@ -3,4 +3,10 @@
     <!--<string name="app_name">Cases</string>-->
 
     <string name="ok">OK</string>
+
+    <!-- 通用模块 -->
+    <string name="no_01" translatable="false">取消</string>
+    <string name="yes_01" translatable="false">确定</string>
+    <string name="jump" translatable="false">跳过</string>
+
 </resources>

@@ -16,7 +16,7 @@ import com.csp.cases.activity.component.camera2.Camera2Util;
  * https://www.jianshu.com/p/9a2e66916fcb
  */
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class Camera3Activity extends Activity {
+public class Camera30Activity extends Activity {
 
     Camera2Util mCamera2Util;
 

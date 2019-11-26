@@ -139,8 +139,7 @@
 
         <activity
             android:name=".activity.component.DialogActivity"
-            android:configChanges="orientation|keyboardHidden"
-       />
+            android:configChanges="orientation|keyboardHidden" />
 
         <activity
             android:name=".activity.component.NotificationActivity"
@@ -300,18 +299,35 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
 
+
         <activity
-            android:name=".activity.component.Camera2Activity"
+            android:name=".activity.component.camerademo.CameraMixActivity"
+            android:configChanges="orientation|keyboardHidden" />
+
+        <activity
+            android:name=".activity.component.camerademo.CameraActivity"
+            android:configChanges="orientation|keyboardHidden" />
+
+        <activity
+            android:name=".activity.component.camerademo.Camera2Activity"
+            android:configChanges="orientation|keyboardHidden" />
+
+        <activity
+            android:name=".activity.component.camerademo.Camera2Activity"
+            android:configChanges="orientation|keyboardHidden" />
+
+        <activity
+            android:name=".activity.component.Camera20Activity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.component.Camera3Activity"
+            android:name=".activity.component.Camera30Activity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.component.CameraActivity"
+            android:name=".activity.component.Camera10Activity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 

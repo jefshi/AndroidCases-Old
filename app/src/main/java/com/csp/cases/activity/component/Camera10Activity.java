@@ -19,7 +19,7 @@ import com.csp.utils.android.log.LogCat;
 /**
  * https://www.jianshu.com/p/9a2e66916fcb
  */
-public class CameraActivity extends Activity {
+public class Camera10Activity extends Activity {
 
 
     /**

@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * https://www.jianshu.com/p/9a2e66916fcb
  */
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class Camera2Activity extends Activity {
+public class Camera20Activity extends Activity {
 
 //
 //    /**
