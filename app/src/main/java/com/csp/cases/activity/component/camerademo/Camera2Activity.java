@@ -2,6 +2,8 @@ package com.csp.cases.activity.component.camerademo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraCharacteristics;
 import android.media.ImageReader;
@@ -17,6 +19,7 @@ import com.csp.cases.R;
 import com.csp.cases.activity.component.camerademo.camera2.AutoFitTextureView;
 import com.csp.cases.activity.component.camerademo.camera2.Camera2Util;
 import com.csp.utils.android.ToastUtil;
+import com.csp.utils.android.classutil.BitmapUtil;
 import com.csp.utils.android.log.LogCat;
 
 import java.io.File;
@@ -120,6 +123,14 @@ public class Camera2Activity extends BaseButterKnifeActivity
                         public void run() {
                             showTakePicture(false);
                             showUse(true);
+
+                            mCameraUtil.closeCamera();
+
+                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData).copy(Bitmap.Config.ARGB_8888, true);
+
+                            Canvas canvas = mTextureView.lockCanvas();
+                            canvas.setBitmap(bitmap);
+                            mTextureView.unlockCanvasAndPost(canvas);
                         }
                     });
                 }

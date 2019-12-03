@@ -28,7 +28,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class CameraMixActivity  extends BaseButterKnifeActivity
+public class CameraMixActivity extends BaseButterKnifeActivity
         implements View.OnClickListener {
 
     @BindView(R.id.img_flash)
@@ -48,9 +48,16 @@ public class CameraMixActivity  extends BaseButterKnifeActivity
     @BindView(R.id.txt_use)
     TextView mTxtUse;
 
-    public final static int REQUEST_CODE = 19118;
-    public final static String KEY_IMAGE_DATA = "KEY_IMAGE_DATA";
+    public final static int REQUEST_CODE = 19117;
+    public final static String KEY_SHOW_JUMP = "KEY_SHOW_JUMP";
+    public final static String KEY_FINISH_FLAG = "KEY_FINISH_FLAG";
+
     public final static File SAVE_FILE = new File(CaseApp.getApplication().getExternalCacheDir(), "CameraCacheFromCameraActivity.JPEG");
+    public final static int FLAG_CANCEL = 0;
+    public final static int FLAG_JUMP = 1;
+    public final static int FLAG_TAKE = 2;
+
+    private boolean mShowJump;
 
     /**
      * 图片流暂存
@@ -61,7 +68,15 @@ public class CameraMixActivity  extends BaseButterKnifeActivity
     private Camera2Util mCameraUtil;
 
     public static void start(Activity activity) {
-        Intent starter = new Intent(activity, Camera2Activity.class);
+        start(activity, false);
+    }
+
+    /**
+     * @param showJump true：显示【跳过】
+     */
+    public static void start(Activity activity, boolean showJump) {
+        Intent starter = new Intent(activity, CameraMixActivity.class);
+        starter.putExtra(KEY_SHOW_JUMP, showJump);
         activity.startActivityForResult(starter, REQUEST_CODE);
     }
 
@@ -72,6 +87,9 @@ public class CameraMixActivity  extends BaseButterKnifeActivity
 
     @Override
     protected void init() {
+        if (getIntent() != null)
+            mShowJump = getIntent().getBooleanExtra(KEY_SHOW_JUMP, false);
+
         showTakePicture(true);
         showUse(false);
 
@@ -167,6 +185,13 @@ public class CameraMixActivity  extends BaseButterKnifeActivity
         mCameraUtil.onPause();
     }
 
+    public void finishForResult(int flag) {
+        Intent intent = new Intent();
+        intent.putExtra(KEY_FINISH_FLAG, flag);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
     @OnClick({R.id.img_flash, R.id.txt_jump, R.id.txt_cancel, R.id.img_lens_face, R.id.img_take_picture, R.id.txt_afresh, R.id.txt_use})
     @Override
     public void onClick(View v) {
@@ -179,10 +204,10 @@ public class CameraMixActivity  extends BaseButterKnifeActivity
                 mImgFlash.setSelected(toSelect);
                 break;
             case R.id.txt_jump:
-                setResult(RESULT_OK);
-                finish();
+                finishForResult(FLAG_JUMP);
                 break;
             case R.id.txt_cancel:
+                finishForResult(FLAG_CANCEL);
                 break;
             case R.id.img_lens_face:
                 toSelect = !mImgLensFace.isSelected();
@@ -236,10 +261,7 @@ public class CameraMixActivity  extends BaseButterKnifeActivity
                     }
                 }
 
-                Intent intent = new Intent();
-//                intent.putExtra(KEY_IMAGE_DATA, mImageData);
-                setResult(RESULT_OK, intent);
-                finish();
+                finishForResult(FLAG_TAKE);
                 break;
         }
     }
@@ -248,10 +270,11 @@ public class CameraMixActivity  extends BaseButterKnifeActivity
         int show = showed ? View.VISIBLE : View.GONE;
 
         mImgFlash.setVisibility(show);
-        mTxtJump.setVisibility(show);
         mTxtCancel.setVisibility(show);
         mImgLensFace.setVisibility(show);
         mImgTakePicture.setVisibility(showed ? View.VISIBLE : View.INVISIBLE);
+
+        mTxtJump.setVisibility(showed && mShowJump ? View.VISIBLE : View.GONE);
     }
 
     private void showUse(boolean showed) {

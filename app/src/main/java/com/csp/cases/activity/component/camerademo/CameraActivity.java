@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import com.csp.cases.CaseApp;
 import com.csp.cases.R;
 import com.csp.cases.activity.component.camerademo.camera1.CameraPreview;
+import com.csp.utils.android.MetricsUtil;
 import com.csp.utils.android.ToastUtil;
 import com.csp.utils.android.classutil.BitmapUtil;
 import com.csp.utils.android.log.LogCat;
@@ -157,22 +161,42 @@ public class CameraActivity extends BaseButterKnifeActivity
                         showTakePicture(false);
                         showUse(true);
 
-//                        Bitmap bitmap = BitmapUtil.toBitmap(mImageData).copy(Bitmap.Config.ARGB_8888, true);
+                        mCameraUtil.releaseCamera();
+                        CameraPreview preview = mCameraUtil.getPreview();
+
+
+                        Bitmap bitmap = BitmapUtil.toBitmap(mImageData); // .copy(Bitmap.Config.ARGB_8888, true);
+
+
+                        Matrix matrix = new Matrix();
+                        matrix.postScale( ((float) preview.getWidth()) / bitmap.getWidth(),
+                                ((float) preview.getHeight()) / bitmap.getHeight(),
+                                0, 0);
+
 //                        Canvas canvas = new Canvas();
 //                        canvas.drawBitmap(bitmap, 0, 0, null);
 //
-//                        SurfaceHolder holder = mCameraUtil.getPreview().getHolder();
-//                        Canvas canvas = holder.lockCanvas();
+                        SurfaceHolder holder = preview.getHolder();
+                        Canvas canvas = holder.lockCanvas();
+
+
+                        // maS1.postTranslate(0, 2 * bmp.getHeight());
+                        // matrix.postScale(0.2f, 0.2f, 0, 0);// X方向缩放比例，Y方向缩放比例，缩放中心X,缩放中心Y
+
+
 //                        if (canvas != null)
 //                            canvas.drawBitmap(bitmap, 0, 0, null);
+                        canvas.drawBitmap(bitmap, matrix, null);
 //                        else
 //                            canvas = new Canvas(bitmap);
 //
-//                        holder.unlockCanvasAndPost(canvas);
+                        holder.unlockCanvasAndPost(canvas);
                     }
                 });
                 break;
             case R.id.txt_afresh:
+                initCamera();
+
                 mImageData = null;
                 showTakePicture(true);
                 showUse(false);

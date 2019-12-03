@@ -3,15 +3,9 @@ package com.csp.cases.activity.network.downfile;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.service.carrier.CarrierMessagingService;
 
-import com.csp.cases.activity.network.visit.NetworkVisitActivity;
-import com.csp.cases.activity.network.vpn.VpnActivity;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.utils.android.classutil.BitmapUtil;

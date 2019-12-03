@@ -76,6 +76,7 @@ public class CameraUtil {
 
         int CammeraIndex = FindCamera();
 
+        LogCat.i("相机索引：" + CammeraIndex);
         releaseCamera();
         mCamera = Camera.open(CammeraIndex);
 
@@ -157,23 +158,30 @@ public class CameraUtil {
 //        }
 
         //调用相机拍照
-        mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
-            @Override
-            public void onPictureTaken(byte[] data, Camera camera) {
-                //视图动画
+        try {
+            mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    //视图动画
 //                cameraPhotobutton.setVisibility(View.GONE);
 //                cameraGroup.setVisibility(View.GONE);
 //                cameraTitle.setVisibility(View.GONE);
 //                cameraConfirmLayout.setVisibility(View.VISIBLE);
 //                //AnimSpring.getInstance(mConfirmLayout).startRotateAnim(120, 360);
 //                imageData = data;
-                //停止预览
-                mCamera.stopPreview();
+                    //停止预览
+                    mCamera.stopPreview();
 
-                if (callback != null)
-                    callback.onPictureTaken(data, camera);
-            }
-        });
+                    if (callback != null)
+                        callback.onPictureTaken(data, camera);
+                }
+            });
+        } catch (Exception e) {
+            // TODO 失败调用
+            LogCat.printStackTrace(e);
+//            if (callback != null)
+//                callback.onPictureTaken(data, camera);
+        }
     }
 
 
