@@ -11,13 +11,10 @@
         android:id="@+id/img_flash"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="4dp"
         android:padding="12dp"
-        android:tint="@color/selector_00000000_3b92f7"
-        android:src="@mipmap/camera_flash"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_jump"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txt_jump" />
+        android:src="@drawable/selector_camera_flash"
+        app:layout_constraintBottom_toTopOf="@+id/lfra_preview"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/txt_jump"
@@ -27,8 +24,10 @@
         android:text="@string/jump"
         android:textColor="@color/color_ffffff"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/lfra_preview"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/img_flash"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/img_flash" />
+
 
     <FrameLayout
         android:id="@+id/lfra_preview"

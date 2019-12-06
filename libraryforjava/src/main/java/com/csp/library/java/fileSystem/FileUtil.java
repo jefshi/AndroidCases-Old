@@ -326,21 +326,34 @@ public class FileUtil {
      */
     public static boolean write(InputStream is, File dest, boolean append) throws IOException {
         create(dest.getParentFile(), false);
-        BufferedInputStream bis = new BufferedInputStream(is);
-        BufferedOutputStream bos = null;
-        try {
-            bos = new BufferedOutputStream(new FileOutputStream(dest, append));
+        try (BufferedInputStream bis = new BufferedInputStream(is);
+             BufferedOutputStream bos = new BufferedOutputStream(
+                     new FileOutputStream(dest, append))) {
             int len = Math.max(bis.available(), MIN_BUFFER_LENGTH);
             byte[] bArr = new byte[Math.min(len, bufferLength)];
             while ((len = bis.read(bArr)) != EOF) {
                 bos.write(bArr, 0, len);
                 bos.flush();
             }
-        } finally {
-            bis.close();
-            if (bos != null) {
-                bos.close();
-            }
+        }
+        return true;
+    }
+
+    /**
+     * 文件写入(二进制方式)
+     *
+     * @param data   二进制数据
+     * @param dest   目标文件
+     * @param append true: 追加内容
+     * @return true: 操作成功
+     * @throws IOException if an I/O error occurs.
+     */
+    public static boolean write(byte[] data, File dest, boolean append) throws IOException {
+        try (BufferedOutputStream bos =
+                     new BufferedOutputStream(
+                             new FileOutputStream(dest, append))) {
+            bos.write(data);
+            bos.flush();
         }
         return true;
     }

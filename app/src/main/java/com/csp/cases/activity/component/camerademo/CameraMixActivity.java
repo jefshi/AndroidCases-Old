@@ -2,9 +2,6 @@ package com.csp.cases.activity.component.camerademo;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.hardware.Camera;
-import android.hardware.camera2.CameraCharacteristics;
-import android.media.ImageReader;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.View;
@@ -14,15 +11,15 @@ import android.widget.TextView;
 
 import com.csp.cases.CaseApp;
 import com.csp.cases.R;
-import com.csp.cases.activity.component.camerademo.camera2.AutoFitTextureView;
-import com.csp.cases.activity.component.camerademo.camera2.Camera2Util;
+import com.csp.cases.activity.component.camerademo.camera.ICamera;
+import com.csp.cases.activity.component.camerademo.camera.PictureTokenCallback;
+import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
+import com.csp.library.java.fileSystem.FileUtil;
 import com.csp.utils.android.ToastUtil;
 import com.csp.utils.android.log.LogCat;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -64,8 +61,7 @@ public class CameraMixActivity extends BaseButterKnifeActivity
      */
     private byte[] mImageData;
 
-
-    private Camera2Util mCameraUtil;
+    private ICamera mCamera;
 
     public static void start(Activity activity) {
         start(activity, false);
@@ -93,96 +89,43 @@ public class CameraMixActivity extends BaseButterKnifeActivity
         showTakePicture(true);
         showUse(false);
 
-
-//            }
-//
-//            @Override
-//            public void onFailed(Context context) {
-//                if (AndPermission.hasAlwaysDeniedPermission(context, Permission.Group.CAMERA)
-//                        && AndPermission.hasAlwaysDeniedPermission(context, Permission.Group.STORAGE)) {
-//                    AndPermission.with(context).runtime().setting().start();
-//                }
-//                ToastUtil.showToast(R.string.permission_camra_storage);
-//                finish();
-//            }
-//        }, Permission.Group.STORAGE, Permission.Group.CAMERA);
+        initCamera();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (mCameraUtil == null) {
-            AutoFitTextureView mTextureView = new AutoFitTextureView(this);
-            mLfraPreview.removeAllViews();
-            mLfraPreview.addView(mTextureView);
-
-            Camera2Util.Builder builder = new Camera2Util.Builder(this)
-                    .setLensFacing(CameraCharacteristics.LENS_FACING_BACK)
-                    .setTextureView(mTextureView);
-
-            mCameraUtil = builder.build();
-
-            mCameraUtil.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
-                @Override
-                public void onImageAvailable(ImageReader reader) {
-                    ByteBuffer buffer = reader.acquireNextImage().getPlanes()[0].getBuffer();
-                    byte[] bytes = new byte[buffer.remaining()];
-                    buffer.get(bytes);
-                    mImageData = bytes;
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showTakePicture(false);
-                            showUse(true);
-                        }
-                    });
-                }
-            });
-
-
-//            new CameraCaptureSession.CaptureCallback() {
-//                @Override
-//                public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-////                    super.onCaptureCompleted(session, request, result);
-//
-//                    mImageData = data;
-//                    showTakePicture(false);
-//                    showUse(true);
-//                }
-//            });
-        }
-
-        mCameraUtil.onResume();
-//        if (mCameraUtil == null)
-//            initCamera();
+        mCamera.onResume();
     }
-
-//    private void initCamera() {
-//        Context context = this;
-//
-//        if (mCameraUtil == null)
-//            mCameraUtil = new Camera2Util();
-//
-//        mCameraUtil.initCamera(this);
-//        Camera camera = mCameraUtil.getCamera();
-//
-//
-////        mCamera = Camera.open();    //初始化 Camera对象
-//        CameraPreview mPreview = new CameraPreview(context, camera);
-////        return mPreview;
-//
-////        FrameLayout lfraCamera = findViewById(R.id.lfra_camera);
-//        mLfraPreview.removeAllViews();
-//        mLfraPreview.addView(mPreview);
-//    }
-
 
     @Override
     protected void onPause() {
         super.onPause();
-        mCameraUtil.onPause();
+        mCamera.onPause();
+    }
+
+    private void initCamera() {
+        if (mCamera == null) {
+            mCamera = new ICamera.Builder()
+                    .setLensFacing(CameraFlag.LENS_FACING_BACK)
+                    .setFlashMode(CameraFlag.FLASH_CLOSE)
+                    .setPictureTokenCallback(new PictureTokenCallback() {
+                        @Override
+                        public void onPictureTaken(byte[] imageData) {
+                            mImageData = imageData;
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showTakePicture(false);
+                                    showUse(true);
+                                }
+                            });
+                        }
+                    }).build(this);
+        }
+        mLfraPreview.removeAllViews();
+        mLfraPreview.addView(mCamera.getPreview());
     }
 
     public void finishForResult(int flag) {
@@ -199,9 +142,8 @@ public class CameraMixActivity extends BaseButterKnifeActivity
         switch (v.getId()) {
             case R.id.img_flash:
                 toSelect = !mImgFlash.isSelected();
-                mCameraUtil.setFlashing(toSelect);
-//                mCameraUtil.switchFlash();
                 mImgFlash.setSelected(toSelect);
+                mCamera.setFlashMode(toSelect ? CameraFlag.FLASH_OPEN : CameraFlag.FLASH_CLOSE);
                 break;
             case R.id.txt_jump:
                 finishForResult(FLAG_JUMP);
@@ -211,57 +153,32 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                 break;
             case R.id.img_lens_face:
                 toSelect = !mImgLensFace.isSelected();
-                mCameraUtil.setLensFace(toSelect ? Camera.CameraInfo.CAMERA_FACING_BACK
-                        : Camera.CameraInfo.CAMERA_FACING_FRONT);
-//                initCamera();
-//                mCameraUtil.initCamera(this);
                 mImgLensFace.setSelected(toSelect);
+                mCamera.setLensFace(toSelect ? CameraFlag.LENS_FACING_BACK
+                        : CameraFlag.LENS_FACING_FRONT);
                 break;
             case R.id.img_take_picture:
-                mCameraUtil.takePicture();
-
-//                mCameraUtil.takePhoto(new Camera.PictureCallback() {
-//                    @Override
-//                    public void onPictureTaken(byte[] data, Camera camera) {
-//                        mImageData = data;
-//                        showTakePicture(false);
-//                        showUse(true);
-//                    }
-//                });
+                mCamera.takePicture();
                 break;
             case R.id.txt_afresh:
                 mImageData = null;
                 showTakePicture(true);
                 showUse(false);
-//                mCameraUtil.afreshPreview();
+                mCamera.resumePreview();
                 break;
             case R.id.txt_use:
                 if (mImageData == null || mImageData.length == 0) {
-                    ToastUtil.showToast("出现异常状况，请重新拍照");
+                    ToastUtil.showToast("相片数据获取失败，请重新拍照");
                     return;
                 }
 
-
-//                byte[] bytes = new byte[mImageData.];
-//                buffer.get(bytes);
-                FileOutputStream output = null;
                 try {
-                    output = new FileOutputStream(SAVE_FILE);
-                    output.write(mImageData);
+                    FileUtil.write(mImageData, SAVE_FILE, false);
+                    finishForResult(FLAG_TAKE);
                 } catch (IOException e) {
+                    ToastUtil.showToast("相片无法保存，请重新拍照");
                     LogCat.printStackTrace(e);
-                } finally {
-//                    mImage.close();
-                    if (null != output) {
-                        try {
-                            output.close();
-                        } catch (IOException e) {
-                            LogCat.printStackTrace(e);
-                        }
-                    }
                 }
-
-                finishForResult(FLAG_TAKE);
                 break;
         }
     }
