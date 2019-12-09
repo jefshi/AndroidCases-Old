@@ -1,6 +1,7 @@
 package com.csp.cases.activity.component.camerademo.camera;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.os.Build;
@@ -62,6 +63,8 @@ public interface ICamera {
 
     class Builder {
 
+        private Context mContext;
+
         @ACameraApi
         private int mCameraApi;
 
@@ -75,6 +78,10 @@ public interface ICamera {
 
         public int getCameraApi() {
             return mCameraApi;
+        }
+
+        public Context getContext() {
+            return mContext;
         }
 
         public int getLensFacing() {
@@ -109,15 +116,22 @@ public interface ICamera {
             return this;
         }
 
-        public Builder() {
+        public Builder(Context context) {
+            mContext = context;
         }
 
         public ICamera build(Context context) {
+            // 判断是否有摄像头
+            if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA))
+                return null;
+
+            // API 选择
             int cameraApi = mCameraApi != 0 ? mCameraApi : preferredCameraApi(context);
             return cameraApi == CameraFlag.CAMERA_API_1
                     ? new Camera1Impl(this)
                     : new Camera2Impl(this);
         }
+
 
         @ACameraApi
         private int preferredCameraApi(Context context) {
@@ -151,6 +165,9 @@ public interface ICamera {
                     Integer hardwareLevel = characteristics.get(
                             CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
 
+                    // 当设备的 Supported Hardware Level 低于 FULL 的时候，建议还是使用 Camera1，
+                    // 因为 FULL 级别以下的 Camera2 能提供的功能几乎和 Camera1 一样，所以倒不如选择更加稳定的 Camera1。
+                    // https://www.jianshu.com/p/9a2e66916fcb
                     return hardwareLevel == null
                             || hardwareLevel < CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY;
                 }

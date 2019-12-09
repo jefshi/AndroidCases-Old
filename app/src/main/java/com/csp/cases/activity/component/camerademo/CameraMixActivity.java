@@ -106,7 +106,7 @@ public class CameraMixActivity extends BaseButterKnifeActivity
 
     private void initCamera() {
         if (mCamera == null) {
-            mCamera = new ICamera.Builder()
+            mCamera = new ICamera.Builder(getContext())
                     .setLensFacing(CameraFlag.LENS_FACING_BACK)
                     .setFlashMode(CameraFlag.FLASH_CLOSE)
                     .setPictureTokenCallback(new PictureTokenCallback() {
@@ -123,6 +123,11 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                             });
                         }
                     }).build(this);
+
+            if (mCamera == null) {
+                ToastUtil.showToast("该设备不存在存在摄像头，无法进行拍照");
+                finishForResult(FLAG_CANCEL);
+            }
         }
         mLfraPreview.removeAllViews();
         mLfraPreview.addView(mCamera.getPreview());
