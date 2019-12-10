@@ -2,8 +2,12 @@ package com.csp.cases.activity.component.camerademo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -14,8 +18,10 @@ import com.csp.cases.R;
 import com.csp.cases.activity.component.camerademo.camera.ICamera;
 import com.csp.cases.activity.component.camerademo.camera.PictureTokenCallback;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
+import com.csp.cases.activity.component.camerademo.camera1.CameraPreview;
 import com.csp.library.java.fileSystem.FileUtil;
 import com.csp.utils.android.ToastUtil;
+import com.csp.utils.android.classutil.BitmapUtil;
 import com.csp.utils.android.log.LogCat;
 
 import java.io.File;
@@ -90,6 +96,7 @@ public class CameraMixActivity extends BaseButterKnifeActivity
         showUse(false);
 
         initCamera();
+        resetPreview();
     }
 
     @Override
@@ -105,30 +112,62 @@ public class CameraMixActivity extends BaseButterKnifeActivity
     }
 
     private void initCamera() {
-        if (mCamera == null) {
-            mCamera = new ICamera.Builder(getContext())
-                    .setLensFacing(CameraFlag.LENS_FACING_BACK)
-                    .setFlashMode(CameraFlag.FLASH_CLOSE)
-                    .setPictureTokenCallback(new PictureTokenCallback() {
-                        @Override
-                        public void onPictureTaken(byte[] imageData) {
-                            mImageData = imageData;
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    showTakePicture(false);
-                                    showUse(true);
-                                }
-                            });
+//        if (mCamera == null) {
+        mCamera = new ICamera.Builder(getActivity(), getContext())
+                .setLensFacing(CameraFlag.LENS_FACING_BACK)
+                .setFlashMode(CameraFlag.FLASH_CLOSE)
+                .setPictureTokenCallback(new PictureTokenCallback() {
+                    @Override
+                    public void onPictureTaken(byte[] imageData, Throwable t) {
+                        if (t != null) {
+                            ToastUtil.showToast("拍照失败");
+                            return;
                         }
-                    }).build(this);
 
-            if (mCamera == null) {
-                ToastUtil.showToast("该设备不存在存在摄像头，无法进行拍照");
-                finishForResult(FLAG_CANCEL);
-            }
+                        mImageData = imageData;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showTakePicture(false);
+                                showUse(true);
+                            }
+                        });
+
+
+                        mCamera.releaseCamera();
+                        View preview = mCamera.getPreview();
+                        if (preview instanceof CameraPreview) {
+                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData); // .copy(Bitmap.Config.ARGB_8888, true);
+
+                            Matrix matrix = new Matrix();
+                            matrix.postScale(((float) preview.getWidth()) / bitmap.getWidth(),
+                                    ((float) preview.getHeight()) / bitmap.getHeight(),
+                                    0, 0);
+
+                            SurfaceHolder holder = ((CameraPreview) preview).getHolder();
+                            Canvas canvas = holder.lockCanvas();
+                            canvas.drawBitmap(bitmap, matrix, null);
+                            holder.unlockCanvasAndPost(canvas);
+                        }
+                    }
+                }).build(this);
+
+        if (mCamera == null) {
+            ToastUtil.showToast("该设备不存在存在摄像头，无法进行拍照");
+            finishForResult(FLAG_CANCEL);
         }
+//        }
+//        mLfraPreview.removeAllViews();
+//        mLfraPreview.addView(mCamera.getPreview());
+    }
+
+    private void resetPreview() {
+        if (mCamera.getCameraApi() == CameraFlag.CAMERA_API_2)
+            return;
+
+        if (mCamera == null)
+            initCamera();
+
         mLfraPreview.removeAllViews();
         mLfraPreview.addView(mCamera.getPreview());
     }
@@ -159,8 +198,9 @@ public class CameraMixActivity extends BaseButterKnifeActivity
             case R.id.img_lens_face:
                 toSelect = !mImgLensFace.isSelected();
                 mImgLensFace.setSelected(toSelect);
-                mCamera.setLensFace(toSelect ? CameraFlag.LENS_FACING_BACK
-                        : CameraFlag.LENS_FACING_FRONT);
+                mCamera.setLensFace(toSelect ? CameraFlag.LENS_FACING_FRONT
+                        : CameraFlag.LENS_FACING_BACK);
+                resetPreview();
                 break;
             case R.id.img_take_picture:
                 mCamera.takePicture();
@@ -169,7 +209,8 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                 mImageData = null;
                 showTakePicture(true);
                 showUse(false);
-                mCamera.resumePreview();
+                mCamera.afreshPreview();
+                resetPreview();
                 break;
             case R.id.txt_use:
                 if (mImageData == null || mImageData.length == 0) {

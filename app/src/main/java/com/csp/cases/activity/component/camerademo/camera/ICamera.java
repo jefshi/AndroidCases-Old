@@ -1,5 +1,6 @@
 package com.csp.cases.activity.component.camerademo.camera;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.camera2.CameraCharacteristics;
@@ -18,10 +19,17 @@ import com.csp.utils.android.log.LogCat;
 
 public interface ICamera {
 
+    @ACameraApi
+    int getCameraApi();
+
     void onResume();
 
     void onPause();
 
+    /**
+     * 释放相机资源
+     */
+    void releaseCamera();
 
     /**
      * @return 预览 View
@@ -43,8 +51,7 @@ public interface ICamera {
      *
      * @see #startPreview()
      */
-    @Deprecated
-    void resumePreview();
+    void afreshPreview();
 
     /**
      * 拍照
@@ -63,7 +70,8 @@ public interface ICamera {
 
     class Builder {
 
-        private Context mContext;
+        private Activity mActivity; // TODO ???
+        private Context mContext; // TODO ???
 
         @ACameraApi
         private int mCameraApi;
@@ -82,6 +90,10 @@ public interface ICamera {
 
         public Context getContext() {
             return mContext;
+        }
+
+        public Activity getActivity() {
+            return mActivity;
         }
 
         public int getLensFacing() {
@@ -116,7 +128,9 @@ public interface ICamera {
             return this;
         }
 
-        public Builder(Context context) {
+
+        public Builder(Activity activity, Context context) {
+            mActivity = activity;
             mContext = context;
         }
 
@@ -125,11 +139,18 @@ public interface ICamera {
             if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA))
                 return null;
 
+            // TODO 测试代码 Begin
+            return new Camera1Impl(this);
+//            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+//                    ? new Camera2Impl(this)
+//                    : new Camera1Impl(this);
+            // TODO 测试代码 End
+
             // API 选择
-            int cameraApi = mCameraApi != 0 ? mCameraApi : preferredCameraApi(context);
-            return cameraApi == CameraFlag.CAMERA_API_1
-                    ? new Camera1Impl(this)
-                    : new Camera2Impl(this);
+//            int cameraApi = mCameraApi != 0 ? mCameraApi : preferredCameraApi(context);
+//            return cameraApi == CameraFlag.CAMERA_API_1
+//                    ? new Camera1Impl(this)
+//                    : new Camera2Impl(this);
         }
 
 

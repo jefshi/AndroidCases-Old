@@ -43,6 +43,11 @@ public class Camera1Impl implements ICamera {
     }
 
     @Override
+    public int getCameraApi() {
+        return CameraFlag.CAMERA_API_1;
+    }
+
+    @Override
     public void onResume() {
 
     }
@@ -59,22 +64,58 @@ public class Camera1Impl implements ICamera {
 
     @Override
     public void startPreview() {
-
+        mCamera.startPreview();
     }
 
     @Override
     public void stopPreview() {
-
+        mCamera.stopPreview();
     }
 
     @Override
-    public void resumePreview() {
+    public void afreshPreview() {
+        initCamera();
+        initCameraPreview();
+//        mPreview.setCamera(mCamera);
 
+        mCamera.startPreview();
     }
 
     @Override
     public void takePicture() {
+//        isTakePhoto = true;
+        switchFlash();
 
+        // 在这个例子中不使用前置摄像头
+//        Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+//        if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+//            continue;
+//        }
+
+        //调用相机拍照
+        try {
+            mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    //视图动画
+//                cameraPhotobutton.setVisibility(View.GONE);
+//                cameraGroup.setVisibility(View.GONE);
+//                cameraTitle.setVisibility(View.GONE);
+//                cameraConfirmLayout.setVisibility(View.VISIBLE);
+//                //AnimSpring.getInstance(mConfirmLayout).startRotateAnim(120, 360);
+//                imageData = data;
+                    //停止预览
+                    mCamera.stopPreview();
+
+                    if (mBuilder.getTokenCallback() != null)
+                        mBuilder.getTokenCallback().onPictureTaken(data, null);
+                }
+            });
+        } catch (Exception e) {
+            LogCat.printStackTrace(e);
+            if (mBuilder.getTokenCallback() != null)
+                mBuilder.getTokenCallback().onPictureTaken(null, e);
+        }
     }
 
     @Override
@@ -87,8 +128,8 @@ public class Camera1Impl implements ICamera {
     public void setLensFace(int lensFacing) {
         mBuilder.setLensFacing(lensFacing);
         initCamera();
-        mPreview.setCamera(mCamera);
-//        initCameraPreview();
+//        mPreview.setCamera(mCamera);
+        initCameraPreview();
     }
 
 
@@ -124,13 +165,16 @@ public class Camera1Impl implements ICamera {
         return -1;
     }
 
-    private void releaseCamera() {
+    @Override
+    public void releaseCamera() {
         if (mCamera != null) {
             mCamera.setPreviewCallback(null);
             mCamera.stopPreview();
             mCamera.lock();
             mCamera.release();
             mCamera = null;
+
+            mPreview = null;
         }
     }
 

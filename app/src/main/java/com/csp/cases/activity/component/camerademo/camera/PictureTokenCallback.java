@@ -2,5 +2,5 @@ package com.csp.cases.activity.component.camerademo.camera;
 
 public interface PictureTokenCallback {
 
-    void onPictureTaken(byte[] imageData);
+    void onPictureTaken(byte[] imageData, Throwable t);
 }
