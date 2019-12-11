@@ -46,11 +46,11 @@ public class Camera2Impl implements ICamera {
 //            mLfraPreview.removeAllViews();
 //            mLfraPreview.addView(mTextureView);
 
-            Camera2Util.Builder builder = new Camera2Util.Builder(mBuilder.getActivity())
-                    .setLensFacing(mBuilder.getLensFacing())
-                    .setTextureView(mTextureView);
+//            Camera2Util.Builder builder = new Camera2Util.Builder(mBuilder.getActivity())
+//                    .setLensFacing(mBuilder.getLensFacing())
+//                    .setTextureView(mTextureView);
 
-            mCameraUtil = builder.build();
+            mCameraUtil = new Camera2Util(mBuilder.getActivity(), mBuilder, mTextureView);
 
             mCameraUtil.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
                 @Override
@@ -60,7 +60,7 @@ public class Camera2Impl implements ICamera {
                     buffer.get(bytes);
 
                     if (mBuilder.getTokenCallback() != null)
-                        mBuilder.getTokenCallback().onPictureTaken(bytes, null);
+                        mBuilder.getTokenCallback().onPictureTaken(bytes);
                 }
             });
         }
@@ -70,7 +70,7 @@ public class Camera2Impl implements ICamera {
 
     @Override
     public void releaseCamera() {
-
+        mCameraUtil.closeCamera();
     }
 
     @Override
@@ -95,7 +95,10 @@ public class Camera2Impl implements ICamera {
 
     @Override
     public void afreshPreview() {
-        mCameraUtil.runPrecaptureSequence();
+//        mTextureView = new AutoFitTextureView(mBuilder.getContext());
+        mCameraUtil.closeCamera();
+        mCameraUtil.openCamera(mTextureView.getWidth(), mTextureView.getHeight());
+        // mCameraUtil.runPrecaptureSequence();
     }
 
     @Override
@@ -104,13 +107,15 @@ public class Camera2Impl implements ICamera {
     }
 
     @Override
-    public void setFlashMode(int mode) {
+    public boolean setFlashMode(int mode) {
         mCameraUtil.setFlashing(false); // TODO ???
+        return true;
     }
 
     @Override
-    public void setLensFace(int lensFacing) {
+    public boolean setLensFace(int lensFacing) {
         mCameraUtil.setLensFace(toLensFacing(lensFacing)); // TODO ???
+        return true;
     }
 
 

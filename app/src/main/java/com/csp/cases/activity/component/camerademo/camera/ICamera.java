@@ -1,12 +1,15 @@
 package com.csp.cases.activity.component.camerademo.camera;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
@@ -16,6 +19,8 @@ import com.csp.cases.activity.component.camerademo.camera.annotation.ALensFacing
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
 import com.csp.cases.activity.component.camerademo.camera.utils.IncompatibleDevicesUtils;
 import com.csp.utils.android.log.LogCat;
+import com.github.dfqin.grantor.PermissionListener;
+import com.github.dfqin.grantor.PermissionsUtil;
 
 public interface ICamera {
 
@@ -60,13 +65,17 @@ public interface ICamera {
 
     /**
      * 设置闪光灯
+     *
+     * @return true：设置成功
      */
-    void setFlashMode(@AFlashFlag int mode);
+    boolean setFlashMode(@AFlashFlag int mode);
 
     /**
      * 设置相机类型：如前置、后置、扩展等
+     *
+     * @return true：切换正常
      */
-    void setLensFace(@ALensFacing int lensFacing);
+    boolean setLensFace(@ALensFacing int lensFacing);
 
     class Builder {
 
@@ -83,6 +92,9 @@ public interface ICamera {
         private int mFlashMode = CameraFlag.FLASH_AUTO;
 
         private PictureTokenCallback mTokenCallback; // 拍照回调
+
+        @NonNull
+        private ErrorCallback mErrorCallback = new ErrorCallback.Sample(); // 错误回调
 
         public int getCameraApi() {
             return mCameraApi;
@@ -108,6 +120,11 @@ public interface ICamera {
             return mTokenCallback;
         }
 
+        @NonNull
+        public ErrorCallback getErrorCallback() {
+            return mErrorCallback;
+        }
+
         public Builder setCameraApi(int cameraApi) {
             mCameraApi = cameraApi;
             return this;
@@ -123,11 +140,15 @@ public interface ICamera {
             return this;
         }
 
+        public Builder setErrorCallback(@NonNull ErrorCallback errorCallback) {
+            mErrorCallback = errorCallback;
+            return this;
+        }
+
         public Builder setFlashMode(@AFlashFlag int mode) {
             mFlashMode = mode;
             return this;
         }
-
 
         public Builder(Activity activity, Context context) {
             mActivity = activity;
@@ -136,8 +157,10 @@ public interface ICamera {
 
         public ICamera build(Context context) {
             // 判断是否有摄像头
-            if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA))
+            if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+                mErrorCallback.onError(ErrorCallback.ERROR_NO_CAMERA, new Exception("摄像头不存在"));
                 return null;
+            }
 
             // TODO 测试代码 Begin
             return new Camera1Impl(this);
@@ -152,7 +175,6 @@ public interface ICamera {
 //                    ? new Camera1Impl(this)
 //                    : new Camera2Impl(this);
         }
-
 
         @ACameraApi
         private int preferredCameraApi(Context context) {

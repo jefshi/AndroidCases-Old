@@ -7,7 +7,10 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 
-import com.csp.utils.android.log.LogCat;
+import com.csp.cases.activity.component.camerademo.camera.ErrorCallback;
+import com.csp.cases.activity.component.camerademo.camera.ICamera;
+import com.csp.cases.activity.component.camerademo.camera.annotation.ALensFacing;
+import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
 
 /**
  * 选择相机，并保有相机常量参数
@@ -28,13 +31,13 @@ class Camera2Param {
     boolean mFlashSupported; // true：支持闪光灯
     int mSensorOrientation; // Orientation of the camera sensor（相机传感器方向）
 
-    public Camera2Param(@NonNull Camera2Util.Builder builder, @NonNull CameraManager manager) {
+    public Camera2Param(@NonNull ICamera.Builder builder, @NonNull CameraManager manager) {
         initMaster(builder, manager);
         initFlashSupported();
         initSensorOrientation();
     }
 
-    private void initMaster(@NonNull Camera2Util.Builder builder, @NonNull CameraManager manager) {
+    private void initMaster(@NonNull ICamera.Builder builder, @NonNull CameraManager manager) {
         try {
             for (String cameraId : manager.getCameraIdList()) {
                 CameraCharacteristics characteristics
@@ -42,7 +45,7 @@ class Camera2Param {
 
                 // We don't use a front facing camera in this sample.
                 Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
-                if (facing != null && facing != builder.getLensFacing())
+                if (facing != null && facing != toLensFacing(builder.getLensFacing()))
                     continue;
 
                 StreamConfigurationMap map = characteristics.get(
@@ -55,14 +58,12 @@ class Camera2Param {
                 }
             }
         } catch (Exception e) {
-            LogCat.printStackTrace(e);
-            if (builder.getErrorListener() != null)
-                builder.getErrorListener().onError(e);
+            builder.getErrorCallback().onError(ErrorCallback.ERROR_NO_CAMERA, e);
         }
     }
 
     /**
-     * after {@link #initMaster(Camera2Util.Builder, CameraManager)}
+     * after {@link #initMaster(ICamera.Builder, CameraManager)}
      */
     private void initFlashSupported() {
         Boolean available = mCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
@@ -73,5 +74,20 @@ class Camera2Param {
         Integer orientation = mCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
         if (orientation != null)
             mSensorOrientation = orientation;
+    }
+
+    /**
+     * @param lensFacing {@link ALensFacing}
+     * @return 转换为正确的 LensFacing
+     */
+    private int toLensFacing(@ALensFacing int lensFacing) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && lensFacing == CameraFlag.LENS_FACING_EXTERNAL) {
+            return CameraCharacteristics.LENS_FACING_EXTERNAL;
+        }
+
+        return lensFacing == CameraFlag.LENS_FACING_FRONT
+                ? CameraCharacteristics.LENS_FACING_FRONT
+                : CameraCharacteristics.LENS_FACING_BACK;
     }
 }

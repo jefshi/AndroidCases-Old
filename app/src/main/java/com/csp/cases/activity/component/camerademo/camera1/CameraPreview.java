@@ -42,13 +42,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private AspectRatio mAspectRatio;
 
     /**
-     * TODO 会不会造成未知问题，未知
-     */
-    public void setCamera(Camera camera) {
-        mCamera = camera;
-    }
-
-    /**
      * 注释：构造函数
      * 时间：2019/2/28 0028 17:10
      * 作者：郭翰林

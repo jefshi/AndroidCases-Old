@@ -98,43 +98,43 @@ public class Camera2Activity extends BaseButterKnifeActivity
         super.onResume();
 
         if (mCameraUtil == null) {
-            AutoFitTextureView mTextureView = new AutoFitTextureView(this);
-
-
-            mLfraPreview.removeAllViews();
-            mLfraPreview.addView(mTextureView);
-
-            Camera2Util.Builder builder = new Camera2Util.Builder(this)
-                    .setLensFacing(CameraCharacteristics.LENS_FACING_BACK)
-                    .setTextureView(mTextureView);
-
-            mCameraUtil = builder.build();
-
-            mCameraUtil.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
-                @Override
-                public void onImageAvailable(ImageReader reader) {
-                    ByteBuffer buffer = reader.acquireNextImage().getPlanes()[0].getBuffer();
-                    byte[] bytes = new byte[buffer.remaining()];
-                    buffer.get(bytes);
-                    mImageData = bytes;
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showTakePicture(false);
-                            showUse(true);
-
-                            mCameraUtil.closeCamera();
-
-                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData).copy(Bitmap.Config.ARGB_8888, true);
-
-                            Canvas canvas = mTextureView.lockCanvas();
-                            canvas.setBitmap(bitmap);
-                            mTextureView.unlockCanvasAndPost(canvas);
-                        }
-                    });
-                }
-            });
+//            AutoFitTextureView mTextureView = new AutoFitTextureView(this);
+//
+//
+//            mLfraPreview.removeAllViews();
+//            mLfraPreview.addView(mTextureView);
+//
+//            Camera2Util.Builder builder = new Camera2Util.Builder(this)
+//                    .setLensFacing(CameraCharacteristics.LENS_FACING_BACK)
+//                    .setTextureView(mTextureView);
+//
+//            mCameraUtil = builder.build();
+//
+//            mCameraUtil.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
+//                @Override
+//                public void onImageAvailable(ImageReader reader) {
+//                    ByteBuffer buffer = reader.acquireNextImage().getPlanes()[0].getBuffer();
+//                    byte[] bytes = new byte[buffer.remaining()];
+//                    buffer.get(bytes);
+//                    mImageData = bytes;
+//
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            showTakePicture(false);
+//                            showUse(true);
+//
+//                            mCameraUtil.closeCamera();
+//
+//                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData).copy(Bitmap.Config.ARGB_8888, true);
+//
+//                            Canvas canvas = mTextureView.lockCanvas();
+//                            canvas.setBitmap(bitmap);
+//                            mTextureView.unlockCanvasAndPost(canvas);
+//                        }
+//                    });
+//                }
+//            });
 
 
 //            new CameraCaptureSession.CaptureCallback() {

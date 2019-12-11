@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -33,6 +34,8 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.TextureView;
 
+import com.csp.cases.activity.component.camerademo.camera.ErrorCallback;
+import com.csp.cases.activity.component.camerademo.camera.ICamera;
 import com.csp.cases.util.GsonUtil;
 import com.csp.utils.android.log.LogCat;
 import com.github.dfqin.grantor.PermissionListener;
@@ -179,9 +182,10 @@ public class Camera2Util {
         mOnImageAvailableListener = onImageAvailableListener;
     }
 
-    public Camera2Util(Activity activity, Builder builder) {
+    public Camera2Util(Activity activity, ICamera.Builder builder, AutoFitTextureView textureView) {
         mActivity = activity;
         mBuilder = builder;
+        mTextureView = textureView;
     }
 
     /**
@@ -310,7 +314,7 @@ public class Camera2Util {
                     // 设置反复捕获数据的请求，这样预览界面就会一直有数据显示
                     mCaptureSession.setRepeatingRequest(mPreviewRequest, mCameraCaptureSessionCaptureCallback, mBackgroundHandler);
                 } catch (CameraAccessException e) {
-                    mBuilder.mErrorListener.onError(e);
+                    mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_CAMERA_ACCESS, e);
                 }
             }
 
@@ -323,8 +327,8 @@ public class Camera2Util {
 
                 LogCat.e("onConfigureFailed");
 
-                if (mBuilder.getErrorListener() != null)
-                    mBuilder.mErrorListener.onError(new Exception("摄像头配置失败"));
+//                if (mBuilder.getErrorListener() != null)
+                mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_CONFIGURE_FAILED, new Exception("摄像头配置失败"));
             }
 
             /**
@@ -481,7 +485,7 @@ public class Camera2Util {
         return (CameraManager) mActivity.getSystemService(Context.CAMERA_SERVICE);
     }
 
-    private Builder mBuilder;
+    private ICamera.Builder mBuilder;
 
     /**
      * 控制闪光灯
@@ -503,6 +507,7 @@ public class Camera2Util {
 //            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
 //            builder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_TORCH);
 
+            // 预览时，不打开闪光灯
             builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
             builder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
 
@@ -551,14 +556,14 @@ public class Camera2Util {
 //            builder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_TORCH);
 
 
-            // 拍照时设置：
+            // 拍照时打开闪光灯：
             builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
             builder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
 
 
 //            // 若拍摄时，不设置，会造成拍照时闪光灯关闭。
 //            // 若拍照时设置为如下，会是在拍照时闪光灯关闭。
-            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
+            // builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
 
 
 //            int flash = isFlashing ? CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH
@@ -706,7 +711,7 @@ public class Camera2Util {
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCameraCaptureSessionCaptureCallback,
                     mBackgroundHandler);
         } catch (CameraAccessException e) {
-            e.printStackTrace();
+            LogCat.printStackTrace(e);
         }
     }
 
@@ -935,33 +940,8 @@ public class Camera2Util {
      * Opens the camera specified by {@link #mCameraParam#mCameraId}.
      */
     public void openCamera(final int width, final int height) {
-        // 权限控制
-        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            PermissionsUtil.requestPermission(mActivity, new PermissionListener() {
-                @Override
-                public void permissionGranted(@NonNull String[] permissions) {
-//                    //用户授予了权限
-//                    photoManager.startCamera(caramePictureName);
-//                    if (null != popupWindow) {
-//                        popupWindow.dismiss();
-//                    }
-                    openCamera(width, height);
-                }
-
-
-                @Override
-                public void permissionDenied(@NonNull String[] permissions) {
-                    //用户拒绝了权限的申请
-
-                }
-            }, Manifest.permission.CAMERA);
-
-//            new ConfirmationDialog().show(mActivity, "dialog");
-//            if (mBuilder.getErrorListener() != null)
-//                mBuilder.getErrorListener().onError(new Exception("未开启相机权限"));
-//             requestCameraPermission();
+        if (ActivityCompat.checkSelfPermission(mBuilder.getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_NO_PERMISSION, new Exception("没有相机权限"));
             return;
         }
 
@@ -988,14 +968,17 @@ public class Camera2Util {
         CameraManager manager = getCameraManager();
         try {
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
+
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
             LogCat.e("openCamera");
+
             manager.openCamera(mCameraParam.mCameraId, mCameraDeviceStateCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
-            LogCat.e(e);
+            mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_OPEN_CAMERA, e);
         } catch (InterruptedException e) {
-            throw new RuntimeException("Interrupted while trying to lock camera opening.", e);
+            mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_OPEN_CLOSE_LOCK,
+                    new RuntimeException("Interrupted while trying to lock camera opening.", e));
         }
     }
 
@@ -1056,72 +1039,72 @@ public class Camera2Util {
             mCameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
                     mCameraCaptureSessionStateCallback, null);
         } catch (CameraAccessException e) {
-            mBuilder.mErrorListener.onError(e);
+            mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_CAMERA_ACCESS, e);
         }
     }
 
     public void setLensFace(int lensFacing) {
-        mBuilder.setLensFacing(lensFacing);
+        mBuilder.setLensFacing(lensFacing); // TODO ？？？
         closeCamera();
         openCamera(mTextureView.getWidth(), mTextureView.getHeight());
     }
 
-    public static class Builder {
-
-        Activity mActivity;
-
-        private AutoFitTextureView mTextureView; // 预览载体
-
-        private int mLensFacing = CameraCharacteristics.LENS_FACING_BACK;
-
-        /**
-         * Whether the current camera device supports Flash or not.
-         */
-        private boolean mFlashSupported;
-
-        private ErrorListener mErrorListener;
-
-        public Builder(Activity activity) {
-            mActivity = activity;
-        }
-
-        public Builder setTextureView(AutoFitTextureView textureView) {
-            mTextureView = textureView;
-            return this;
-        }
-
-        /**
-         * @see CameraCharacteristics#LENS_FACING_FRONT
-         * @see CameraCharacteristics#LENS_FACING_BACK
-         * @see CameraCharacteristics#LENS_FACING_EXTERNAL
-         */
-        public Builder setLensFacing(int lensFacing) {
-            mLensFacing = lensFacing;
-            return this;
-        }
-
+//    public static class Builder {
+//
+//        Activity mActivity;
+//
+//        private AutoFitTextureView mTextureView; // 预览载体
+//
+//        private int mLensFacing = CameraCharacteristics.LENS_FACING_BACK;
+//
+//        /**
+//         * Whether the current camera device supports Flash or not.
+//         */
+//        private boolean mFlashSupported;
+//
+//        private ErrorListener mErrorListener;
+//
+//        public Builder(Activity activity) {
+//            mActivity = activity;
+//        }
+//
+//        public Builder setTextureView(AutoFitTextureView textureView) {
+//            mTextureView = textureView;
+//            return this;
+//        }
+//
+//        /**
+//         * @see CameraCharacteristics#LENS_FACING_FRONT
+//         * @see CameraCharacteristics#LENS_FACING_BACK
+//         * @see CameraCharacteristics#LENS_FACING_EXTERNAL
+//         */
+//        public Builder setLensFacing(int lensFacing) {
+//            mLensFacing = lensFacing;
+//            return this;
+//        }
+//
+////        public int getLensFacing() {
+////            return mLensFacing;
+////        }
+//
+//        public Camera2Util build() {
+//            Camera2Util camera2Util = new Camera2Util(mActivity, this);
+//            camera2Util.mTextureView = mTextureView;
+//            return camera2Util;
+//        }
+//
 //        public int getLensFacing() {
 //            return mLensFacing;
 //        }
-
-        public Camera2Util build() {
-            Camera2Util camera2Util = new Camera2Util(mActivity, this);
-            camera2Util.mTextureView = mTextureView;
-            return camera2Util;
-        }
-
-        public int getLensFacing() {
-            return mLensFacing;
-        }
-
-        public boolean isFlashSupported() {
-            return mFlashSupported;
-        }
-
-        public ErrorListener getErrorListener() {
-            return mErrorListener;
-        }
-    }
+//
+//        public boolean isFlashSupported() {
+//            return mFlashSupported;
+//        }
+//
+//        public ErrorListener getErrorListener() {
+//            return mErrorListener;
+//        }
+//    }
 
     // ========================================
     // 工作线程相关
@@ -1237,8 +1220,8 @@ public class Camera2Util {
 
     }
 
-    public interface ErrorListener {
-
-        void onError(Exception e);
-    }
+//    public interface ErrorListener {
+//
+//        void onError(Exception e);
+//    }
 }

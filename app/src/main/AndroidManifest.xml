@@ -312,25 +312,6 @@
             android:name=".activity.component.camerademo.Camera2Activity"
             android:configChanges="orientation|keyboardHidden" />
 
-        <activity
-            android:name=".activity.component.camerademo.Camera2Activity"
-            android:configChanges="orientation|keyboardHidden" />
-
-        <activity
-            android:name=".activity.component.Camera20Activity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activity.component.Camera30Activity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activity.component.Camera10Activity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

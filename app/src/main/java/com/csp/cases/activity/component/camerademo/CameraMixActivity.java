@@ -1,13 +1,20 @@
 package com.csp.cases.activity.component.camerademo;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.SurfaceHolder;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -15,6 +22,7 @@ import android.widget.TextView;
 
 import com.csp.cases.CaseApp;
 import com.csp.cases.R;
+import com.csp.cases.activity.component.camerademo.camera.ErrorCallback;
 import com.csp.cases.activity.component.camerademo.camera.ICamera;
 import com.csp.cases.activity.component.camerademo.camera.PictureTokenCallback;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
@@ -23,6 +31,8 @@ import com.csp.library.java.fileSystem.FileUtil;
 import com.csp.utils.android.ToastUtil;
 import com.csp.utils.android.classutil.BitmapUtil;
 import com.csp.utils.android.log.LogCat;
+import com.github.dfqin.grantor.PermissionListener;
+import com.github.dfqin.grantor.PermissionsUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,35 +105,75 @@ public class CameraMixActivity extends BaseButterKnifeActivity
         showTakePicture(true);
         showUse(false);
 
-        initCamera();
-        resetPreview();
+        // 权限控制
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            resetCameraAndPreview();
+            return;
+        }
+
+        PermissionsUtil.requestPermission(this, new PermissionListener() {
+            @Override
+            public void permissionGranted(@NonNull String[] permissions) {
+                resetCameraAndPreview();
+            }
+
+            @Override
+            public void permissionDenied(@NonNull String[] permissions) {
+                //用户拒绝了权限的申请
+                finish();
+            }
+        }, Manifest.permission.CAMERA);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mCamera.onResume();
+        if (mCamera == null)
+            return;
+
+        if (mCamera.getCameraApi() == CameraFlag.CAMERA_API_1) {
+            mCamera.onResume();
+            resetCameraAndPreview();
+        } else {
+            mCamera.onResume();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mCamera.onPause();
+        if (mCamera != null)
+            mCamera.onPause();
     }
 
-    private void initCamera() {
-//        if (mCamera == null) {
-        mCamera = new ICamera.Builder(getActivity(), getContext())
+    private void resetCameraAndPreview() {
+        // Camera 2 跳过操作
+        if (mCamera != null
+                && mCamera.getCameraApi() == CameraFlag.CAMERA_API_2)
+            return;
+
+        if (mCamera == null)
+            mCamera = initCamera();
+
+        if (mCamera == null) {
+            ToastUtil.showToast("无法获取摄像头，设备可能不存在摄像头或者未授予相机权限");
+            finishForResult(FLAG_CANCEL);
+            return;
+        }
+
+        mLfraPreview.removeAllViews();
+        mLfraPreview.addView(mCamera.getPreview());
+    }
+
+    @Nullable
+    private ICamera initCamera() {
+        return new ICamera.Builder(getActivity(), getContext())
                 .setLensFacing(CameraFlag.LENS_FACING_BACK)
                 .setFlashMode(CameraFlag.FLASH_CLOSE)
                 .setPictureTokenCallback(new PictureTokenCallback() {
                     @Override
-                    public void onPictureTaken(byte[] imageData, Throwable t) {
-                        if (t != null) {
-                            ToastUtil.showToast("拍照失败");
-                            return;
-                        }
-
+                    public void onPictureTaken(byte[] imageData) {
                         mImageData = imageData;
                         runOnUiThread(new Runnable() {
                             @Override
@@ -133,10 +183,10 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                             }
                         });
 
-
                         mCamera.releaseCamera();
                         View preview = mCamera.getPreview();
                         if (preview instanceof CameraPreview) {
+                            // Camera 1
                             Bitmap bitmap = BitmapUtil.toBitmap(mImageData); // .copy(Bitmap.Config.ARGB_8888, true);
 
                             Matrix matrix = new Matrix();
@@ -148,34 +198,53 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                             Canvas canvas = holder.lockCanvas();
                             canvas.drawBitmap(bitmap, matrix, null);
                             holder.unlockCanvasAndPost(canvas);
+                        } else if (preview instanceof TextureView) {
+                            // Camera 2
+                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData).copy(Bitmap.Config.ARGB_8888, true);
+
+                            Canvas canvas = ((TextureView) preview).lockCanvas();
+                            canvas.setBitmap(bitmap);
+                            ((TextureView) preview).unlockCanvasAndPost(canvas);
                         }
                     }
+                }).setErrorCallback(new ErrorCallback() {
+                    @Override
+                    public void onError(int type, Throwable t) {
+                        LogCat.printStackTrace(Log.DEBUG, null, t);
+                        switch (type) {
+                            case ErrorCallback.ERROR_NO_CAMERA:
+                                // ToastUtil.showToast("该设备不存在摄像头，无法进行拍照");
+                                // finishForResult(FLAG_CANCEL);
+                                break;
+                            case ErrorCallback.ERROR_FLASH:
+                                ToastUtil.showToast("该设备不支持闪光灯");
+                                break;
+                            case ErrorCallback.ERROR_LENS_FACE:
+                                ToastUtil.showToast("该设备不支持转换摄像头");
+                                break;
+                            case ErrorCallback.ERROR_TOKEN_PICTURE:
+                                ToastUtil.showToast("拍照失败，请重新拍照");
+                                break;
+                        }
+
+                    }
                 }).build(this);
-
-        if (mCamera == null) {
-            ToastUtil.showToast("该设备不存在存在摄像头，无法进行拍照");
-            finishForResult(FLAG_CANCEL);
-        }
-//        }
-//        mLfraPreview.removeAllViews();
-//        mLfraPreview.addView(mCamera.getPreview());
     }
 
-    private void resetPreview() {
-        if (mCamera.getCameraApi() == CameraFlag.CAMERA_API_2)
-            return;
-
-        if (mCamera == null)
-            initCamera();
-
-        mLfraPreview.removeAllViews();
-        mLfraPreview.addView(mCamera.getPreview());
+    @Override
+    public void onBackPressed() {
+        finishOnlySetResult(FLAG_CANCEL);
+        super.onBackPressed();
     }
 
-    public void finishForResult(int flag) {
+    private void finishOnlySetResult(int flag) {
         Intent intent = new Intent();
         intent.putExtra(KEY_FINISH_FLAG, flag);
         setResult(RESULT_OK, intent);
+    }
+
+    private void finishForResult(int flag) {
+        finishOnlySetResult(flag);
         finish();
     }
 
@@ -186,8 +255,9 @@ public class CameraMixActivity extends BaseButterKnifeActivity
         switch (v.getId()) {
             case R.id.img_flash:
                 toSelect = !mImgFlash.isSelected();
-                mImgFlash.setSelected(toSelect);
-                mCamera.setFlashMode(toSelect ? CameraFlag.FLASH_OPEN : CameraFlag.FLASH_CLOSE);
+                int mode = toSelect ? CameraFlag.FLASH_OPEN : CameraFlag.FLASH_CLOSE;
+                if (mCamera.setFlashMode(mode))
+                    mImgFlash.setSelected(toSelect);
                 break;
             case R.id.txt_jump:
                 finishForResult(FLAG_JUMP);
@@ -197,10 +267,11 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                 break;
             case R.id.img_lens_face:
                 toSelect = !mImgLensFace.isSelected();
-                mImgLensFace.setSelected(toSelect);
-                mCamera.setLensFace(toSelect ? CameraFlag.LENS_FACING_FRONT
-                        : CameraFlag.LENS_FACING_BACK);
-                resetPreview();
+                int lensFacing = toSelect ? CameraFlag.LENS_FACING_FRONT : CameraFlag.LENS_FACING_BACK;
+                if (mCamera.setLensFace(lensFacing)) {
+                    mImgLensFace.setSelected(toSelect);
+                    resetCameraAndPreview();
+                }
                 break;
             case R.id.img_take_picture:
                 mCamera.takePicture();
@@ -210,7 +281,7 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                 showTakePicture(true);
                 showUse(false);
                 mCamera.afreshPreview();
-                resetPreview();
+                resetCameraAndPreview();
                 break;
             case R.id.txt_use:
                 if (mImageData == null || mImageData.length == 0) {

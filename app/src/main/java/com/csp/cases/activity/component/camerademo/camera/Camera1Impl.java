@@ -1,17 +1,12 @@
 package com.csp.cases.activity.component.camerademo.camera;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.util.Log;
 import android.view.View;
 
 import com.csp.cases.activity.component.camerademo.camera.annotation.AFlashFlag;
 import com.csp.cases.activity.component.camerademo.camera.annotation.ALensFacing;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
 import com.csp.cases.activity.component.camerademo.camera1.CameraPreview;
-import com.csp.utils.android.ToastUtil;
-import com.csp.utils.android.log.LogCat;
 
 /**
  * 默认有权限，有摄像机
@@ -49,7 +44,8 @@ public class Camera1Impl implements ICamera {
 
     @Override
     public void onResume() {
-
+        initCamera();
+        initCameraPreview();
     }
 
     @Override
@@ -108,42 +104,49 @@ public class Camera1Impl implements ICamera {
                     mCamera.stopPreview();
 
                     if (mBuilder.getTokenCallback() != null)
-                        mBuilder.getTokenCallback().onPictureTaken(data, null);
+                        mBuilder.getTokenCallback().onPictureTaken(data);
                 }
             });
         } catch (Exception e) {
-            LogCat.printStackTrace(e);
-            if (mBuilder.getTokenCallback() != null)
-                mBuilder.getTokenCallback().onPictureTaken(null, e);
+            mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_TOKEN_PICTURE, e);
         }
     }
 
     @Override
-    public void setFlashMode(int mode) {
+    public boolean setFlashMode(int mode) {
         mBuilder.setFlashMode(mode);
-        switchFlash();
+        return switchFlash();
     }
 
     @Override
-    public void setLensFace(int lensFacing) {
+    public boolean setLensFace(int lensFacing) {
         mBuilder.setLensFacing(lensFacing);
-        initCamera();
+        if (!initCamera())
+            return false;
+
 //        mPreview.setCamera(mCamera);
         initCameraPreview();
+        return true;
     }
 
 
     /**
      * TODO 要不要追加接口？
+     *
+     * @return
      */
-    private void initCamera() {
-        int CammeraIndex = FindCamera();
-        releaseCamera();
-        mCamera = Camera.open(CammeraIndex);
+    private boolean initCamera() {
+        int cameraIndex = findCamera();
+        if (cameraIndex < 0) {
+            mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_LENS_FACE, new Throwable("该设备不支持转换摄像头"));
+            return false;
+        }
 
+        releaseCamera();
+        mCamera = Camera.open(cameraIndex);
+        return true;
     }
 
-    @Deprecated
     private void initCameraPreview() {
         mPreview = new CameraPreview(mBuilder.getContext(), mCamera);
     }
@@ -153,7 +156,7 @@ public class Camera1Impl implements ICamera {
      *
      * @return 相机索引
      */
-    private int FindCamera() {
+    private int findCamera() {
         int cameraCount = Camera.getNumberOfCameras();
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
         for (int camIdx = 0; camIdx < cameraCount; camIdx++) {
@@ -174,7 +177,7 @@ public class Camera1Impl implements ICamera {
             mCamera.release();
             mCamera = null;
 
-            mPreview = null;
+//            mPreview = null;
         }
     }
 
@@ -185,15 +188,18 @@ public class Camera1Impl implements ICamera {
 
     /**
      * 注释：切换闪光灯
+     *
+     * @return true：操作成功
      */
-    public void switchFlash() {
+    public boolean switchFlash() {
         try {
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.setFlashMode(toFlashMode(mBuilder.getFlashMode()));
             mCamera.setParameters(parameters);
+            return true;
         } catch (Exception e) {
-            LogCat.printStackTrace(Log.DEBUG, null, e);
-            ToastUtil.showToast("该设备不支持闪光灯");
+            mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_FLASH, e);
+            return false;
         }
     }
 
