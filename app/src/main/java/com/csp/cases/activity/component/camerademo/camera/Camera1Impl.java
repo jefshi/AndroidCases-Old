@@ -1,5 +1,7 @@
 package com.csp.cases.activity.component.camerademo.camera;
 
+import android.content.pm.FeatureInfo;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.view.View;
 
@@ -7,6 +9,7 @@ import com.csp.cases.activity.component.camerademo.camera.annotation.AFlashFlag;
 import com.csp.cases.activity.component.camerademo.camera.annotation.ALensFacing;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
 import com.csp.cases.activity.component.camerademo.camera1.CameraPreview;
+import com.csp.utils.android.log.LogCat;
 
 /**
  * 默认有权限，有摄像机
@@ -193,6 +196,16 @@ public class Camera1Impl implements ICamera {
      */
     public boolean switchFlash() {
         try {
+            PackageManager pm = mBuilder.getContext().getPackageManager();
+            FeatureInfo[] features = pm.getSystemAvailableFeatures();
+            for (FeatureInfo f : features) {
+                if (PackageManager.FEATURE_CAMERA_FLASH.equals(f.name)) //判断设备是否支持闪光灯
+                {
+                    LogCat.e("FEATURE_CAMERA_FLASH");
+                }
+                LogCat.w(f.name);
+            }
+
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.setFlashMode(toFlashMode(mBuilder.getFlashMode()));
             mCamera.setParameters(parameters);
@@ -233,5 +246,10 @@ public class Camera1Impl implements ICamera {
             default:
                 return Camera.Parameters.FLASH_MODE_AUTO;
         }
+    }
+
+    @Override
+    public int getLensFace() {
+        return mBuilder.getLensFacing();
     }
 }

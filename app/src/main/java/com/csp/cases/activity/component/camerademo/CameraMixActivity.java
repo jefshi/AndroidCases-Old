@@ -5,16 +5,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.TextureView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -26,7 +23,6 @@ import com.csp.cases.activity.component.camerademo.camera.ErrorCallback;
 import com.csp.cases.activity.component.camerademo.camera.ICamera;
 import com.csp.cases.activity.component.camerademo.camera.PictureTokenCallback;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
-import com.csp.cases.activity.component.camerademo.camera1.CameraPreview;
 import com.csp.library.java.fileSystem.FileUtil;
 import com.csp.utils.android.ToastUtil;
 import com.csp.utils.android.classutil.BitmapUtil;
@@ -50,6 +46,8 @@ public class CameraMixActivity extends BaseButterKnifeActivity
     TextView mTxtJump;
     @BindView(R.id.lfra_preview)
     FrameLayout mLfraPreview;
+    @BindView(R.id.img_verify)
+    ImageView mImgVerify;
     @BindView(R.id.txt_cancel)
     TextView mTxtCancel;
     @BindView(R.id.img_take_picture)
@@ -175,37 +173,51 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                     @Override
                     public void onPictureTaken(byte[] imageData) {
                         mImageData = imageData;
+
+
+
+                        try {
+                            FileUtil.write(mImageData, SAVE_FILE, false);
+//                            finishForResult(FLAG_TAKE);
+                        } catch (IOException e) {
+//                            ToastUtil.showToast("相片无法保存，请重新拍照");
+                            LogCat.printStackTrace(e);
+                        }
+
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 showTakePicture(false);
                                 showUse(true);
+                                refreshImgVerify();
                             }
                         });
+                        mCamera.onPause();
 
-                        mCamera.releaseCamera();
-                        View preview = mCamera.getPreview();
-                        if (preview instanceof CameraPreview) {
-                            // Camera 1
-                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData); // .copy(Bitmap.Config.ARGB_8888, true);
-
-                            Matrix matrix = new Matrix();
-                            matrix.postScale(((float) preview.getWidth()) / bitmap.getWidth(),
-                                    ((float) preview.getHeight()) / bitmap.getHeight(),
-                                    0, 0);
-
-                            SurfaceHolder holder = ((CameraPreview) preview).getHolder();
-                            Canvas canvas = holder.lockCanvas();
-                            canvas.drawBitmap(bitmap, matrix, null);
-                            holder.unlockCanvasAndPost(canvas);
-                        } else if (preview instanceof TextureView) {
-                            // Camera 2
-                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData).copy(Bitmap.Config.ARGB_8888, true);
-
-                            Canvas canvas = ((TextureView) preview).lockCanvas();
-                            canvas.setBitmap(bitmap);
-                            ((TextureView) preview).unlockCanvasAndPost(canvas);
-                        }
+//                        mCamera.releaseCamera();
+//                        View preview = mCamera.getPreview();
+//                        if (preview instanceof CameraPreview) {
+//                            // Camera 1
+//                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData); // .copy(Bitmap.Config.ARGB_8888, true);
+//
+//                            Matrix matrix = new Matrix();
+//                            matrix.postScale(((float) preview.getWidth()) / bitmap.getWidth(),
+//                                    ((float) preview.getHeight()) / bitmap.getHeight(),
+//                                    0, 0);
+//
+//                            SurfaceHolder holder = ((CameraPreview) preview).getHolder();
+//                            Canvas canvas = holder.lockCanvas();
+//                            canvas.drawBitmap(bitmap, matrix, null);
+//                            holder.unlockCanvasAndPost(canvas);
+//                        } else if (preview instanceof TextureView) {
+//                            // Camera 2
+//                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData).copy(Bitmap.Config.ARGB_8888, true);
+//
+//                            Canvas canvas = ((TextureView) preview).lockCanvas();
+//                            canvas.setBitmap(bitmap);
+//                            ((TextureView) preview).unlockCanvasAndPost(canvas);
+//                        }
                     }
                 }).setErrorCallback(new ErrorCallback() {
                     @Override
@@ -280,7 +292,7 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                 mImageData = null;
                 showTakePicture(true);
                 showUse(false);
-                mCamera.afreshPreview();
+                mCamera.onResume();
                 resetCameraAndPreview();
                 break;
             case R.id.txt_use:
@@ -289,32 +301,54 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                     return;
                 }
 
-                try {
-                    FileUtil.write(mImageData, SAVE_FILE, false);
-                    finishForResult(FLAG_TAKE);
-                } catch (IOException e) {
-                    ToastUtil.showToast("相片无法保存，请重新拍照");
-                    LogCat.printStackTrace(e);
-                }
+//                try {
+//                    FileUtil.write(mImageData, SAVE_FILE, false);
+//                    finishForResult(FLAG_TAKE);
+//                } catch (IOException e) {
+//                    ToastUtil.showToast("相片无法保存，请重新拍照");
+//                    LogCat.printStackTrace(e);
+//                }
+                finishForResult(FLAG_TAKE);
                 break;
         }
     }
 
     private void showTakePicture(boolean showed) {
         int show = showed ? View.VISIBLE : View.GONE;
+        int show02 = showed ? View.VISIBLE : View.INVISIBLE;
 
         mImgFlash.setVisibility(show);
         mTxtCancel.setVisibility(show);
         mImgLensFace.setVisibility(show);
-        mImgTakePicture.setVisibility(showed ? View.VISIBLE : View.INVISIBLE);
 
+        mImgTakePicture.setVisibility(show02);
+        mLfraPreview.setVisibility(show02);
         mTxtJump.setVisibility(showed && mShowJump ? View.VISIBLE : View.GONE);
     }
 
     private void showUse(boolean showed) {
         int show = showed ? View.VISIBLE : View.GONE;
 
+        mImgVerify.setVisibility(show);
         mTxtAfresh.setVisibility(show);
         mTxtUse.setVisibility(show);
+    }
+
+    /**
+     * 不建议使用相机返回的数据，因为在某些手机上，后置摄像头也会莫名旋转90读，如小米
+     */
+    private void refreshImgVerify() {
+        Bitmap bitmap = BitmapFactory.decodeFile(SAVE_FILE.getAbsolutePath());
+
+
+        Bitmap bitmap = BitmapUtil.toBitmap(mImageData);
+        bitmap = BitmapUtil.scaleBitmap(bitmap,
+                (float) mLfraPreview.getWidth(),
+                (float) mLfraPreview.getHeight());
+
+        if (mCamera.getLensFace() == CameraFlag.LENS_FACING_FRONT)
+            bitmap = BitmapUtil.rotateBitmap(bitmap, 180);
+
+        mImgVerify.setImageBitmap(bitmap);
     }
 }

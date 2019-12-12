@@ -27,7 +27,7 @@ public class AspectRatio implements Comparable<AspectRatio>, Parcelable {
      */
     public static AspectRatio of(int x, int y) {
         int gcd = gcd(x, y);
-        x /= gcd;BitmapUtil
+        x /= gcd;
         y /= gcd;
         SparseArrayCompat<AspectRatio> arrayX = sCache.get(x);
         if (arrayX == null) {

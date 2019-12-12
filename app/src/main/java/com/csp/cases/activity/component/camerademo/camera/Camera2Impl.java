@@ -155,4 +155,9 @@ public class Camera2Impl implements ICamera {
                 return Camera.Parameters.FLASH_MODE_AUTO;
         }
     }
+
+    @Override
+    public int getLensFace() {
+        return mBuilder.getLensFacing();
+    }
 }

@@ -77,6 +77,12 @@ public interface ICamera {
      */
     boolean setLensFace(@ALensFacing int lensFacing);
 
+    /**
+     * @return 相机类型
+     */
+    @ALensFacing
+    int getLensFace();
+
     class Builder {
 
         private Activity mActivity; // TODO ???
