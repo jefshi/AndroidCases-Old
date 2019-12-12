@@ -38,6 +38,7 @@ public class Camera1Impl implements ICamera {
         mBuilder = builder;
         initCamera();
         initCameraPreview();
+        switchFlash();
     }
 
     @Override
@@ -49,6 +50,7 @@ public class Camera1Impl implements ICamera {
     public void onResume() {
         initCamera();
         initCameraPreview();
+        switchFlash();
     }
 
     @Override
@@ -75,6 +77,7 @@ public class Camera1Impl implements ICamera {
     public void afreshPreview() {
         initCamera();
         initCameraPreview();
+        switchFlash();
 //        mPreview.setCamera(mCamera);
 
         mCamera.startPreview();
@@ -241,7 +244,7 @@ public class Camera1Impl implements ICamera {
             case CameraFlag.FLASH_OPEN:
                 return Camera.Parameters.FLASH_MODE_ON;
             case CameraFlag.FLASH_LIGHT:
-                return Camera.Parameters.FLASH_MODE_ON; // TODO 未知
+                return Camera.Parameters.FLASH_MODE_TORCH;
             case CameraFlag.FLASH_AUTO:
             default:
                 return Camera.Parameters.FLASH_MODE_AUTO;

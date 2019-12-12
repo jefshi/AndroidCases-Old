@@ -57,7 +57,7 @@ public class MainActivity extends BaseGridActivity {
         items.add(new ItemInfo("Storage", StorageActivity.class, "存储案例"));
         items.add(new ItemInfo("System", SystemActivity.class, "系统、应用信息案例"));
         items.add(new ItemInfo("Thread", ThreadActivity.class, "线程管理案例"));
-        items.add(new ItemInfo("View", ViewActivity.class, "View 案例"));
+        items.add(new ItemInfo("View", ViewActivity.class, "自定义 View、画布绘制、图片绘制案例"));
         items.add(new ItemInfo("WindowManager", WindowManagerActivity.class, "[WindowManager]案例"));
         items.add(new ItemInfo("OtherCase", OtherCaseActivity.class, "[其他]案例"));
         return items;

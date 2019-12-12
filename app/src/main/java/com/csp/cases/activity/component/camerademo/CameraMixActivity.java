@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,15 +23,13 @@ import com.csp.cases.activity.component.camerademo.camera.ErrorCallback;
 import com.csp.cases.activity.component.camerademo.camera.ICamera;
 import com.csp.cases.activity.component.camerademo.camera.PictureTokenCallback;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
-import com.csp.library.java.fileSystem.FileUtil;
+import com.csp.utils.android.ImageUtils;
 import com.csp.utils.android.ToastUtil;
-import com.csp.utils.android.classutil.BitmapUtil;
 import com.csp.utils.android.log.LogCat;
 import com.github.dfqin.grantor.PermissionListener;
 import com.github.dfqin.grantor.PermissionsUtil;
 
 import java.io.File;
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -63,7 +61,7 @@ public class CameraMixActivity extends BaseButterKnifeActivity
     public final static String KEY_SHOW_JUMP = "KEY_SHOW_JUMP";
     public final static String KEY_FINISH_FLAG = "KEY_FINISH_FLAG";
 
-    public final static File SAVE_FILE = new File(CaseApp.getApplication().getExternalCacheDir(), "CameraCacheFromCameraActivity.JPEG");
+    public final static File SAVE_FILE = new File(CaseApp.getApplication().getExternalCacheDir(), "CameraCacheFromCameraActivity.jpeg");
     public final static int FLAG_CANCEL = 0;
     public final static int FLAG_JUMP = 1;
     public final static int FLAG_TAKE = 2;
@@ -73,7 +71,7 @@ public class CameraMixActivity extends BaseButterKnifeActivity
     /**
      * 图片流暂存
      */
-    private byte[] mImageData;
+    private Bitmap mBitmap;
 
     private ICamera mCamera;
 
@@ -101,7 +99,6 @@ public class CameraMixActivity extends BaseButterKnifeActivity
             mShowJump = getIntent().getBooleanExtra(KEY_SHOW_JUMP, false);
 
         showTakePicture(true);
-        showUse(false);
 
         // 权限控制
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -127,7 +124,7 @@ public class CameraMixActivity extends BaseButterKnifeActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (mCamera == null)
+        if (mCamera == null || !isTakePicture())
             return;
 
         if (mCamera.getCameraApi() == CameraFlag.CAMERA_API_1) {
@@ -167,57 +164,29 @@ public class CameraMixActivity extends BaseButterKnifeActivity
     @Nullable
     private ICamera initCamera() {
         return new ICamera.Builder(getActivity(), getContext())
-                .setLensFacing(CameraFlag.LENS_FACING_BACK)
+                .setLensFacing(CameraFlag.LENS_FACING_FRONT)
                 .setFlashMode(CameraFlag.FLASH_CLOSE)
                 .setPictureTokenCallback(new PictureTokenCallback() {
                     @Override
                     public void onPictureTaken(byte[] imageData) {
-                        mImageData = imageData;
-
-
-
-                        try {
-                            FileUtil.write(mImageData, SAVE_FILE, false);
-//                            finishForResult(FLAG_TAKE);
-                        } catch (IOException e) {
-//                            ToastUtil.showToast("相片无法保存，请重新拍照");
-                            LogCat.printStackTrace(e);
+                        mBitmap = ImageUtils.getBitmap(imageData, 0);
+                        if (mBitmap == null) {
+                            ToastUtil.showToast("相片数据获取失败，请重新拍照");
+                            return;
                         }
 
-
+                        mCamera.onPause();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 showTakePicture(false);
-                                showUse(true);
                                 refreshImgVerify();
                             }
                         });
-                        mCamera.onPause();
 
-//                        mCamera.releaseCamera();
-//                        View preview = mCamera.getPreview();
-//                        if (preview instanceof CameraPreview) {
-//                            // Camera 1
-//                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData); // .copy(Bitmap.Config.ARGB_8888, true);
-//
-//                            Matrix matrix = new Matrix();
-//                            matrix.postScale(((float) preview.getWidth()) / bitmap.getWidth(),
-//                                    ((float) preview.getHeight()) / bitmap.getHeight(),
-//                                    0, 0);
-//
-//                            SurfaceHolder holder = ((CameraPreview) preview).getHolder();
-//                            Canvas canvas = holder.lockCanvas();
-//                            canvas.drawBitmap(bitmap, matrix, null);
-//                            holder.unlockCanvasAndPost(canvas);
-//                        } else if (preview instanceof TextureView) {
-//                            // Camera 2
-//                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData).copy(Bitmap.Config.ARGB_8888, true);
-//
-//                            Canvas canvas = ((TextureView) preview).lockCanvas();
-//                            canvas.setBitmap(bitmap);
-//                            ((TextureView) preview).unlockCanvasAndPost(canvas);
-//                        }
+//                        // 使用相机的预览 View 查看拍照图片。
+//                        // 但有个问题，因为 onPause 的缘故，切到后台重新切回来时，回黑屏
+//                        lookUpTokenPicture();
                     }
                 }).setErrorCallback(new ErrorCallback() {
                     @Override
@@ -225,8 +194,8 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                         LogCat.printStackTrace(Log.DEBUG, null, t);
                         switch (type) {
                             case ErrorCallback.ERROR_NO_CAMERA:
-                                // ToastUtil.showToast("该设备不存在摄像头，无法进行拍照");
-                                // finishForResult(FLAG_CANCEL);
+                                ToastUtil.showToast("该设备不存在摄像头，无法进行拍照");
+                                finishForResult(FLAG_CANCEL);
                                 break;
                             case ErrorCallback.ERROR_FLASH:
                                 ToastUtil.showToast("该设备不支持闪光灯");
@@ -242,6 +211,36 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                     }
                 }).build(this);
     }
+
+//    /**
+//     * 使用相机的预览 View 查看拍照图片。
+//     * 但有个问题，因为 onPause 的缘故，切到后台重新切回来时，回黑屏
+//     */
+//    private void lookUpTokenPicture() {
+//        mCamera.releaseCamera();
+//        View preview = mCamera.getPreview();
+//        if (preview instanceof CameraPreview) {
+//            // Camera 1
+//            Bitmap bitmap = ImageUtils.getBitmap(imageData, 0); // .copy(Bitmap.Config.ARGB_8888, true);
+//
+//            Matrix matrix = new Matrix();
+//            matrix.postScale(((float) preview.getWidth()) / bitmap.getWidth(),
+//                    ((float) preview.getHeight()) / bitmap.getHeight(),
+//                    0, 0);
+//
+//            SurfaceHolder holder = ((CameraPreview) preview).getHolder();
+//            Canvas canvas = holder.lockCanvas();
+//            canvas.drawBitmap(bitmap, matrix, null);
+//            holder.unlockCanvasAndPost(canvas);
+//        } else if (preview instanceof TextureView) {
+//            // Camera 2
+//            Bitmap bitmap = ImageUtils.getBitmap(imageData, 0).copy(Bitmap.Config.ARGB_8888, true);
+//
+//            Canvas canvas = ((TextureView) preview).lockCanvas();
+//            canvas.setBitmap(bitmap);
+//            ((TextureView) preview).unlockCanvasAndPost(canvas);
+//        }
+//    }
 
     @Override
     public void onBackPressed() {
@@ -267,7 +266,7 @@ public class CameraMixActivity extends BaseButterKnifeActivity
         switch (v.getId()) {
             case R.id.img_flash:
                 toSelect = !mImgFlash.isSelected();
-                int mode = toSelect ? CameraFlag.FLASH_OPEN : CameraFlag.FLASH_CLOSE;
+                int mode = toSelect ? CameraFlag.FLASH_LIGHT : CameraFlag.FLASH_CLOSE;
                 if (mCamera.setFlashMode(mode))
                     mImgFlash.setSelected(toSelect);
                 break;
@@ -289,26 +288,22 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                 mCamera.takePicture();
                 break;
             case R.id.txt_afresh:
-                mImageData = null;
+                mBitmap = null;
                 showTakePicture(true);
-                showUse(false);
                 mCamera.onResume();
                 resetCameraAndPreview();
                 break;
             case R.id.txt_use:
-                if (mImageData == null || mImageData.length == 0) {
+                if (mBitmap == null) {
                     ToastUtil.showToast("相片数据获取失败，请重新拍照");
                     return;
                 }
 
-//                try {
-//                    FileUtil.write(mImageData, SAVE_FILE, false);
-//                    finishForResult(FLAG_TAKE);
-//                } catch (IOException e) {
-//                    ToastUtil.showToast("相片无法保存，请重新拍照");
-//                    LogCat.printStackTrace(e);
-//                }
-                finishForResult(FLAG_TAKE);
+                boolean save = ImageUtils.save(mBitmap, SAVE_FILE, Bitmap.CompressFormat.JPEG);
+                if (save)
+                    finishForResult(FLAG_TAKE);
+                else
+                    ToastUtil.showToast("相片无法保存，请重新拍照");
                 break;
         }
     }
@@ -316,6 +311,7 @@ public class CameraMixActivity extends BaseButterKnifeActivity
     private void showTakePicture(boolean showed) {
         int show = showed ? View.VISIBLE : View.GONE;
         int show02 = showed ? View.VISIBLE : View.INVISIBLE;
+        int gone = showed ? View.GONE : View.VISIBLE;
 
         mImgFlash.setVisibility(show);
         mTxtCancel.setVisibility(show);
@@ -324,31 +320,52 @@ public class CameraMixActivity extends BaseButterKnifeActivity
         mImgTakePicture.setVisibility(show02);
         mLfraPreview.setVisibility(show02);
         mTxtJump.setVisibility(showed && mShowJump ? View.VISIBLE : View.GONE);
+
+        mImgVerify.setVisibility(gone);
+        mTxtAfresh.setVisibility(gone);
+        mTxtUse.setVisibility(gone);
     }
 
-    private void showUse(boolean showed) {
-        int show = showed ? View.VISIBLE : View.GONE;
-
-        mImgVerify.setVisibility(show);
-        mTxtAfresh.setVisibility(show);
-        mTxtUse.setVisibility(show);
+    private boolean isTakePicture() {
+        return mImgTakePicture.getVisibility() == View.VISIBLE;
     }
 
     /**
+     * mImgVerify 控件是为了解决确认照片时，home 键切到后台，重新返回前台图片不能查看的问题
+     * <p>
      * 不建议使用相机返回的数据，因为在某些手机上，后置摄像头也会莫名旋转90读，如小米
      */
     private void refreshImgVerify() {
-        Bitmap bitmap = BitmapFactory.decodeFile(SAVE_FILE.getAbsolutePath());
+        LogCat.e(Build.MODEL);
 
+        Bitmap bitmap = mBitmap;
+        if (bitmap == null)
+            return;
 
-        Bitmap bitmap = BitmapUtil.toBitmap(mImageData);
-        bitmap = BitmapUtil.scaleBitmap(bitmap,
-                (float) mLfraPreview.getWidth(),
-                (float) mLfraPreview.getHeight());
+        // 机型适配
+        if ("Redmi K20 Pro".equals(Build.MODEL)) {
+            Matrix matrix = new Matrix();
+            matrix.setRotate(90);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+        }
 
-        if (mCamera.getLensFace() == CameraFlag.LENS_FACING_FRONT)
-            bitmap = BitmapUtil.rotateBitmap(bitmap, 180);
+        Matrix matrix = new Matrix();
+        matrix.setScale(((float) mLfraPreview.getWidth()) / bitmap.getWidth(),
+                ((float) mLfraPreview.getHeight()) / bitmap.getHeight());
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
 
+        if (mCamera.getLensFace() == CameraFlag.LENS_FACING_FRONT) {
+            matrix = new Matrix();
+            matrix.setRotate(180);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+
+            // 左右翻转
+            matrix = new Matrix();
+            matrix.setScale(-1, 1);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+        }
+
+        mBitmap = bitmap;
         mImgVerify.setImageBitmap(bitmap);
     }
 }
