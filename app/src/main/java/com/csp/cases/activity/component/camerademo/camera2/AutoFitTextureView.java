@@ -21,8 +21,10 @@ import android.util.AttributeSet;
 import android.view.TextureView;
 
 /**
+ * 根据相机的尺寸调整 View 的高宽比
  * 来源于：https://github.com/googlearchive/android-Camera2Basic
- * A {@link TextureView} that can be adjusted to a specified aspect ratio.
+ * <p>
+ * {@link TextureView} that can be adjusted to a specified aspect ratio.
  */
 public class AutoFitTextureView extends TextureView {
 
@@ -73,5 +75,4 @@ public class AutoFitTextureView extends TextureView {
             }
         }
     }
-
 }

@@ -12,7 +12,6 @@ import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
@@ -27,7 +26,6 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Display;
@@ -36,10 +34,9 @@ import android.view.TextureView;
 
 import com.csp.cases.activity.component.camerademo.camera.ErrorCallback;
 import com.csp.cases.activity.component.camerademo.camera.ICamera;
+import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
 import com.csp.cases.util.GsonUtil;
 import com.csp.utils.android.log.LogCat;
-import com.github.dfqin.grantor.PermissionListener;
-import com.github.dfqin.grantor.PermissionsUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,7 +102,7 @@ public class Camera2Util {
     /**
      * 相机预览
      */
-    private AutoFitTextureView mTextureView; // 预览载体
+    private TextureView mTextureView; // 预览载体
     private Size mPreviewSize; // 预览大小
 
     /**
@@ -134,33 +131,42 @@ public class Camera2Util {
 
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture texture, int width, int height) {
+            LogCat.e("onSurfaceTextureAvailable");
             openCamera(width, height);
         }
 
         @Override
         public void onSurfaceTextureSizeChanged(SurfaceTexture texture, int width, int height) {
+            LogCat.e("onSurfaceTextureSizeChanged");
             configureTransform(width, height);
         }
 
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture texture) {
+            LogCat.e("onSurfaceTextureDestroyed");
             return true;
         }
 
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture texture) {
+            LogCat.d("onSurfaceTextureUpdated");
         }
     };
 
 
-    /**
-     * *是否开启闪光灯
-     */
-    private boolean isFlashing = true;
-
-    public void setFlashing(boolean flashing) {
-        isFlashing = flashing;
+    public void setFlashMode() {
+        if (mPreviewRequestBuilder != null)
+            setFlashMode(mPreviewRequestBuilder, true);
     }
+
+//    /**
+//     * *是否开启闪光灯
+//     */
+//    private boolean isFlashing = true;
+//
+//    public void setFlashing(boolean flashing) {
+//        isFlashing = flashing;
+//    }
 
 
     /**
@@ -182,7 +188,7 @@ public class Camera2Util {
         mOnImageAvailableListener = onImageAvailableListener;
     }
 
-    public Camera2Util(Activity activity, ICamera.Builder builder, AutoFitTextureView textureView) {
+    public Camera2Util(Activity activity, ICamera.Builder builder, TextureView textureView) {
         mActivity = activity;
         mBuilder = builder;
         mTextureView = textureView;
@@ -306,7 +312,8 @@ public class Camera2Util {
                     mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                             CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
                     // Flash is automatically enabled when necessary.
-                    setAutoFlashForPreview(mPreviewRequestBuilder);
+                    setFlashMode(mPreviewRequestBuilder, true);
+//                    setAutoFlashForPreview(mPreviewRequestBuilder);
 
                     // 显示相机预览
                     // Finally, we start displaying the camera preview.
@@ -579,16 +586,58 @@ public class Camera2Util {
         }
     }
 
-    /**
-     * 控制手电筒
-     *
-     * @param requestBuilder
-     */
-    private void setFlashlight(CaptureRequest.Builder requestBuilder) {
-        int flash = isFlashing ? CaptureRequest.FLASH_MODE_TORCH
-                : CaptureRequest.FLASH_MODE_OFF;
+//    /**
+//     * 控制手电筒
+//     *
+//     * @param requestBuilder
+//     */
+//    private void setFlashlight(CaptureRequest.Builder requestBuilder) {
+//        int flash = isFlashing ? CaptureRequest.FLASH_MODE_TORCH
+//                : CaptureRequest.FLASH_MODE_OFF;
+//
+//        requestBuilder.set(CaptureRequest.FLASH_MODE, flash);
+//    }
 
-        requestBuilder.set(CaptureRequest.FLASH_MODE, flash);
+    /**
+     * 设置闪光灯
+     *
+     * @param builder
+     * @param preview true：预览，false：拍照
+     */
+    private void setFlashMode(CaptureRequest.Builder builder, boolean preview) {
+        if (mBuilder == null
+                || builder == null
+                || !mCameraParam.mFlashSupported)
+            return;
+
+        /**
+         * CaptureRequest.CONTROL_AE_MODE_OFF
+         * CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH
+         * CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH
+         */
+        switch (mBuilder.getFlashMode()) {
+            case CameraFlag.FLASH_CLOSE:
+                builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF);
+                builder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
+                break;
+            case CameraFlag.FLASH_OPEN:
+                if (preview) {
+                    builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
+                    builder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
+                } else {
+                    builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
+                    builder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
+                }
+                break;
+            case CameraFlag.FLASH_LIGHT:
+//                builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
+                builder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
+                break;
+            case CameraFlag.FLASH_AUTO:
+            default:
+                // TODO ？？？
+                break;
+        }
     }
 
 
@@ -648,7 +697,8 @@ public class Camera2Util {
             // Use the same AE and AF modes as the preview.
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-            setAutoFlash(captureBuilder);
+            setFlashMode(captureBuilder, false);
+            // setAutoFlash(captureBuilder);
 
             // Orientation
             int rotation = getDefaultDisplay().getRotation();
@@ -681,6 +731,16 @@ public class Camera2Util {
 //                                mTakePictureListener.onCaptureCompleted(session, request, result);
 //                        }
 //                    });
+
+
+//                    if (mBuilder.getTokenCallback() != null) {
+//                        ByteBuffer buffer = reader.acquireNextImage().getPlanes()[0].getBuffer();
+//                        byte[] bytes = new byte[buffer.remaining()];
+//                        buffer.get(bytes);
+//                        mImageData = bytes;
+//
+//                        mBuilder.getTokenCallback().onPictureTaken();
+//                    }
                 }
             };
 
@@ -725,7 +785,8 @@ public class Camera2Util {
             // Reset the auto-focus trigger
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
-            setAutoFlashForPreview(mPreviewRequestBuilder);
+            setFlashMode(mPreviewRequestBuilder, true);
+//            setAutoFlashForPreview(mPreviewRequestBuilder);
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCameraCaptureSessionCaptureCallback,
                     mBackgroundHandler);
             // After this, the camera will go back to the normal state of preview.
@@ -952,13 +1013,16 @@ public class Camera2Util {
 
 
         // We fit the aspect ratio of TextureView to the size of preview we picked.
-        int orientation = mActivity.getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mTextureView.setAspectRatio(
-                    mPreviewSize.getWidth(), mPreviewSize.getHeight());
-        } else {
-            mTextureView.setAspectRatio(
-                    mPreviewSize.getHeight(), mPreviewSize.getWidth());
+        if (mTextureView instanceof AutoFitTextureView) {
+            AutoFitTextureView textureView = (AutoFitTextureView) mTextureView;
+            int orientation = mActivity.getResources().getConfiguration().orientation;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                textureView.setAspectRatio(
+                        mPreviewSize.getWidth(), mPreviewSize.getHeight());
+            } else {
+                textureView.setAspectRatio(
+                        mPreviewSize.getHeight(), mPreviewSize.getWidth());
+            }
         }
 
         LogCat.e("configureTransform");
@@ -1012,6 +1076,8 @@ public class Camera2Util {
      */
     private void createCameraPreviewSession() {
         try {
+            LogCat.e("createCameraPreviewSession");
+
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
             assert texture != null;
 

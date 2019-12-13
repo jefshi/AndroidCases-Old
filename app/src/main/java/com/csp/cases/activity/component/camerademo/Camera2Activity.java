@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.hardware.Camera;
-import android.hardware.camera2.CameraCharacteristics;
 import android.media.ImageReader;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -16,8 +18,12 @@ import android.widget.TextView;
 
 import com.csp.cases.CaseApp;
 import com.csp.cases.R;
-import com.csp.cases.activity.component.camerademo.camera2.AutoFitTextureView;
+import com.csp.cases.activity.component.camerademo.camera.ErrorCallback;
+import com.csp.cases.activity.component.camerademo.camera.ICamera;
+import com.csp.cases.activity.component.camerademo.camera.PictureTokenCallback;
+import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
 import com.csp.cases.activity.component.camerademo.camera2.Camera2Util;
+import com.csp.utils.android.ImageUtils;
 import com.csp.utils.android.ToastUtil;
 import com.csp.utils.android.classutil.BitmapUtil;
 import com.csp.utils.android.log.LogCat;
@@ -98,43 +104,129 @@ public class Camera2Activity extends BaseButterKnifeActivity
         super.onResume();
 
         if (mCameraUtil == null) {
-//            AutoFitTextureView mTextureView = new AutoFitTextureView(this);
-//
-//
-//            mLfraPreview.removeAllViews();
-//            mLfraPreview.addView(mTextureView);
-//
+            TextureView mTextureView = new TextureView(this);
+
+
+            mLfraPreview.removeAllViews();
+            mLfraPreview.addView(mTextureView);
+
 //            Camera2Util.Builder builder = new Camera2Util.Builder(this)
 //                    .setLensFacing(CameraCharacteristics.LENS_FACING_BACK)
 //                    .setTextureView(mTextureView);
+
+
+            ICamera.Builder builder = new ICamera.Builder(getActivity(), getContext())
+                    .setLensFacing(CameraFlag.LENS_FACING_BACK)
+                    .setFlashMode(CameraFlag.FLASH_CLOSE)
+                    .setPictureTokenCallback(new PictureTokenCallback() {
+                        @Override
+                        public void onPictureTaken(byte[] imageData) {
+                            LogCat.e("onPictureTaken");
+                            // TODO 数据处理
+                            Bitmap bitmap = ImageUtils.getBitmap(imageData, 0);
+                            if (bitmap == null) {
+                                LogCat.e("bitmap == null");
+                                ToastUtil.showToast("相片数据获取失败，请重新拍照");
+                                return;
+                            }
+
+                            // 机型适配
+                            if ("Redmi K20 Pro".equals(Build.MODEL)) {
+                                Matrix matrix = new Matrix();
+                                matrix.setRotate(90);
+                                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+                            }
+
+                            Matrix matrix = new Matrix();
+                            matrix.setScale(((float) mLfraPreview.getWidth()) / bitmap.getWidth(),
+                                    ((float) mLfraPreview.getHeight()) / bitmap.getHeight());
+                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+
+//                            LogCat.e("onPictureTaken mCamera.getLensFace()");
+//                            if (mCamera.getLensFace() == CameraFlag.LENS_FACING_FRONT) {
+//                                matrix = new Matrix();
+//                                matrix.setRotate(180);
+//                                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
 //
+////                            // 左右翻转
+////                            matrix = new Matrix();
+////                            matrix.setScale(-1, 1);
+////                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+//                            }
+//
+//                            mBitmap = bitmap;
+
+                            LogCat.e("onPictureTaken onPause");
+                            LogCat.e(Thread.currentThread().getName());
+//                            mCamera.onPause();
+
+                            LogCat.e("onPictureTaken onPause end");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LogCat.e("runOnUiThread");
+                                    showTakePicture(false);
+//                                    refreshImgVerify();
+                                }
+                            });
+                            LogCat.e("onPictureTaken end");
+
+//                        // 使用相机的预览 View 查看拍照图片。
+//                        // 但有个问题，因为 onPause 的缘故，切到后台重新切回来时，回黑屏
+//                        lookUpTokenPicture();
+                        }
+                    }).setErrorCallback(new ErrorCallback() {
+                        @Override
+                        public void onError(int type, Throwable t) {
+                            LogCat.printStackTrace(Log.DEBUG, null, t);
+                            switch (type) {
+                                case ErrorCallback.ERROR_NO_CAMERA:
+                                    ToastUtil.showToast("该设备不存在摄像头，无法进行拍照");
+//                                    finishForResult(FLAG_CANCEL);
+                                    break;
+                                case ErrorCallback.ERROR_FLASH:
+                                    ToastUtil.showToast("该设备不支持闪光灯");
+                                    break;
+                                case ErrorCallback.ERROR_LENS_FACE:
+                                    ToastUtil.showToast("该设备不支持转换摄像头");
+                                    break;
+                                case ErrorCallback.ERROR_TOKEN_PICTURE:
+                                    ToastUtil.showToast("拍照失败，请重新拍照");
+                                    break;
+                            }
+
+                        }
+                    });
+
+            mCameraUtil = new Camera2Util(this, builder, mTextureView);
+
 //            mCameraUtil = builder.build();
-//
-//            mCameraUtil.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
-//                @Override
-//                public void onImageAvailable(ImageReader reader) {
-//                    ByteBuffer buffer = reader.acquireNextImage().getPlanes()[0].getBuffer();
-//                    byte[] bytes = new byte[buffer.remaining()];
-//                    buffer.get(bytes);
-//                    mImageData = bytes;
-//
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            showTakePicture(false);
-//                            showUse(true);
-//
-//                            mCameraUtil.closeCamera();
-//
-//                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData).copy(Bitmap.Config.ARGB_8888, true);
-//
-//                            Canvas canvas = mTextureView.lockCanvas();
-//                            canvas.setBitmap(bitmap);
-//                            mTextureView.unlockCanvasAndPost(canvas);
-//                        }
-//                    });
-//                }
-//            });
+
+            mCameraUtil.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
+                @Override
+                public void onImageAvailable(ImageReader reader) {
+                    ByteBuffer buffer = reader.acquireNextImage().getPlanes()[0].getBuffer();
+                    byte[] bytes = new byte[buffer.remaining()];
+                    buffer.get(bytes);
+                    mImageData = bytes;
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showTakePicture(false);
+                            showUse(true);
+
+                            mCameraUtil.closeCamera();
+
+                            Bitmap bitmap = BitmapUtil.toBitmap(mImageData).copy(Bitmap.Config.ARGB_8888, true);
+
+                            Canvas canvas = mTextureView.lockCanvas();
+                            canvas.setBitmap(bitmap);
+                            mTextureView.unlockCanvasAndPost(canvas);
+                        }
+                    });
+                }
+            });
 
 
 //            new CameraCaptureSession.CaptureCallback() {
@@ -187,7 +279,7 @@ public class Camera2Activity extends BaseButterKnifeActivity
         switch (v.getId()) {
             case R.id.img_flash:
                 toSelect = !mImgFlash.isSelected();
-                mCameraUtil.setFlashing(toSelect);
+//                mCameraUtil.setFlashing(toSelect);
 //                mCameraUtil.switchFlash();
                 mImgFlash.setSelected(toSelect);
                 break;

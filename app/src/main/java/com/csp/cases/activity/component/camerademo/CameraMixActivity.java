@@ -9,7 +9,6 @@ import android.graphics.Matrix;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +22,7 @@ import com.csp.cases.activity.component.camerademo.camera.ErrorCallback;
 import com.csp.cases.activity.component.camerademo.camera.ICamera;
 import com.csp.cases.activity.component.camerademo.camera.PictureTokenCallback;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
+import com.csp.cases.activity.component.camerademo.camera2.AutoFitTextureView;
 import com.csp.utils.android.ImageUtils;
 import com.csp.utils.android.ToastUtil;
 import com.csp.utils.android.log.LogCat;
@@ -34,7 +34,6 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class CameraMixActivity extends BaseButterKnifeActivity
         implements View.OnClickListener {
 
@@ -116,7 +115,7 @@ public class CameraMixActivity extends BaseButterKnifeActivity
             @Override
             public void permissionDenied(@NonNull String[] permissions) {
                 //用户拒绝了权限的申请
-                finish();
+                finishForResult(FLAG_CANCEL);
             }
         }, Manifest.permission.CAMERA);
     }
@@ -164,25 +163,62 @@ public class CameraMixActivity extends BaseButterKnifeActivity
     @Nullable
     private ICamera initCamera() {
         return new ICamera.Builder(getActivity(), getContext())
-                .setLensFacing(CameraFlag.LENS_FACING_FRONT)
-                .setFlashMode(CameraFlag.FLASH_CLOSE)
+                .setCameraApi(CameraFlag.CAMERA_API_2)
+                .setPreViewForApi2(new AutoFitTextureView(this))
+                .setLensFacing(CameraFlag.LENS_FACING_BACK)
+                .setFlashMode(CameraFlag.FLASH_LIGHT)
                 .setPictureTokenCallback(new PictureTokenCallback() {
                     @Override
                     public void onPictureTaken(byte[] imageData) {
-                        mBitmap = ImageUtils.getBitmap(imageData, 0);
-                        if (mBitmap == null) {
+                        LogCat.e("onPictureTaken");
+                        // TODO 数据处理
+                        Bitmap bitmap = ImageUtils.getBitmap(imageData, 0);
+                        if (bitmap == null) {
+                            LogCat.e("bitmap == null");
                             ToastUtil.showToast("相片数据获取失败，请重新拍照");
                             return;
                         }
 
+                        // 机型适配
+                        if ("Redmi K20 Pro".equals(Build.MODEL)) {
+                            Matrix matrix = new Matrix();
+                            matrix.setRotate(90);
+                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+                        }
+
+                        Matrix matrix = new Matrix();
+                        matrix.setScale(((float) mLfraPreview.getWidth()) / bitmap.getWidth(),
+                                ((float) mLfraPreview.getHeight()) / bitmap.getHeight());
+                        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+
+                        LogCat.e("onPictureTaken mCamera.getLensFace()");
+                        if (mCamera.getLensFace() == CameraFlag.LENS_FACING_FRONT) {
+                            matrix = new Matrix();
+                            matrix.setRotate(180);
+                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+
+//                            // 左右翻转
+//                            matrix = new Matrix();
+//                            matrix.setScale(-1, 1);
+//                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+                        }
+
+                        mBitmap = bitmap;
+
+                        LogCat.e("onPictureTaken onPause");
+                        LogCat.e(Thread.currentThread().getName());
                         mCamera.onPause();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showTakePicture(false);
-                                refreshImgVerify();
-                            }
-                        });
+
+                        LogCat.e("onPictureTaken onPause end");
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+                        LogCat.e("runOnUiThread");
+                        showTakePicture(false);
+                        refreshImgVerify();
+//                            }
+//                        });
+                        LogCat.e("onPictureTaken end");
 
 //                        // 使用相机的预览 View 查看拍照图片。
 //                        // 但有个问题，因为 onPause 的缘故，切到后台重新切回来时，回黑屏
@@ -207,7 +243,6 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                                 ToastUtil.showToast("拍照失败，请重新拍照");
                                 break;
                         }
-
                     }
                 }).build(this);
     }
@@ -336,36 +371,6 @@ public class CameraMixActivity extends BaseButterKnifeActivity
      * 不建议使用相机返回的数据，因为在某些手机上，后置摄像头也会莫名旋转90读，如小米
      */
     private void refreshImgVerify() {
-        LogCat.e(Build.MODEL);
-
-        Bitmap bitmap = mBitmap;
-        if (bitmap == null)
-            return;
-
-        // 机型适配
-        if ("Redmi K20 Pro".equals(Build.MODEL)) {
-            Matrix matrix = new Matrix();
-            matrix.setRotate(90);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-        }
-
-        Matrix matrix = new Matrix();
-        matrix.setScale(((float) mLfraPreview.getWidth()) / bitmap.getWidth(),
-                ((float) mLfraPreview.getHeight()) / bitmap.getHeight());
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-
-        if (mCamera.getLensFace() == CameraFlag.LENS_FACING_FRONT) {
-            matrix = new Matrix();
-            matrix.setRotate(180);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-
-            // 左右翻转
-            matrix = new Matrix();
-            matrix.setScale(-1, 1);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-        }
-
-        mBitmap = bitmap;
-        mImgVerify.setImageBitmap(bitmap);
+        mImgVerify.setImageBitmap(mBitmap);
     }
 }

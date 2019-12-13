@@ -1,20 +1,17 @@
 package com.csp.cases.activity.component.camerademo.camera;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.hardware.Camera;
 import android.hardware.camera2.CameraCharacteristics;
 import android.media.ImageReader;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.view.TextureView;
 import android.view.View;
 
-import com.csp.cases.activity.component.camerademo.camera.annotation.AFlashFlag;
 import com.csp.cases.activity.component.camerademo.camera.annotation.ALensFacing;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
 import com.csp.cases.activity.component.camerademo.camera2.AutoFitTextureView;
 import com.csp.cases.activity.component.camerademo.camera2.Camera2Util;
-import com.csp.utils.android.classutil.BitmapUtil;
+import com.csp.utils.android.log.LogCat;
 
 import java.nio.ByteBuffer;
 
@@ -25,11 +22,11 @@ public class Camera2Impl implements ICamera {
 
     private Camera2Util mCameraUtil;
 
-    private AutoFitTextureView mTextureView;
+    private TextureView mTextureView;
 
     public Camera2Impl(Builder builder) {
         mBuilder = builder;
-        onResume();
+        initCamera();
     }
 
     @Override
@@ -39,8 +36,20 @@ public class Camera2Impl implements ICamera {
 
     @Override
     public void onResume() {
+        initCamera();
+        mCameraUtil.onResume();
+    }
+
+    private void initCamera() {
         if (mCameraUtil == null) {
-            mTextureView = new AutoFitTextureView(mBuilder.getContext());
+//            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
+//                    ViewGroup.LayoutParams.MATCH_PARENT,
+//                    ViewGroup.LayoutParams.MATCH_PARENT);
+
+            TextureView preView = mBuilder.getPreViewForApi2();
+            if (preView == null)
+                preView = new AutoFitTextureView(mBuilder.getContext());
+//            mTextureView.setLayoutParams(lp);
 
 
 //            mLfraPreview.removeAllViews();
@@ -50,22 +59,27 @@ public class Camera2Impl implements ICamera {
 //                    .setLensFacing(mBuilder.getLensFacing())
 //                    .setTextureView(mTextureView);
 
+            mTextureView = preView;
             mCameraUtil = new Camera2Util(mBuilder.getActivity(), mBuilder, mTextureView);
 
             mCameraUtil.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
+                    LogCat.e("onImageAvailable");
                     ByteBuffer buffer = reader.acquireNextImage().getPlanes()[0].getBuffer();
                     byte[] bytes = new byte[buffer.remaining()];
                     buffer.get(bytes);
 
-                    if (mBuilder.getTokenCallback() != null)
-                        mBuilder.getTokenCallback().onPictureTaken(bytes);
+                    mBuilder.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mBuilder.getTokenCallback() != null)
+                                mBuilder.getTokenCallback().onPictureTaken(bytes);
+                        }
+                    });
                 }
             });
         }
-
-        mCameraUtil.onResume();
     }
 
     @Override
@@ -108,7 +122,8 @@ public class Camera2Impl implements ICamera {
 
     @Override
     public boolean setFlashMode(int mode) {
-        mCameraUtil.setFlashing(false); // TODO ???
+        mBuilder.setFlashMode(mode);
+        mCameraUtil.setFlashMode();
         return true;
     }
 
@@ -138,23 +153,6 @@ public class Camera2Impl implements ICamera {
                 : CameraCharacteristics.LENS_FACING_BACK;
     }
 
-    /**
-     * @param flashFla {@link AFlashFlag}
-     * @return 转换为正确的 FlashMode
-     */
-    private String toFlashMode(@AFlashFlag int flashFla) {
-        switch (flashFla) {
-            case CameraFlag.FLASH_CLOSE:
-                return Camera.Parameters.FLASH_MODE_OFF;
-            case CameraFlag.FLASH_OPEN:
-                return Camera.Parameters.FLASH_MODE_ON;
-            case CameraFlag.FLASH_LIGHT:
-                return Camera.Parameters.FLASH_MODE_ON; // TODO 未知
-            case CameraFlag.FLASH_AUTO:
-            default:
-                return Camera.Parameters.FLASH_MODE_AUTO;
-        }
-    }
 
     @Override
     public int getLensFace() {

@@ -1,6 +1,6 @@
 package com.csp.cases.activity.component.camerademo.camera;
 
-import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -9,8 +9,7 @@ import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
 
 import com.csp.cases.activity.component.camerademo.camera.annotation.ACameraApi;
@@ -18,9 +17,8 @@ import com.csp.cases.activity.component.camerademo.camera.annotation.AFlashFlag;
 import com.csp.cases.activity.component.camerademo.camera.annotation.ALensFacing;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
 import com.csp.cases.activity.component.camerademo.camera.utils.IncompatibleDevicesUtils;
-import com.csp.utils.android.log.LogCat;
-import com.github.dfqin.grantor.PermissionListener;
-import com.github.dfqin.grantor.PermissionsUtil;
+import com.csp.cases.activity.component.camerademo.camera.utils.LogDelegate;
+import com.csp.cases.activity.component.camerademo.camera.utils.Logger;
 
 public interface ICamera {
 
@@ -91,8 +89,12 @@ public interface ICamera {
         private Activity mActivity; // TODO ???
         private Context mContext; // TODO ???
 
+        private Logger mLogger;
+
         @ACameraApi
         private int mCameraApi;
+
+        private TextureView mPreViewForApi2;
 
         @ALensFacing
         private int mLensFacing = CameraFlag.LENS_FACING_BACK;
@@ -117,6 +119,10 @@ public interface ICamera {
             return mActivity;
         }
 
+        public TextureView getPreViewForApi2() {
+            return mPreViewForApi2;
+        }
+
         public int getLensFacing() {
             return mLensFacing;
         }
@@ -134,8 +140,18 @@ public interface ICamera {
             return mErrorCallback;
         }
 
+        public Builder setLogger(Logger logger) {
+            mLogger = logger;
+            return this;
+        }
+
         public Builder setCameraApi(int cameraApi) {
             mCameraApi = cameraApi;
+            return this;
+        }
+
+        public Builder setPreViewForApi2(TextureView preViewForApi2) {
+            mPreViewForApi2 = preViewForApi2;
             return this;
         }
 
@@ -164,6 +180,7 @@ public interface ICamera {
             mContext = context;
         }
 
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public ICamera build(Context context) {
             // 判断是否有摄像头
             if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
@@ -171,42 +188,62 @@ public interface ICamera {
                 return null;
             }
 
-            // TODO 测试代码 Begin
-            return new Camera1Impl(this);
-//            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-//                    ? new Camera2Impl(this)
-//                    : new Camera1Impl(this);
-            // TODO 测试代码 End
+            // 日志代理
+            if (mLogger == null) {
+                mLogger = new Logger.Sample();
+            }
+            LogDelegate.setLogger(mLogger);
 
             // API 选择
-//            int cameraApi = mCameraApi != 0 ? mCameraApi : preferredCameraApi(context);
-//            return cameraApi == CameraFlag.CAMERA_API_1
-//                    ? new Camera1Impl(this)
-//                    : new Camera2Impl(this);
+            int cameraApi = mCameraApi == CameraFlag.CAMERA_API_1 ? mCameraApi : preferredCameraApi(context);
+            LogDelegate.log("选择的相机：" + cameraApi);
+
+            // TODO 测试 begin
+            cameraApi = CameraFlag.CAMERA_API_2;
+            // TODO 测试 end
+
+            return cameraApi == CameraFlag.CAMERA_API_1
+                    ? new Camera1Impl(this)
+                    : new Camera2Impl(this);
         }
 
         @ACameraApi
         private int preferredCameraApi(Context context) {
             boolean userCamera2 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                    && !isLegacyCamera(context)
+                    && isAdvancedCamera(context)
                     && !IncompatibleDevicesUtils.isIncompatibleDevice(Build.MODEL);
 
             return userCamera2 ? CameraFlag.CAMERA_API_2 : CameraFlag.CAMERA_API_1;
         }
 
         /**
-         * There were more issues than benefits when using Legacy camera with Camera2 API.
-         * I found it to be working much better with deprecated Camera1 API instead.
+         * 当设备的 Supported Hardware Level 低于 FULL 的时候，建议还是使用 Camera1，
+         * 因为 FULL 级别以下的 Camera2 能提供的功能几乎和 Camera1 一样，所以倒不如选择更加稳定的 Camera1。
+         * <p>
+         * LEVEL_LEGACY: 向后兼容模式, 如果是此等级, 基本没有额外功能, HAL层大概率就是HAL1(我遇到过的都是)
+         * LEVEL_LIMITED: 有最基本的功能, 还支持一些额外的高级功能, 这些高级功能是LEVEL_FULL的子集
+         * LEVEL_FULL: 支持对每一帧数据进行控制,还支持高速率的图片拍摄
+         * LEVEL_3: 支持YUV后处理和Raw格式图片拍摄, 还支持额外的输出流配置
+         * LEVEL_EXTERNAL: API28中加入的, 应该是外接的摄像头, 功能和LIMITED类似
+         * <p>
+         * 各个等级从支持的功能多少排序为: LEGACY < LIMITED < FULL < LEVEL_3
+         * <p>
+         * 来源：https://www.jianshu.com/p/9a2e66916fcb
+         * 来源：https://www.jianshu.com/p/23e8789fbc10
          *
-         * @return true：推荐使用旧相机API
+         * @return true：推荐使用新相机API
+         * @see CameraCharacteristics#INFO_SUPPORTED_HARDWARE_LEVEL_3
+         * @see CameraCharacteristics#INFO_SUPPORTED_HARDWARE_LEVEL_FULL
+         * @see CameraCharacteristics#INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED
          * @see CameraCharacteristics#INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY
+         * @see CameraCharacteristics#INFO_SUPPORTED_HARDWARE_LEVEL_EXTERNAL
          */
         @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-        private boolean isLegacyCamera(Context context) {
+        private boolean isAdvancedCamera(Context context) {
             try {
                 CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
                 if (manager == null)
-                    return true;
+                    return false;
 
                 for (String cameraId : manager.getCameraIdList()) {
                     CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
@@ -214,20 +251,55 @@ public interface ICamera {
                     if (lensFacing == null || lensFacing != mLensFacing)
                         continue;
 
-                    Integer hardwareLevel = characteristics.get(
-                            CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
-
-                    // 当设备的 Supported Hardware Level 低于 FULL 的时候，建议还是使用 Camera1，
-                    // 因为 FULL 级别以下的 Camera2 能提供的功能几乎和 Camera1 一样，所以倒不如选择更加稳定的 Camera1。
-                    // https://www.jianshu.com/p/9a2e66916fcb
-                    return hardwareLevel == null
-                            || hardwareLevel < CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY;
+                    int requiredLevel = CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL;
+                    return isHardwareLevelSupported(requiredLevel, characteristics);
                 }
-                return true;
+                return false;
             } catch (Throwable t) {
-                LogCat.printStackTrace(Log.DEBUG, null, t);
-                return true;
+                mErrorCallback.onError(ErrorCallback.ERROR_COMMON, t);
+                return false;
             }
+        }
+
+        /**
+         * 判断相机的 Hardware Level 是否大于等于指定的 Level
+         * <p>
+         * 各个等级从支持的功能多少排序为: LEGACY < LIMITED < FULL < LEVEL_3
+         *
+         * @return true：支持
+         */
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        private boolean isHardwareLevelSupported(int requiredLevel, CameraCharacteristics characteristics) {
+            Integer hardwareLevel = characteristics.get(
+                    CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
+            if (hardwareLevel == null)
+                return false;
+
+            if (requiredLevel == hardwareLevel)
+                return true;
+
+            int[] sortedLevels;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                sortedLevels = new int[]{
+                        CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY,
+                        CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED,
+                        CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL,
+                        CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_3
+                };
+            } else {
+                sortedLevels = new int[]{
+                        CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY,
+                        CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED,
+                        CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL
+                };
+            }
+            for (int sort : sortedLevels) {
+                if (requiredLevel == sort)
+                    return true;
+                else if (hardwareLevel == sort)
+                    return false;
+            }
+            return false;
         }
     }
 }

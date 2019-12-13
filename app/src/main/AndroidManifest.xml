@@ -305,10 +305,6 @@
             android:configChanges="orientation|keyboardHidden" />
 
         <activity
-            android:name=".activity.component.camerademo.CameraActivity"
-            android:configChanges="orientation|keyboardHidden" />
-
-        <activity
             android:name=".activity.component.camerademo.Camera2Activity"
             android:configChanges="orientation|keyboardHidden" />
 

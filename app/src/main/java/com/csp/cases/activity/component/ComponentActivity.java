@@ -2,7 +2,6 @@ package com.csp.cases.activity.component;
 
 import com.csp.cases.activity.component.broadcast.BroadcastActivity;
 import com.csp.cases.activity.component.camerademo.Camera2Activity;
-import com.csp.cases.activity.component.camerademo.CameraActivity;
 import com.csp.cases.activity.component.camerademo.CameraMixActivity;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
@@ -29,7 +28,6 @@ public class ComponentActivity extends BaseGridActivity {
         items.add(new ItemInfo("Toast", ToastActivity.class, "Toast 通知案例"));
         items.add(new ItemInfo("---", "---", "---"));
         items.add(new ItemInfo("Camera max", CameraMixActivity.class, "Camera 案例"));
-        items.add(new ItemInfo("Camera 1", CameraActivity.class, "Camera 案例"));
         items.add(new ItemInfo("Camera 2", Camera2Activity.class, "Camera2Activity 通知案例"));
         return items;
     }

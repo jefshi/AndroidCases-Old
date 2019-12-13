@@ -1,10 +1,10 @@
-package com.csp.cases.activity.component.camerademo.camera;
+package com.csp.cases.activity.component.camerademo.camera.utils;
 
 import android.util.Log;
 
 import com.csp.utils.android.log.LogCat;
 
-public interface ErrorCallback {
+public interface Logger {
 
     int ERROR_COMMON = 0; // 一般异常日志
 
@@ -19,12 +19,19 @@ public interface ErrorCallback {
     int ERROR_CAMERA_ACCESS = 8; // 预览数据捕获异常
     int ERROR_OPEN_CLOSE_LOCK = 9; // 打开关闭锁超时
 
-    void onError(int type, Throwable t);
+    void log(String message);
 
-    class Sample implements ErrorCallback {
+    void printStackTrace(int type, Throwable t);
+
+    class Sample implements Logger {
 
         @Override
-        public void onError(int type, Throwable t) {
+        public void log(String message) {
+            LogCat.e(message);
+        }
+
+        @Override
+        public void printStackTrace(int type, Throwable t) {
             LogCat.printStackTrace(Log.ERROR, "type = " + type, t);
         }
     }
