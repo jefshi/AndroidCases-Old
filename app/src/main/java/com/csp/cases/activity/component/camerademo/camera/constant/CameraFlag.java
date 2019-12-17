@@ -1,7 +1,5 @@
 package com.csp.cases.activity.component.camerademo.camera.constant;
 
-import android.hardware.camera2.CameraCharacteristics;
-
 public interface CameraFlag {
 
     // API 类型
@@ -18,6 +16,4 @@ public interface CameraFlag {
     int FLASH_CLOSE = 1; // 关
     int FLASH_OPEN = 2; // 开
     int FLASH_LIGHT = 3; // 常亮
-
-
 }

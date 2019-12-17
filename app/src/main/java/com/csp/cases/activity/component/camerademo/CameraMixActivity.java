@@ -21,6 +21,7 @@ import com.csp.cases.R;
 import com.csp.cases.activity.component.camerademo.camera.ErrorCallback;
 import com.csp.cases.activity.component.camerademo.camera.ICamera;
 import com.csp.cases.activity.component.camerademo.camera.PictureTokenCallback;
+import com.csp.cases.activity.component.camerademo.camera.annotation.ACameraApi;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
 import com.csp.cases.activity.component.camerademo.camera2.AutoFitTextureView;
 import com.csp.utils.android.ImageUtils;
@@ -73,6 +74,10 @@ public class CameraMixActivity extends BaseButterKnifeActivity
     private Bitmap mBitmap;
 
     private ICamera mCamera;
+
+    // 测试用数据
+    @ACameraApi
+    protected int mCameraApi;
 
     public static void start(Activity activity) {
         start(activity, false);
@@ -163,18 +168,16 @@ public class CameraMixActivity extends BaseButterKnifeActivity
     @Nullable
     private ICamera initCamera() {
         return new ICamera.Builder(getActivity(), getContext())
-                .setCameraApi(CameraFlag.CAMERA_API_2)
+                .setCameraApi(mCameraApi)
                 .setPreViewForApi2(new AutoFitTextureView(this))
                 .setLensFacing(CameraFlag.LENS_FACING_BACK)
-                .setFlashMode(CameraFlag.FLASH_LIGHT)
+                .setFlashMode(CameraFlag.FLASH_CLOSE)
                 .setPictureTokenCallback(new PictureTokenCallback() {
                     @Override
                     public void onPictureTaken(byte[] imageData) {
-                        LogCat.e("onPictureTaken");
                         // TODO 数据处理
                         Bitmap bitmap = ImageUtils.getBitmap(imageData, 0);
                         if (bitmap == null) {
-                            LogCat.e("bitmap == null");
                             ToastUtil.showToast("相片数据获取失败，请重新拍照");
                             return;
                         }
@@ -191,7 +194,6 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                                 ((float) mLfraPreview.getHeight()) / bitmap.getHeight());
                         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
 
-                        LogCat.e("onPictureTaken mCamera.getLensFace()");
                         if (mCamera.getLensFace() == CameraFlag.LENS_FACING_FRONT) {
                             matrix = new Matrix();
                             matrix.setRotate(180);
@@ -204,21 +206,9 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                         }
 
                         mBitmap = bitmap;
-
-                        LogCat.e("onPictureTaken onPause");
-                        LogCat.e(Thread.currentThread().getName());
                         mCamera.onPause();
-
-                        LogCat.e("onPictureTaken onPause end");
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-                        LogCat.e("runOnUiThread");
                         showTakePicture(false);
                         refreshImgVerify();
-//                            }
-//                        });
-                        LogCat.e("onPictureTaken end");
 
 //                        // 使用相机的预览 View 查看拍照图片。
 //                        // 但有个问题，因为 onPause 的缘故，切到后台重新切回来时，回黑屏
@@ -294,53 +284,12 @@ public class CameraMixActivity extends BaseButterKnifeActivity
         finish();
     }
 
-    @OnClick({R.id.img_flash, R.id.txt_jump, R.id.txt_cancel, R.id.img_lens_face, R.id.img_take_picture, R.id.txt_afresh, R.id.txt_use})
-    @Override
-    public void onClick(View v) {
-        boolean toSelect;
-        switch (v.getId()) {
-            case R.id.img_flash:
-                toSelect = !mImgFlash.isSelected();
-                int mode = toSelect ? CameraFlag.FLASH_LIGHT : CameraFlag.FLASH_CLOSE;
-                if (mCamera.setFlashMode(mode))
-                    mImgFlash.setSelected(toSelect);
-                break;
-            case R.id.txt_jump:
-                finishForResult(FLAG_JUMP);
-                break;
-            case R.id.txt_cancel:
-                finishForResult(FLAG_CANCEL);
-                break;
-            case R.id.img_lens_face:
-                toSelect = !mImgLensFace.isSelected();
-                int lensFacing = toSelect ? CameraFlag.LENS_FACING_FRONT : CameraFlag.LENS_FACING_BACK;
-                if (mCamera.setLensFace(lensFacing)) {
-                    mImgLensFace.setSelected(toSelect);
-                    resetCameraAndPreview();
-                }
-                break;
-            case R.id.img_take_picture:
-                mCamera.takePicture();
-                break;
-            case R.id.txt_afresh:
-                mBitmap = null;
-                showTakePicture(true);
-                mCamera.onResume();
-                resetCameraAndPreview();
-                break;
-            case R.id.txt_use:
-                if (mBitmap == null) {
-                    ToastUtil.showToast("相片数据获取失败，请重新拍照");
-                    return;
-                }
+    private boolean isFlashClose() {
+        return !mImgFlash.isSelected();
+    }
 
-                boolean save = ImageUtils.save(mBitmap, SAVE_FILE, Bitmap.CompressFormat.JPEG);
-                if (save)
-                    finishForResult(FLAG_TAKE);
-                else
-                    ToastUtil.showToast("相片无法保存，请重新拍照");
-                break;
-        }
+    private boolean isLensFaceFront() {
+        return mImgLensFace.isSelected();
     }
 
     private void showTakePicture(boolean showed) {
@@ -372,5 +321,62 @@ public class CameraMixActivity extends BaseButterKnifeActivity
      */
     private void refreshImgVerify() {
         mImgVerify.setImageBitmap(mBitmap);
+    }
+
+    @OnClick({R.id.img_flash, R.id.txt_jump, R.id.txt_cancel, R.id.img_lens_face, R.id.img_take_picture, R.id.txt_afresh, R.id.txt_use})
+    @Override
+    public void onClick(View v) {
+        boolean toSelect;
+        switch (v.getId()) {
+            case R.id.img_flash:
+                toSelect = !mImgFlash.isSelected();
+                if (toSelect && isLensFaceFront()) {
+                    ToastUtil.showToast("前置摄像头不能打开闪光灯");
+                    return;
+                }
+                int mode = toSelect ? CameraFlag.FLASH_LIGHT : CameraFlag.FLASH_CLOSE;
+                if (mCamera.setFlashMode(mode))
+                    mImgFlash.setSelected(toSelect);
+                break;
+            case R.id.txt_jump:
+                finishForResult(FLAG_JUMP);
+                break;
+            case R.id.txt_cancel:
+                finishForResult(FLAG_CANCEL);
+                break;
+            case R.id.img_lens_face:
+                toSelect = !mImgLensFace.isSelected();
+                int lensFacing = toSelect ? CameraFlag.LENS_FACING_FRONT : CameraFlag.LENS_FACING_BACK;
+                // 前置摄像头闪光灯重置为关闭
+                if (lensFacing == CameraFlag.LENS_FACING_FRONT && !isFlashClose())
+                    onClick(mImgFlash);
+
+                // 切换摄像头
+                if (mCamera.setLensFace(lensFacing)) {
+                    mImgLensFace.setSelected(toSelect);
+                    resetCameraAndPreview();
+                }
+                break;
+            case R.id.img_take_picture:
+                mCamera.takePicture();
+                break;
+            case R.id.txt_afresh:
+                mBitmap = null;
+                showTakePicture(true);
+                mCamera.onResume();
+                resetCameraAndPreview();
+                break;
+            case R.id.txt_use:
+                if (mBitmap == null) {
+                    ToastUtil.showToast("相片数据获取失败，请重新拍照");
+                    return;
+                }
+                boolean save = ImageUtils.save(mBitmap, SAVE_FILE, Bitmap.CompressFormat.JPEG);
+                if (save)
+                    finishForResult(FLAG_TAKE);
+                else
+                    ToastUtil.showToast("相片无法保存，请重新拍照");
+                break;
+        }
     }
 }

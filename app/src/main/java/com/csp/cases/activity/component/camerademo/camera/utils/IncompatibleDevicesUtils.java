@@ -28,7 +28,8 @@ public class IncompatibleDevicesUtils {
 
     private enum Device {
 
-        ONE_PLUS_6(Arrays.asList("oneplus a6000", "oneplus a6003"));
+        ONE_PLUS_6(Arrays.asList("oneplus a6000", "oneplus a6003")),
+        REDMI(Arrays.asList("Redmi K20 Pro")); // 小米系列估计都得进黑名单
 
         private List<String> mNames;
 

@@ -120,21 +120,28 @@ public class Camera1Impl implements ICamera {
 
     @Override
     public boolean setFlashMode(int mode) {
+        int oldMode = mBuilder.getFlashMode();
         mBuilder.setFlashMode(mode);
-        return switchFlash();
+        boolean result = switchFlash();
+        if (!result)
+            mBuilder.setFlashMode(oldMode);
+
+        return result;
     }
 
     @Override
     public boolean setLensFace(int lensFacing) {
+        int oldFacing = mBuilder.getLensFacing();
+
         mBuilder.setLensFacing(lensFacing);
-        if (!initCamera())
-            return false;
+        boolean result = initCamera();
+        if (result)
+            initCameraPreview();
+        else
+            mBuilder.setLensFacing(oldFacing);
 
-//        mPreview.setCamera(mCamera);
-        initCameraPreview();
-        return true;
+        return result;
     }
-
 
     /**
      * TODO 要不要追加接口？
@@ -199,16 +206,6 @@ public class Camera1Impl implements ICamera {
      */
     public boolean switchFlash() {
         try {
-            PackageManager pm = mBuilder.getContext().getPackageManager();
-            FeatureInfo[] features = pm.getSystemAvailableFeatures();
-            for (FeatureInfo f : features) {
-                if (PackageManager.FEATURE_CAMERA_FLASH.equals(f.name)) //判断设备是否支持闪光灯
-                {
-                    LogCat.e("FEATURE_CAMERA_FLASH");
-                }
-                LogCat.w(f.name);
-            }
-
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.setFlashMode(toFlashMode(mBuilder.getFlashMode()));
             mCamera.setParameters(parameters);

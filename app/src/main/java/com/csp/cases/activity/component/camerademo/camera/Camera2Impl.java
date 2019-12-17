@@ -64,17 +64,17 @@ public class Camera2Impl implements ICamera {
 
             mCameraUtil.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
                 @Override
-                public void onImageAvailable(ImageReader reader) {
-                    LogCat.e("onImageAvailable");
-                    ByteBuffer buffer = reader.acquireNextImage().getPlanes()[0].getBuffer();
-                    byte[] bytes = new byte[buffer.remaining()];
-                    buffer.get(bytes);
-
+                public void onImageAvailable(final ImageReader reader) {
                     mBuilder.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (mBuilder.getTokenCallback() != null)
+                            if (mBuilder.getTokenCallback() != null) {
+                                ByteBuffer buffer = reader.acquireNextImage().getPlanes()[0].getBuffer();
+                                byte[] bytes = new byte[buffer.remaining()];
+                                buffer.get(bytes);
+
                                 mBuilder.getTokenCallback().onPictureTaken(bytes);
+                            }
                         }
                     });
                 }
@@ -122,9 +122,13 @@ public class Camera2Impl implements ICamera {
 
     @Override
     public boolean setFlashMode(int mode) {
+        int oldMode = mBuilder.getFlashMode();
         mBuilder.setFlashMode(mode);
-        mCameraUtil.setFlashMode();
-        return true;
+        boolean result = mCameraUtil.setFlashMode();
+        if (!result)
+            mBuilder.setFlashMode(oldMode);
+
+        return result;
     }
 
     @Override

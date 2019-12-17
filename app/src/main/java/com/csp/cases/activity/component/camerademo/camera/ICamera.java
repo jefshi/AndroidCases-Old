@@ -196,12 +196,14 @@ public interface ICamera {
 
             // API 选择
             int cameraApi = mCameraApi == CameraFlag.CAMERA_API_1 ? mCameraApi : preferredCameraApi(context);
-            LogDelegate.log("选择的相机：" + cameraApi);
+            LogDelegate.log("推荐或选择的相机：" + cameraApi);
 
             // TODO 测试 begin
-            cameraApi = CameraFlag.CAMERA_API_2;
+            if (mCameraApi != 0)
+                cameraApi = mCameraApi;
             // TODO 测试 end
 
+            LogDelegate.log("实际使用相机：" + cameraApi);
             return cameraApi == CameraFlag.CAMERA_API_1
                     ? new Camera1Impl(this)
                     : new Camera2Impl(this);

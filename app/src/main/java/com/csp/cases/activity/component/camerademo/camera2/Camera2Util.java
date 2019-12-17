@@ -35,6 +35,7 @@ import android.view.TextureView;
 import com.csp.cases.activity.component.camerademo.camera.ErrorCallback;
 import com.csp.cases.activity.component.camerademo.camera.ICamera;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
+import com.csp.cases.activity.component.camerademo.camera.utils.LogDelegate;
 import com.csp.cases.util.GsonUtil;
 import com.csp.utils.android.log.LogCat;
 
@@ -131,32 +132,44 @@ public class Camera2Util {
 
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture texture, int width, int height) {
-            LogCat.e("onSurfaceTextureAvailable");
             openCamera(width, height);
         }
 
         @Override
         public void onSurfaceTextureSizeChanged(SurfaceTexture texture, int width, int height) {
-            LogCat.e("onSurfaceTextureSizeChanged");
             configureTransform(width, height);
         }
 
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture texture) {
-            LogCat.e("onSurfaceTextureDestroyed");
             return true;
         }
 
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture texture) {
-            LogCat.d("onSurfaceTextureUpdated");
         }
     };
 
 
-    public void setFlashMode() {
-        if (mPreviewRequestBuilder != null)
-            setFlashMode(mPreviewRequestBuilder, true);
+    public boolean setFlashMode() {
+        boolean result = setFlashMode(mPreviewRequestBuilder, true);
+        if (result) {
+            // 显示相机预览
+            // Finally, we start displaying the camera preview.
+            mPreviewRequest = mPreviewRequestBuilder.build();
+            // 设置反复捕获数据的请求，这样预览界面就会一直有数据显示
+            try {
+                if (mCaptureSession != null)
+                    mCaptureSession.setRepeatingRequest(mPreviewRequest, mCameraCaptureSessionCaptureCallback, mBackgroundHandler);
+            } catch (CameraAccessException e) {
+                mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_FLASH, e);
+            }
+        } else {
+            mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_FLASH, new Exception("不支持闪光灯 "));
+        }
+        return result;
+
+
     }
 
 //    /**
@@ -174,15 +187,6 @@ public class Camera2Util {
      * still image is ready to be saved.
      */
     private ImageReader.OnImageAvailableListener mOnImageAvailableListener;
-//            = new ImageReader.OnImageAvailableListener() {
-//
-//        @Override
-//        public void onImageAvailable(ImageReader reader) {
-//            LogCat.e("onImageAvailable");
-//            // TODO 调用场景
-////            mBackgroundHandler.post(new CameraPreview.ImageSaver(reader.acquireNextImage(), mFile));
-//        }
-//    };
 
     public void setOnImageAvailableListener(ImageReader.OnImageAvailableListener onImageAvailableListener) {
         mOnImageAvailableListener = onImageAvailableListener;
@@ -254,9 +258,6 @@ public class Camera2Util {
 
             @Override
             public void onOpened(@NonNull CameraDevice cameraDevice) {
-
-                LogCat.e("onOpened");
-
                 // This method is called when the camera is opened. We start camera preview here.
                 mCameraOpenCloseLock.release();
                 mCameraDevice = cameraDevice;
@@ -265,9 +266,6 @@ public class Camera2Util {
 
             @Override
             public void onDisconnected(@NonNull CameraDevice cameraDevice) {
-                LogCat.e("onDisconnected");
-
-
                 mCameraOpenCloseLock.release();
                 cameraDevice.close();
                 mCameraDevice = null;
@@ -275,8 +273,6 @@ public class Camera2Util {
 
             @Override
             public void onError(@NonNull CameraDevice cameraDevice, int error) {
-                LogCat.e("onError");
-
                 mCameraOpenCloseLock.release();
                 cameraDevice.close();
                 mCameraDevice = null;
@@ -296,9 +292,6 @@ public class Camera2Util {
              */
             @Override
             public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                LogCat.e("onConfigured");
-
-
                 // The camera is already closed
                 if (null == mCameraDevice) {
                     return;
@@ -331,10 +324,6 @@ public class Camera2Util {
             @Override
             public void onConfigureFailed(
                     @NonNull CameraCaptureSession cameraCaptureSession) {
-
-                LogCat.e("onConfigureFailed");
-
-//                if (mBuilder.getErrorListener() != null)
                 mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_CONFIGURE_FAILED, new Exception("摄像头配置失败"));
             }
 
@@ -343,7 +332,6 @@ public class Camera2Util {
              */
             @Override
             public void onReady(@NonNull CameraCaptureSession session) {
-                LogCat.e("onReady");
                 super.onReady(session);
             }
 
@@ -352,7 +340,6 @@ public class Camera2Util {
              */
             @Override
             public void onActive(@NonNull CameraCaptureSession session) {
-                LogCat.e("onActive");
                 super.onActive(session);
             }
 
@@ -361,7 +348,6 @@ public class Camera2Util {
              */
             @Override
             public void onClosed(@NonNull CameraCaptureSession session) {
-                LogCat.e("onClosed");
                 super.onClosed(session);
             }
 
@@ -370,7 +356,6 @@ public class Camera2Util {
              */
             @Override
             public void onSurfacePrepared(@NonNull CameraCaptureSession session, @NonNull Surface surface) {
-                LogCat.e("onSurfacePrepared");
                 super.onSurfacePrepared(session, surface);
             }
         };
@@ -383,7 +368,7 @@ public class Camera2Util {
         return new CameraCaptureSession.CaptureCallback() {
             private void process(CaptureResult result) {
                 if (mState != STATE_PREVIEW)
-                    LogCat.e("process.mState", mState);
+                    LogCat.d("process.mState", mState);
 
                 switch (mState) {
                     case STATE_PREVIEW: {
@@ -404,12 +389,13 @@ public class Camera2Util {
                                     aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
                                 mState = STATE_PICTURE_TAKEN;
                                 //  对焦完成，进行拍照
-                                LogCat.e("process.captureStillPicture");
                                 captureStillPicture();
                             } else {
-                                LogCat.e("process.runPrecaptureSequence");
                                 runPrecaptureSequence();
                             }
+                        } else if (mBuilder.getLensFacing() == CameraFlag.LENS_FACING_FRONT) {
+                            // TODO 修改
+                            captureStillPicture();
                         }
                         break;
                     }
@@ -439,7 +425,6 @@ public class Camera2Util {
             public void onCaptureProgressed(@NonNull CameraCaptureSession session,
                                             @NonNull CaptureRequest request,
                                             @NonNull CaptureResult partialResult) {
-                LogCat.e("onCaptureProgressed");
                 process(partialResult);
             }
 
@@ -447,7 +432,6 @@ public class Camera2Util {
             public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                            @NonNull CaptureRequest request,
                                            @NonNull TotalCaptureResult result) {
-//                LogCat.e("onCaptureCompleted");
                 process(result);
             }
         };
@@ -466,10 +450,8 @@ public class Camera2Util {
         // a camera and start preview from here (otherwise, we wait until the surface is ready in
         // the SurfaceTextureListener).
         if (mTextureView.isAvailable()) {
-            LogCat.e("onResume.mTextureView.isAvailable()");
             openCamera(mTextureView.getWidth(), mTextureView.getHeight());
         } else {
-            LogCat.e("onResume.!mTextureView.isAvailable()");
             mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
         }
     }
@@ -604,11 +586,11 @@ public class Camera2Util {
      * @param builder
      * @param preview true：预览，false：拍照
      */
-    private void setFlashMode(CaptureRequest.Builder builder, boolean preview) {
+    private boolean setFlashMode(CaptureRequest.Builder builder, boolean preview) {
         if (mBuilder == null
                 || builder == null
                 || !mCameraParam.mFlashSupported)
-            return;
+            return false;
 
         /**
          * CaptureRequest.CONTROL_AE_MODE_OFF
@@ -636,8 +618,9 @@ public class Camera2Util {
             case CameraFlag.FLASH_AUTO:
             default:
                 // TODO ？？？
-                break;
+                return false;
         }
+        return true;
     }
 
 
@@ -672,7 +655,6 @@ public class Camera2Util {
         } else if (Surface.ROTATION_180 == rotation) {
             matrix.postRotate(180, centerX, centerY);
         }
-        LogCat.e("configureTransform.Matrix", GsonUtil.toJson(matrix));
         mTextureView.setTransform(matrix);
     }
 
@@ -711,43 +693,13 @@ public class Camera2Util {
                 public void onCaptureCompleted(@NonNull final CameraCaptureSession session,
                                                @NonNull final CaptureRequest request,
                                                @NonNull final TotalCaptureResult result) {
-
-                    LogCat.e("mTakePictureListener");
-
-
-//                    showToast("Saved: " + mFile);
-//                    Log.d(TAG, mFile.toString());
                     unlockFocus();
-//                    try {
-//                        mCaptureSession.stopRepeating();
-//                    } catch (CameraAccessException e) {
-//                        LogCat.printStackTrace(e);
-//                    }
-
-//                    mActivity.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if (mTakePictureListener != null)
-//                                mTakePictureListener.onCaptureCompleted(session, request, result);
-//                        }
-//                    });
-
-
-//                    if (mBuilder.getTokenCallback() != null) {
-//                        ByteBuffer buffer = reader.acquireNextImage().getPlanes()[0].getBuffer();
-//                        byte[] bytes = new byte[buffer.remaining()];
-//                        buffer.get(bytes);
-//                        mImageData = bytes;
-//
-//                        mBuilder.getTokenCallback().onPictureTaken();
-//                    }
                 }
             };
 
             mCaptureSession.stopRepeating();
             mCaptureSession.abortCaptures();
             mCaptureSession.capture(captureBuilder.build(), captureCallback, null);
-            LogCat.e("captureStillPicture.capture");
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -812,8 +764,6 @@ public class Camera2Util {
             mState = STATE_WAITING_PRECAPTURE;
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCameraCaptureSessionCaptureCallback,
                     mBackgroundHandler);
-
-            LogCat.e("runPrecaptureSequence.capture");
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -844,7 +794,6 @@ public class Camera2Util {
 
 
     private void setupPreviewSize(Size textureViewSize, Size largest) {
-        LogCat.e("setupPreviewSize");
         Display defaultDisplay = getDefaultDisplay();
 //        CameraCharacteristics characteristics = mCameraParam.mCharacteristics;
         StreamConfigurationMap map = mCameraParam.mMap;
@@ -902,8 +851,6 @@ public class Camera2Util {
         mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
                 rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
                 maxPreviewHeight, largest);
-
-        LogCat.e("setupPreviewSize.Size", GsonUtil.toJson(mPreviewSize));
     }
 
 
@@ -976,10 +923,8 @@ public class Camera2Util {
     }
 
     private boolean setUpCameraOutputs(Size textureViewSize) {
-        LogCat.e("setUpCameraOutputs");
         CameraManager manager = getCameraManager();
         mCameraParam = new Camera2Param(mBuilder, manager);
-        LogCat.e("setUpCameraOutputs.mCameraParam", GsonUtil.toJson(mCameraParam));
         if (mCameraParam.mCameraId == null)
             return false;
 
@@ -989,8 +934,6 @@ public class Camera2Util {
         Size largest = Collections.max(
                 Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)),
                 new CompareSizesByArea());
-
-        LogCat.e("setUpCameraOutputs.Size", GsonUtil.toJson(largest));
 
         setupImageReader(largest);
         setupPreviewSize(textureViewSize, largest);
@@ -1006,11 +949,7 @@ public class Camera2Util {
             return;
         }
 
-        LogCat.e("openCamera");
-
         setUpCameraOutputs(width, height);
-//            return;
-
 
         // We fit the aspect ratio of TextureView to the size of preview we picked.
         if (mTextureView instanceof AutoFitTextureView) {
@@ -1025,8 +964,6 @@ public class Camera2Util {
             }
         }
 
-        LogCat.e("configureTransform");
-
         configureTransform(width, height);
 //        Context context = mActivity;
         CameraManager manager = getCameraManager();
@@ -1035,8 +972,6 @@ public class Camera2Util {
 
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
-            LogCat.e("openCamera");
-
             manager.openCamera(mCameraParam.mCameraId, mCameraDeviceStateCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
             mBuilder.getErrorCallback().onError(ErrorCallback.ERROR_OPEN_CAMERA, e);
@@ -1076,8 +1011,6 @@ public class Camera2Util {
      */
     private void createCameraPreviewSession() {
         try {
-            LogCat.e("createCameraPreviewSession");
-
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
             assert texture != null;
 

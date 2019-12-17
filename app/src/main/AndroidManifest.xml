@@ -301,11 +301,15 @@
 
 
         <activity
-            android:name=".activity.component.camerademo.CameraMixActivity"
+            android:name=".activity.component.camerademo.Camera01Activity"
             android:configChanges="orientation|keyboardHidden" />
 
         <activity
-            android:name=".activity.component.camerademo.Camera2Activity"
+            android:name=".activity.component.camerademo.Camera02Activity"
+            android:configChanges="orientation|keyboardHidden" />
+
+        <activity
+            android:name=".activity.component.camerademo.CameraMixActivity"
             android:configChanges="orientation|keyboardHidden" />
 
         <provider
