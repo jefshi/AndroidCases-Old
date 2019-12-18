@@ -99,6 +99,8 @@ public class CameraMixActivity extends BaseButterKnifeActivity
 
     @Override
     protected void init() {
+        LogCat.e("当前手机 Model = %s", Build.MODEL);
+
         if (getIntent() != null)
             mShowJump = getIntent().getBooleanExtra(KEY_SHOW_JUMP, false);
 
@@ -176,33 +178,10 @@ public class CameraMixActivity extends BaseButterKnifeActivity
                     @Override
                     public void onPictureTaken(byte[] imageData) {
                         // TODO 数据处理
-                        Bitmap bitmap = ImageUtils.getBitmap(imageData, 0);
+                        Bitmap bitmap = switchoverBitmap(imageData);
                         if (bitmap == null) {
                             ToastUtil.showToast("相片数据获取失败，请重新拍照");
                             return;
-                        }
-
-                        // 机型适配
-                        if ("Redmi K20 Pro".equals(Build.MODEL)) {
-                            Matrix matrix = new Matrix();
-                            matrix.setRotate(90);
-                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-                        }
-
-                        Matrix matrix = new Matrix();
-                        matrix.setScale(((float) mLfraPreview.getWidth()) / bitmap.getWidth(),
-                                ((float) mLfraPreview.getHeight()) / bitmap.getHeight());
-                        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-
-                        if (mCamera.getLensFace() == CameraFlag.LENS_FACING_FRONT) {
-                            matrix = new Matrix();
-                            matrix.setRotate(180);
-                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-
-//                            // 左右翻转
-//                            matrix = new Matrix();
-//                            matrix.setScale(-1, 1);
-//                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
                         }
 
                         mBitmap = bitmap;
@@ -266,6 +245,42 @@ public class CameraMixActivity extends BaseButterKnifeActivity
 //            ((TextureView) preview).unlockCanvasAndPost(canvas);
 //        }
 //    }
+
+    private Bitmap switchoverBitmap(byte[] imageData) {
+        Bitmap bitmap = ImageUtils.getBitmap(imageData, 0);
+        if (bitmap == null) {
+            ToastUtil.showToast("相片数据获取失败，请重新拍照");
+            return null;
+        }
+
+        // 机型适配
+        String[] devices = new String[]{"MIX 2S", "Redmi K20 Pro"};
+        for (String device : devices) {
+            if (device.equals(Build.MODEL)) {
+                Matrix matrix = new Matrix();
+                matrix.setRotate(90);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+                break;
+            }
+        }
+
+        Matrix matrix = new Matrix();
+        matrix.setScale(((float) mLfraPreview.getWidth()) / bitmap.getWidth(),
+                ((float) mLfraPreview.getHeight()) / bitmap.getHeight());
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+
+        if (mCamera.getLensFace() == CameraFlag.LENS_FACING_FRONT) {
+            matrix = new Matrix();
+            matrix.setRotate(180);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+
+//            // 左右翻转
+//            matrix = new Matrix();
+//            matrix.setScale(-1, 1);
+//            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+        }
+        return bitmap;
+    }
 
     @Override
     public void onBackPressed() {

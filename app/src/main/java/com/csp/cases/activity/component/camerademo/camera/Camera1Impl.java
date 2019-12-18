@@ -1,7 +1,5 @@
 package com.csp.cases.activity.component.camerademo.camera;
 
-import android.content.pm.FeatureInfo;
-import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.view.View;
 
@@ -9,7 +7,6 @@ import com.csp.cases.activity.component.camerademo.camera.annotation.AFlashFlag;
 import com.csp.cases.activity.component.camerademo.camera.annotation.ALensFacing;
 import com.csp.cases.activity.component.camerademo.camera.constant.CameraFlag;
 import com.csp.cases.activity.component.camerademo.camera1.CameraPreview;
-import com.csp.utils.android.log.LogCat;
 
 /**
  * 默认有权限，有摄像机
