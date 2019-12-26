@@ -35,6 +35,13 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * 参考：
+ * 1. Camera 2 官网：git@github.com:jefshi/google-camera-samples.git
+ * 1. git@github.com:yangmingchuan/CameraMaster.git
+ * 2.
+ * 3. git@github.com:infinum/Android-GoldenEye.git
+ */
 public class CameraMixActivity extends BaseButterKnifeActivity
         implements View.OnClickListener {
 
@@ -253,16 +260,18 @@ public class CameraMixActivity extends BaseButterKnifeActivity
             return null;
         }
 
-        // 机型适配
-        String[] devices = new String[]{"MIX 2S", "Redmi K20 Pro"};
-        for (String device : devices) {
-            if (device.equals(Build.MODEL)) {
-                Matrix matrix = new Matrix();
-                matrix.setRotate(90);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-                break;
-            }
+        LogCat.e("w = %s, h = %s", bitmap.getWidth(), bitmap.getHeight());
+
+        // 自定义拍照，部分机型图片旋转问题
+//        String[] devices = new String[]{"MIX 2S", "Redmi K20 Pro"};
+//        for (String device : devices) {
+        if (bitmap.getWidth() > bitmap.getHeight()) {
+            Matrix matrix = new Matrix();
+            matrix.setRotate(90);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+//                break;
         }
+//        }
 
         Matrix matrix = new Matrix();
         matrix.setScale(((float) mLfraPreview.getWidth()) / bitmap.getWidth(),

@@ -24,6 +24,7 @@ android {
 
         // 自定义 BuildConfig 常量
         buildConfigField "String", "DEV_USER", DEV_USER
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     // java 1.8
@@ -176,4 +177,9 @@ dependencies {
 
     // 临时
     implementation 'com.github.dfqin:grantor:2.1.0'
+
+    // 测试
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
