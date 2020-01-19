@@ -35,6 +35,8 @@ public class PopupWindowHelper {
         private int mWidth;
         private int mHeight;
 
+        private Drawable mBackground;
+
         public PopupWindowHelper.Builder setLayoutId(int layoutId) {
             mLayoutId = layoutId;
             return this;
@@ -52,6 +54,11 @@ public class PopupWindowHelper {
 
         public Builder setHeight(int height) {
             mHeight = height;
+            return this;
+        }
+
+        public Builder setBackground(Drawable background) {
+            mBackground = background;
             return this;
         }
 
@@ -74,17 +81,20 @@ public class PopupWindowHelper {
             super(builder.mWidth, builder.mHeight);
             View view = builder.getView(context);
             setContentView(view);
-            init();
+            init(builder);
         }
 
-        private void init() {
+        private void init(PopupWindowHelper.Builder builder) {
             //点击空白区域PopupWindow消失，这里必须先设置setBackgroundDrawable，否则点击无反应
-            setBackgroundDrawable(new BitmapDrawable());
+            setBackgroundDrawable(builder.mBackground == null ? new BitmapDrawable() : builder.mBackground);
             setFocusable(true);
             setOutsideTouchable(true);
 
-            //设置是否允许PopupWindow的范围超过屏幕范围
-            setClippingEnabled(false);
+            // 设置是否允许 PopupWindow 的范围超过屏幕范围
+            // 不建议设置，会导致 showAtLocation 方法 Android 7.0 及以上导航栏(虚拟按键)遮挡 PopupWindow 问题
+            // Android 7.0 以下导航栏(虚拟按键)遮挡 PopupWindow 问题：https://blog.csdn.net/qq_35332786/article/details/82660587
+            // Android 7.0 及以上导航栏(虚拟按键)遮挡 PopupWindow 问题：https://www.jianshu.com/p/291321305dee
+            // setClippingEnabled(false);
         }
 
         // @Nullable
@@ -252,6 +262,14 @@ public class PopupWindowHelper {
 
         public HPopupWindow setEnabled(int viewId, boolean enabled) {
             findViewById(viewId).setEnabled(enabled);
+            return this;
+        }
+
+        /**
+         * 关于事件的
+         */
+        public HPopupWindow setOnClickListener(View.OnClickListener listener) {
+            getContentView().setOnClickListener(listener);
             return this;
         }
 

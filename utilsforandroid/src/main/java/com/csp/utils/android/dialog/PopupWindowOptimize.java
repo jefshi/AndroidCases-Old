@@ -1,9 +1,12 @@
 package com.csp.utils.android.dialog;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 /**
@@ -75,4 +78,35 @@ public class PopupWindowOptimize extends PopupWindow {
         return this;
     }
 
+    /**
+     * 让 PopupWindow 以外的区域阴影显示
+     *
+     * @param window      PopupWindow 所在的 Window 对象
+     * @param popupWindow PopupWindow 对象
+     * @param alpha       透明度
+     */
+    public static void setWindowAlpha(@NonNull final Window window, @NonNull PopupWindow popupWindow, float alpha) {
+        if (alpha < 0 || 1f - alpha < 0.001)
+            return;
+
+        setWindowAlpha(window, alpha);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                setWindowAlpha(window, 1f);
+            }
+        });
+    }
+
+    /**
+     * 设置窗口的透明度
+     *
+     * @param window 窗口对象
+     * @param alpha  透明度
+     */
+    private static void setWindowAlpha(Window window, float alpha) {
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.alpha = alpha;
+        window.setAttributes(lp);
+    }
 }

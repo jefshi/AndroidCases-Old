@@ -28,9 +28,9 @@ public class ChronometerUtil {
             time -= day * DateUtil.TIME_24_00_00;
         }
 
+        chronometer.setFormat(formatString(time, day));
         chronometer.setBase(DateUtil.getNowClock() - time);
         if (start) {
-            chronometer.setFormat(formatString(time, day));
             // 应用切换到后台，该监听器就不会执行了
             // 所以要么随时刷新格式，要么刷新 Chronometer 控件
             chronometer.setOnChronometerTickListener(new ChronometerFormatListener(day));
