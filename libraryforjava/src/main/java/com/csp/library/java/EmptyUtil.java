@@ -1,26 +1,26 @@
 package com.csp.library.java;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
- * Description: 判定数据是否为空
- * <p>Create Date: 2017/07/18
- * <p>Modify Date: 2018/05/14
+ * 判定数据是否为空
+ * Created by csp on 2017/07/18
+ * Modified by csp on 2019/07/16
  *
- * @author csp
  * @version 1.0.2
- * @since JavaLibrary 1.0.0
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class EmptyUtil {
+
     /**
      * 字符串是否为空
      *
-     * @param str 字符串
+     * @param chars 字符串
      * @return true: 是
      */
-    public static boolean isEmpty(String str) {
-        return str == null || str.isEmpty();
+    public static boolean isBlank(CharSequence chars) {
+        return chars == null || chars.length() == 0;
     }
 
     /**
@@ -29,8 +29,18 @@ public class EmptyUtil {
      * @param str 字符串
      * @return true: 是
      */
-    public static boolean isBank(String str) {
+    public static boolean isBlank(String str) {
         return str == null || str.trim().isEmpty();
+    }
+
+    /**
+     * 集合（迭代器）是否为空
+     *
+     * @param iterable 集合
+     * @return true: 是
+     */
+    public static boolean isEmpty(Iterable iterable) {
+        return iterable == null || !iterable.iterator().hasNext();
     }
 
     /**
@@ -41,6 +51,16 @@ public class EmptyUtil {
      */
     public static boolean isEmpty(Collection collection) {
         return collection == null || collection.isEmpty();
+    }
+
+    /**
+     * 集合是否为空
+     *
+     * @param map 集合
+     * @return true: 是
+     */
+    public static boolean isEmpty(Map map) {
+        return map == null || map.isEmpty();
     }
 
     /**
