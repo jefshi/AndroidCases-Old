@@ -7,16 +7,38 @@ import com.csp.utils.android.log.LogCat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Byte 操作工具类
- * Created by csp on 2018/04/17.
- * Modified by csp on 2018/04/17.
+ * Created by csp on 2017/09/11
+ * Modified by csp on 2018/04/17
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
-@SuppressWarnings({"unused", "WeakerAccess", "SameParameterValue"})
+@SuppressWarnings("unused")
 public class ByteUtil {
+
+    private final static int MIN_BUFFER_LENGTH = 8192; // 8 KB
+
+    /**
+     * InputStream -> byte[]
+     *
+     * @param is InputStream
+     * @return byte[]
+     * @throws IOException IOException
+     */
+    public static byte[] toBytes(InputStream is) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        byte[] buffer = new byte[MIN_BUFFER_LENGTH];
+        int len;
+        while ((len = is.read(buffer)) != -1) {
+            os.write(buffer, 0, len);
+            os.flush();
+        }
+        return os.toByteArray();
+    }
+
     /**
      * Bitmap -> byte[]
      *
