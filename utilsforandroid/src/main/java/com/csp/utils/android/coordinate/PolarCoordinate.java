@@ -1,7 +1,6 @@
 package com.csp.utils.android.coordinate;
 
 import android.graphics.Point;
-import android.view.MotionEvent;
 
 public class PolarCoordinate {
 
@@ -15,19 +14,11 @@ public class PolarCoordinate {
         int dy = end.y - begin.y;
 
         double radius = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-        double theta = Math.atan(dx / dy);
+        double theta;
+        if (dx == 0)
+            theta = Math.PI / 2;
+        else
+            theta = Math.atan(dy / dx);
         return new Polar(radius, theta);
-    }
-
-    /**
-     * @param center 围绕中心点
-     * @param begin  矢量起点
-     * @param end    矢量末点
-     * @return true 是顺时针
-     */
-    public static boolean isClockwise(Point center, Point begin, Point end) {
-        Polar pBegin = toPolar(center, begin);
-        Polar pEnd = toPolar(center, end);
-        return pEnd.theta >= pBegin.theta;
     }
 }
