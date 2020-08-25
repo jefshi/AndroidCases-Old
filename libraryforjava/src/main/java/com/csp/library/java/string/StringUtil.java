@@ -49,7 +49,7 @@ public class StringUtil {
      * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
     public static String encode(String url) throws UnsupportedEncodingException {
-        if (EmptyUtil.isBank(url))
+        if (EmptyUtil.isBlank(url))
             return null;
 
         return URLEncoder.encode(url, ENCODING);
@@ -63,7 +63,7 @@ public class StringUtil {
      * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
     public static String decode(String url) throws UnsupportedEncodingException {
-        if (EmptyUtil.isBank(url))
+        if (EmptyUtil.isBlank(url))
             return null;
 
         return URLDecoder.decode(url, ENCODING);

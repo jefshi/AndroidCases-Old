@@ -48,6 +48,7 @@ public class CaseApp extends Application {
         sApplication = this;
         sContext = getApplicationContext();
         Utils.init(this);
+        LogCat.setDebug(BuildConfig.IS_DEBUGGABLE);
 
         LogCat.e("Application.onCreate");
     }

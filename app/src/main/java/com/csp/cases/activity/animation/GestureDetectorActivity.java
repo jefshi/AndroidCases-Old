@@ -1,11 +1,8 @@
 package com.csp.cases.activity.animation;
 
 import android.animation.ObjectAnimator;
-import android.graphics.Point;
+import android.graphics.PointF;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,12 +11,9 @@ import android.view.animation.DecelerateInterpolator;
 import com.csp.cases.R;
 import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.utils.android.MetricsUtil;
 import com.csp.utils.android.coordinate.CartesianCoordinate;
-import com.csp.utils.android.coordinate.PolarCoordinate;
 import com.csp.utils.android.log.LogCat;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,11 +129,11 @@ public class GestureDetectorActivity extends BaseListActivity implements
         LogCat.e(String.format("OnGestureListener.onFling: x 轴速率 %s，y 轴速率 %s", velocityX, velocityY));
 
         // 顺时针、逆时针判定
-        Point center = CartesianCoordinate.toPoint(getView());
-        Point begin = CartesianCoordinate.toPoint(e1);
-        Point end = CartesianCoordinate.toPoint(e2);
+        PointF center = CartesianCoordinate.toPoint(getView());
+        PointF begin = CartesianCoordinate.toPoint(e1);
+        PointF end = CartesianCoordinate.toPoint(e2);
 
-        boolean isClockwise = PolarCoordinate.isClockwise(center, begin, end);
+        boolean isClockwise = CartesianCoordinate.isClockwise(center, begin, end);
 
 
         double velocity = Math.sqrt(Math.pow(velocityX, 2) + Math.pow(velocityY, 2));

@@ -5,40 +5,39 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.RadioGroup;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * RecyclerView.Adapter - 多布局
  * Created by csp on 2018/06/19.
- * Modified by csp on 2019/04/10.
+ * Modified by csp on 2019/08/20.
  *
  * @param <T> 数据对象
- * @version 1.0.1
+ * @version 1.1.0
  * @see SingleAdapter
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
-    protected LayoutInflater mInflater;
-    protected List<T> mData;
-
-    private SparseArray<IViewFill> mViewFillManager;
+public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ItemViewHolder> {
+    private LayoutInflater mInflater;
+    protected List<T> mData; // 原始数据集合，外围通过 Adapter 影响，但与 Item 不一一对应
+    protected List<Object> mItemData; // 数据集合，Adapter 内部数据，与 Item 一一对应
+    protected List<IItemView> mItemViews; // 布局集合，Adapter 内部数据，与 Item 一一对应
 
     protected OnItemClickListener mOnItemClickListener;
     protected OnItemLongClickListener mOnItemLongClickListener;
+    protected OnDataChangedListener mOnDataChangedListener;
 
-    @Deprecated
     public List<T> getData() {
-        return mData;
+        return new ArrayList<>(mData);
     }
 
     /**
@@ -59,12 +58,16 @@ public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ViewHolder
         mOnItemLongClickListener = listener;
     }
 
+    public void setOnDataChangedListener(OnDataChangedListener onDataChangedListener) {
+        mOnDataChangedListener = onDataChangedListener;
+    }
+
     public MultipleAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         mData = new ArrayList<>();
 
-        mViewFillManager = new SparseArray<>();
-        addMultiViewFills();
+        mItemData = new ArrayList<>();
+        mItemViews = new ArrayList<>();
     }
 
     public MultipleAdapter(Context context, Collection<T> data) {
@@ -76,22 +79,22 @@ public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ViewHolder
     /**
      * @see #addData(int, Collection, boolean)
      */
-    public void addData(Collection<T> data, boolean append) {
+    public void addData(Collection<? extends T> data, boolean append) {
         addData(-1, data, append);
     }
 
     /**
      * @see #addData(int, Collection, boolean)
      */
-    public void addData(T[] data, boolean append) {
-        List<T> dataList = Arrays.asList(data);
+    public <U extends T> void addData(U[] data, boolean append) {
+        List<U> dataList = Arrays.asList(data);
         addData(-1, dataList, append);
     }
 
     /**
      * @see #addData(int, Collection, boolean)
      */
-    public void addData(T datum, boolean append) {
+    public <U extends T> void addData(U datum, boolean append) {
         addData(-1, datum, append);
     }
 
@@ -102,7 +105,7 @@ public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ViewHolder
      * @param data     数据
      * @param append   是否追加到列表末尾。false: 重置数据
      */
-    public void addData(int position, Collection<T> data, boolean append) {
+    public void addData(int position, Collection<? extends T> data, boolean append) {
         if (!append)
             mData.clear();
 
@@ -118,7 +121,7 @@ public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ViewHolder
     /**
      * @see #addData(int, Collection, boolean)
      */
-    public void addData(int position, T datum, boolean append) {
+    public <U extends T> void addData(int position, U datum, boolean append) {
         if (!append)
             mData.clear();
 
@@ -134,7 +137,7 @@ public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ViewHolder
     /**
      * @see Collection#remove(Object)
      */
-    public void removeData(T datum) {
+    public <U extends T> void removeData(U datum) {
         mData.remove(datum);
         onDataChanged();
     }
@@ -151,97 +154,113 @@ public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ViewHolder
      * 数据变化时回调
      */
     public void onDataChanged() {
-    }
-
-    /**
-     * 追加布局
-     *
-     * @see SingleAdapter#onBindViewHolder(ViewHolder, int)
-     */
-    protected MultipleAdapter addViewFill(int viewType, IViewFill viewHolder) {
-        mViewFillManager.put(viewType, viewHolder);
-        return this;
+        if (mOnDataChangedListener != null)
+            mOnDataChangedListener.onDataChanged();
     }
 
     /**
      * @return 获取布局
      */
-    protected IViewFill getViewFill(int viewType) {
-        return mViewFillManager.get(viewType);
+    protected IItemView getItemView(int position) {
+        return mItemViews.get(position);
+    }
+
+    /**
+     * @see android.widget.Adapter#getItem(int)
+     */
+    public Object getItem(int position) {
+        return mItemData.get(position);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mItemViews.size();
+    }
+
+    /**
+     * @return 布局ID 作为 ItemViewType
+     */
+    @Override
+    public int getItemViewType(int position) {
+        return mItemViews.get(position).getLayoutId();
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layoutId = mViewFillManager.get(viewType).getLayoutId();
-        View view = mInflater.inflate(layoutId, parent, false);
-        ViewHolder holder = new ViewHolder(view);
-        onCreateViewHolder(holder);
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = mInflater.inflate(viewType, parent, false); // ItemViewType 为布局ID
+        ItemViewHolder holder = new ItemViewHolder(view);
+        onCreateViewHolder(parent, holder);
         setOnClickListener(parent, holder);
         return holder;
     }
 
-    protected void onCreateViewHolder(ViewHolder holder) {
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+        IItemView itemView = getItemView(position);
+        itemView.onBind(holder, getItem(position), position);
     }
 
-    protected void setOnClickListener(final ViewGroup parent, final ViewHolder viewHolder) {
-        viewHolder.getConvertView().setOnClickListener(new View.OnClickListener() {
+    protected void onCreateViewHolder(@NonNull ViewGroup parent, ItemViewHolder holder) {
+    }
+
+    protected void setOnClickListener(final ViewGroup parent, final ItemViewHolder holder) {
+        holder.getConvertView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int position = viewHolder.getAdapterPosition();
+                int position = holder.getAdapterPosition();
                 if (mOnItemClickListener != null)
-                    mOnItemClickListener.onItemClick(parent, view, viewHolder, position);
+                    mOnItemClickListener.onItemClick(parent, view, holder, position);
             }
         });
 
-        viewHolder.getConvertView().setOnLongClickListener(new View.OnLongClickListener() {
+        holder.getConvertView().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                int position = viewHolder.getAdapterPosition();
+                int position = holder.getAdapterPosition();
                 return mOnItemLongClickListener != null
-                        && mOnItemLongClickListener.onItemLongClick(parent, view, viewHolder, position);
+                        && mOnItemLongClickListener.onItemLongClick(parent, view, holder, position);
             }
         });
     }
-
-    /**
-     * 添加布局，配合 onBindViewHolder() 使用，具体参考见 @see
-     *
-     * @see #addViewFill(int, IViewFill)
-     * @see SingleAdapter#addMultiViewFills()
-     * @see SingleAdapter#onBindViewHolder(ViewHolder, int)
-     */
-    protected abstract void addMultiViewFills();
 
     /**
      * 解析 XML，如果 ViewGroup 是 RecyclerView，那么保证 RecyclerView 已经执行过 setAdapter()
      */
-    @SuppressWarnings("unchecked")
     public View inflate(@LayoutRes int layoutId, ViewGroup parent) {
         return mInflater.inflate(layoutId, parent, false);
     }
 
     /**
-     * ViewHolder 数据填充（规则）
+     * ItemViewHolder 数据填充（规则）
      *
      * @param <E> 数据对象
      */
-    public interface IViewFill<E> {
+    public interface IItemView<E> {
 
         /**
-         * @return ViewHolder 对应布局
+         * @return ItemViewHolder 对应布局
          */
+        @LayoutRes
         int getLayoutId();
 
         /**
-         * ViewHolder 数据绑定
+         * ItemViewHolder 数据绑定
          *
-         * @param holder   ViewHolder
+         * @param holder   ItemViewHolder
          * @param datum    对应数据
-         * @param extra    额外数据
          * @param position 位置
          */
-        void onBind(ViewHolder holder, E datum, Object extra, int position);
+        void onBind(ItemViewHolder holder, E datum, int position);
+    }
+
+    /**
+     * 数据变化监听器
+     */
+    public interface OnDataChangedListener {
+
+        void onDataChanged();
     }
 
     /**
@@ -252,12 +271,12 @@ public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ViewHolder
         /**
          * Item 的点击事件
          *
-         * @param parent     即 Item 所在的 RecyclerView 对象
-         * @param view       被点击的 View
-         * @param viewHolder 被点击的 View 所属 Item 的 ViewHolder
-         * @param position   被点击的 View 所属 Item 的 position
+         * @param parent   即 Item 所在的 RecyclerView 对象
+         * @param view     被点击的 View
+         * @param holder   被点击的 View 所属 Item 的 ItemViewHolder
+         * @param position 被点击的 View 所属 Item 的 position
          */
-        void onItemClick(ViewGroup parent, View view, ViewHolder viewHolder, int position);
+        void onItemClick(ViewGroup parent, View view, ItemViewHolder holder, int position);
     }
 
     /**
@@ -268,12 +287,12 @@ public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ViewHolder
         /**
          * Item 的长按事件
          *
-         * @param parent     即 Item 所在的 RecyclerView 对象
-         * @param view       被点击的 View
-         * @param viewHolder 被点击的 View 所属 Item 的 ViewHolder
-         * @param position   被点击的 View 所属 Item 的 position
+         * @param parent   即 Item 所在的 RecyclerView 对象
+         * @param view     被点击的 View
+         * @param holder   被点击的 View 所属 Item 的 ItemViewHolder
+         * @param position 被点击的 View 所属 Item 的 position
          */
-        boolean onItemLongClick(ViewGroup parent, View view, ViewHolder viewHolder, int position);
+        boolean onItemLongClick(ViewGroup parent, View view, ItemViewHolder holder, int position);
     }
 
     /**
@@ -284,10 +303,44 @@ public abstract class MultipleAdapter<T> extends RecyclerView.Adapter<ViewHolder
         /**
          * 勾选事件
          *
-         * @param view       勾选监听的 View
-         * @param viewHolder 勾选监听的 View 所属 Item 的 ViewHolder
-         * @param position   勾选监听的 View 所属 Item 的 position
+         * @param view     勾选监听的 View
+         * @param checked  true：表示事件发生前，View 已勾选
+         * @param holder   View 所属 Item 的 ItemViewHolder
+         * @param position View 所属 Item 的 position
          */
-        void onCheckedChanged(View view, ViewHolder viewHolder, int position);
+        void onCheckedChanged(View view, boolean checked, ItemViewHolder holder, int position);
+    }
+
+    /**
+     * 其他事件监听
+     */
+    public interface OnOtherListener {
+
+        /**
+         * 其他事件
+         *
+         * @param view     勾选监听的 View
+         * @param holder   View 所属 Item 的 ItemViewHolder
+         * @param position View 所属 Item 的 position
+         */
+        void onOther(View view, ItemViewHolder holder, int position);
+    }
+
+    /**
+     * 自定义事件监听
+     * 1) 可用于传递的数据与 position 无关的场景
+     * 2) 与 position 有关的场景，建议使用：{@link OnOtherListener}
+     */
+    public interface OnCustomListener<E> {
+
+        /**
+         * 其他事件
+         *
+         * @param view     勾选监听的 View
+         * @param holder   View 所属 Item 的 ItemViewHolder
+         * @param datum    需要传递的数据
+         * @param position View 所属 Item 的 position
+         */
+        void onOther(View view, ItemViewHolder holder, E datum, int position);
     }
 }

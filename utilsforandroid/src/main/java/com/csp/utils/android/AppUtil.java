@@ -121,7 +121,7 @@ public class AppUtil {
      */
     public static ResolveInfo searchApplication(String packageName) {
         Context context = Utils.getAppContext();
-        if (EmptyUtil.isBank(packageName) || context == null)
+        if (EmptyUtil.isBlank(packageName) || context == null)
             return null;
 
         Intent searchIntent = new Intent(Intent.ACTION_MAIN, null);

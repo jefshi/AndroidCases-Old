@@ -122,6 +122,10 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
 
+        <activity android:name=".zoom.ZoomImageActivity" />
+
+        <activity android:name=".zoom.ScaleViewActivity" />
+
         <activity
             android:name=".activity.permissions.PermissionActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -283,6 +287,11 @@
         <activity android:name=".activity.ToolBarActivity" />
 
         <activity android:name=".activity.other.TabActivity" />
+
+        <activity
+            android:name=".activity.FileActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape" />
 
         <activity
             android:name=".guides.GuidesActivity"

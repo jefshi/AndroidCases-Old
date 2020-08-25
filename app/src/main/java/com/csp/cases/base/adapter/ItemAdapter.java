@@ -78,7 +78,7 @@ public class ItemAdapter extends BaseListAdapter<ItemInfo> implements AdapterVie
 	 */
 	private void excuteMethod(ItemInfo object) {
 		String methodName = object.getMethodName();
-		if (EmptyUtil.isBank(methodName)) {
+		if (EmptyUtil.isBlank(methodName)) {
 			return;
 		}
 

@@ -1,4 +1,4 @@
-include ':app', ':libraryforandroid', ':libraryforjava', ':utilsforandroid'
+include ':app', ':libraryforandroid', ':libraryforjava', ':utilsforandroid', ':lib-adapter-recyclerview'
 include ':appdemo'
 include ':customview'
 

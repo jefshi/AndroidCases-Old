@@ -16,13 +16,13 @@ import java.util.List;
 /**
  * HeadFootAdapter - 追加头尾布局
  * Created by csp on 2018/08/30.
- * Modified by csp on 2018/11/28.
+ * Modified by csp on 2019/08/20.
  *
- * @version 1.0.2
+ * @version 1.1.0
  */
 @SuppressWarnings("unused")
 public class HeadFootAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final int VIEW_TYPE_HEAD = 0x40000000;
+    private static final int VIEW_TYPE_HEAD = 0xC0000000;
     private static final int VIEW_TYPE_FOOT = 0x80000000;
 
     private RecyclerView.Adapter mAdapter;
@@ -133,7 +133,7 @@ public class HeadFootAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @NonNull
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (isHeadOrFoot(viewType)) {
-            return new ViewHolder(getViewByViewType(viewType));
+            return new ItemViewHolder(getViewByViewType(viewType));
         } else
             return mAdapter.onCreateViewHolder(parent, viewType);
     }
@@ -182,6 +182,7 @@ public class HeadFootAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     /**
      * 解析 XML，如果 ViewGroup 是 RecyclerView，那么保证 RecyclerView 已经执行过 setAdapter()
      */
+    @SuppressWarnings("WeakerAccess")
     public View inflate(Context context, @LayoutRes int layoutId, ViewGroup parent) {
         return LayoutInflater.from(context).inflate(layoutId, parent, false);
     }

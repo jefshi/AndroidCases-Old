@@ -34,12 +34,7 @@ import java.util.ListIterator;
 public class FileUtil {
     private final static String UTF_8 = "utf-8";
     private final static int EOF = -1;
-    private final static int MIN_BUFFER_LENGTH = 8192; // 8 KB
-    private static int bufferLength = 524_288; // 512 KB
-
-    public static void setBufferLength(int bufferLength) {
-        FileUtil.bufferLength = bufferLength;
-    }
+    private final static int MIN_BUFFER_LENGTH = 1_024; // 1 KB，不建议设置的很大
 
     /**
      * 判定字符串是否为空
@@ -329,8 +324,8 @@ public class FileUtil {
         try (BufferedInputStream bis = new BufferedInputStream(is);
              BufferedOutputStream bos = new BufferedOutputStream(
                      new FileOutputStream(dest, append))) {
-            int len = Math.max(bis.available(), MIN_BUFFER_LENGTH);
-            byte[] bArr = new byte[Math.min(len, bufferLength)];
+            int len;
+            byte[] bArr = new byte[MIN_BUFFER_LENGTH];
             while ((len = bis.read(bArr)) != EOF) {
                 bos.write(bArr, 0, len);
                 bos.flush();

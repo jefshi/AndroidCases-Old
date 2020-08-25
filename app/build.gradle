@@ -139,6 +139,7 @@ dependencies {
     implementation project(':libraryforandroid')
     implementation project(':libraryforjava')
     implementation project(':utilsforandroid')
+    implementation project(':lib-adapter-recyclerview')
 
     // 网络请求
     implementation 'com.google.code.gson:gson:2.8.5'
@@ -180,6 +181,7 @@ dependencies {
 
     // 测试
     testImplementation 'junit:junit:4.12'
+    testImplementation "org.robolectric:robolectric:4.2"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
