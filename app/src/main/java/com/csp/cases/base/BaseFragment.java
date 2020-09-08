@@ -1,6 +1,7 @@
 package com.csp.cases.base;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
@@ -19,7 +20,9 @@ public class BaseFragment extends Fragment {
     @NonNull
     @Override
     public Context getContext() {
-        Context context = super.getContext();
+        Context context = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                ? super.getContext()
+                : null;
         if (context != null)
             return context;
 
