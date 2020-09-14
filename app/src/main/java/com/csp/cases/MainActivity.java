@@ -4,7 +4,7 @@ import android.Manifest;
 import android.os.Bundle;
 import android.util.Base64;
 
-import com.csp.cases.activity.FileActivity;
+import com.csp.cases.activity.file.FileActivity;
 import com.csp.cases.activity.MetricsActivity;
 import com.csp.cases.activity.OtherCaseActivity;
 import com.csp.cases.activity.ProcessActivity;

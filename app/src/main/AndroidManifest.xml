@@ -289,7 +289,7 @@
         <activity android:name=".activity.other.TabActivity" />
 
         <activity
-            android:name=".activity.FileActivity"
+            android:name=".activity.file.FileActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
 

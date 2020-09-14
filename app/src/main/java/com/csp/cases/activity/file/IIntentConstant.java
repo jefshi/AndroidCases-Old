@@ -1,4 +1,4 @@
-package com.csp.cases.activity;
+package com.csp.cases.activity.file;
 
 import java.util.HashMap;
 import java.util.Map;

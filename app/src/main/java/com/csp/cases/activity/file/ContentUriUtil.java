@@ -1,4 +1,4 @@
-package com.csp.cases.activity;
+package com.csp.cases.activity.file;
 
 import android.content.ContentUris;
 import android.content.Context;

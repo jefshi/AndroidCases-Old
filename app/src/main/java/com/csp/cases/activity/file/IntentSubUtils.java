@@ -1,7 +1,10 @@
-package com.csp.cases.activity;
+package com.csp.cases.activity.file;
 
 import android.content.Intent;
 import android.net.Uri;
+
+import com.csp.cases.activity.UriUtils;
+import com.csp.cases.activity.file.IIntentConstant;
 
 import java.io.File;
 
