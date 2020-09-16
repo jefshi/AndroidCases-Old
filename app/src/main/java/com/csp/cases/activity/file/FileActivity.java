@@ -1,5 +1,6 @@
 package com.csp.cases.activity.file;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import com.csp.cases.base.activity.BaseListActivity;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.utils.android.log.LogCat;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,8 +74,11 @@ public class FileActivity extends BaseListActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         LogCat.e("requestCode = %s, resultCode = %s\ndata = %s, ", requestCode, resultCode, data);
+
+        if (resultCode != -1)
+            return;
+
 
         // ===============================
         // 以上未解决
@@ -84,77 +89,34 @@ public class FileActivity extends BaseListActivity {
         // content://com.android.shell.documents/document/bugreport:bugreport-EVR-AL00-HUAWEIEVR-AL00-2020-08-11-00-39-02-dumpstate_log-27034.txt
         // content://com.android.contacts/contacts/lookup/1885r157-51227EA77365/157
 
-        // content://com.lcg.Xplore.FileContent/le//sdcard/.AResource/考虑考虑.txt
-        // content://cn.wps.moffice_eng.fileprovider/external/Download/Browser/previewFile.pdf
-        // content://cn.wps.moffice_eng.fileprovider/external_storage_root/Android/data/cn.wps.moffice_eng/.cache/KingsoftOffice/file/download/c7372e84-520d-439c-965b-e1f06ead0664/com.lcg.Xplore.FileContent/Hjj.pdf
+        ClipData clipData = data.getClipData();
+        Uri uri = data.getData();
+        if (clipData == null && uri != null) {
+            File file = UriToFileUtil.toFile(this, uri);
 
-
-        // ===============================
-        // 以下已解决
-        // ===============================
-
-
-        // content://com.android.providers.media.documents/document/image:13775
-        // content://com.android.providers.media.documents/document/video:13658
-        // content://com.android.providers.media.documents/document/audio:33
-
-
-        // content://media/external/audio/media/13779
-        // content://media/external/images/media/13582
-        // content://media/external/images/media/13630
-        // content://media/external/audio/media/33
-        // content://media/external/file/13268
-        // content://media/external/file/31643
-
-        // content://com.android.externalstorage.documents/document/primary:baidu/flyflow/kernel.log
-        // content://com.android.externalstorage.documents/document/primary:APK/copy_src.patch
-        // content://com.android.externalstorage.documents/document/primary:APK/TIM图片20200617164716.jpg
-        // content://com.android.externalstorage.documents/document/primary:APK/copy_src.patch
-        // content://com.android.externalstorage.documents/document/primary:耕雨健康/GYI.txt
-        // content://com.android.externalstorage.documents/document/primary:APK/阿里巴巴Java.pdf
-
-
-        // content://media/external/video/media
-        // content://media/external/images/media
-        // content://media/external/audio/media
-        // content://contacts/people
-        //
-        // Intent.EXTRA_MIME_TYPES
-
-        if (data.getClipData() != null) {//有选择多个文件
-            int count = data.getClipData().getItemCount();
-            LogCat.e("url count ：  " + count);
-            int currentItem = 0;
-
-            while (currentItem < count) {
-                Uri imageUri = data.getClipData().getItemAt(currentItem).getUri();
-                // File file = UriUtils.uri2File(imageUri); // ContentUriUtil.getPath(this, imageUri);
-//                String imgpath = file == null ? null : file.getAbsolutePath();
-                String imagePath = ContentUriUtil.getPath(this, data.getData());
-                LogCat.e("url " + imagePath);
-
-                //do something with the image (save it to some directory or whatever you need to do with it here)
-                currentItem = currentItem + 1;
-            }
-
-        } else if (data.getData() != null) {//只有一个文件咯
-            Uri uri = data.getData();
-            String imagePath = ContentUriUtil.getPath(this, data.getData());
-            // String imagePath = file == null ? null : file.getAbsolutePath();
-            LogCat.e("Single image path ---- " + imagePath);
-
-            LogCat.e("uri.toString()", uri.toString());
-            LogCat.e("uri.getAuthority()", uri.getAuthority());
-            LogCat.e("uri.getScheme()", uri.getScheme());
-            LogCat.e("uri.getPath()", uri.getPath());
-
-            Context context = this;
-            LogCat.e("isDocumentUri()", DocumentsContract.isDocumentUri(context, uri));
-            if (DocumentsContract.isDocumentUri(context, uri))
-                LogCat.e("getDocumentId()", DocumentsContract.getDocumentId(uri));
-
-
-            //do something with the image (save it to some directory or whatever you need to do with it here)
+            LogCat.e("file", file);
+            logUriInfo(uri, 0);
         }
+        if (clipData != null) {
+            for (int i = 0; i < clipData.getItemCount(); i++) {
+                uri = clipData.getItemAt(i).getUri();
+                File file = UriToFileUtil.toFile(this, uri);
+
+                LogCat.e("file", file);
+                logUriInfo(uri, i);
+            }
+        }
+    }
+
+    private void logUriInfo(Uri uri, int index) {
+        LogCat.e("[%s]uri.toString(): %s", index, uri.toString());
+        LogCat.e("[%s]uri.getAuthority(): %s", index, uri.getAuthority());
+        LogCat.e("[%s]uri.getScheme(): %s", index, uri.getScheme());
+        LogCat.e("[%s]uri.getPath(): %s", index, uri.getPath());
+
+        Context context = this;
+        LogCat.e("[%s]isDocumentUri(): %s", index, DocumentsContract.isDocumentUri(context, uri));
+        if (DocumentsContract.isDocumentUri(context, uri))
+            LogCat.e("[%s]getDocumentId(): %s", index, DocumentsContract.getDocumentId(uri));
     }
 }

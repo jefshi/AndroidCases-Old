@@ -52,6 +52,7 @@ public final class UriUtils {
      * @param uri The uri.
      * @return file
      */
+    @Deprecated
     public static File uri2File(@NonNull final Uri uri) {
         Log.d("UriUtils", uri.toString());
         String authority = uri.getAuthority();

@@ -143,7 +143,8 @@ public class SystemActivity extends BaseListActivity {
 
             @Override
             public int compare(AppInfo object1, AppInfo object2) {
-                return sCollator.compare(object1.getLabel(), object2.getLabel());
+//                return sCollator.compare(object1.getLabel(), object2.getLabel());
+                return sCollator.compare(object1.getPackageName(), object2.getPackageName());
             }
         });
 
