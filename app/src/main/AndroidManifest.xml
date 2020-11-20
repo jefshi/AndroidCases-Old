@@ -288,6 +288,8 @@
 
         <activity android:name=".activity.other.TabActivity" />
 
+        <activity android:name=".activity.other.RecyclerActivity" />
+
         <activity
             android:name=".activity.file.FileActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -320,6 +322,10 @@
         <activity
             android:name=".activity.component.camerademo.CameraMixActivity"
             android:configChanges="orientation|keyboardHidden" />
+
+        <activity
+            android:name=".step.StepActivity"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.os.Bundle;
 import android.util.Base64;
 
-import com.csp.cases.activity.file.FileActivity;
 import com.csp.cases.activity.MetricsActivity;
 import com.csp.cases.activity.OtherCaseActivity;
 import com.csp.cases.activity.ProcessActivity;
@@ -13,8 +12,10 @@ import com.csp.cases.activity.TestActivity;
 import com.csp.cases.activity.activity.ActivityActivity;
 import com.csp.cases.activity.animation.AnimationActivity;
 import com.csp.cases.activity.component.ComponentActivity;
+import com.csp.cases.activity.file.FileActivity;
 import com.csp.cases.activity.intent.IntentActivity;
 import com.csp.cases.activity.network.NetworkActivity;
+import com.csp.cases.activity.other.RecyclerActivity;
 import com.csp.cases.activity.permissions.PermissionActivity;
 import com.csp.cases.activity.storage.StorageActivity;
 import com.csp.cases.activity.system.SystemActivity;
@@ -24,6 +25,7 @@ import com.csp.cases.activity.windowmanager.WindowManagerActivity;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
 import com.csp.cases.guides.GuidesActivity;
+import com.csp.cases.step.StepActivity;
 import com.csp.cases.zoom.ScaleViewActivity;
 import com.csp.cases.zoom.ZoomImageActivity;
 import com.csp.utils.android.log.LogCat;
@@ -53,6 +55,7 @@ public class MainActivity extends BaseGridActivity {
     @Override
     public List<ItemInfo> getItemInfos() {
         List<ItemInfo> items = new ArrayList<>();
+        items.add(new ItemInfo("通用步骤 View", StepActivity.class, "自定义 View "));
         items.add(new ItemInfo("Guides", GuidesActivity.class, "官方 Android 开发指南"));
         items.add(new ItemInfo("Test", TestActivity.class, ""));
         items.add(new ItemInfo("Activity", ActivityActivity.class, "[Activity]案例"));
@@ -75,6 +78,7 @@ public class MainActivity extends BaseGridActivity {
         items.add(new ItemInfo("RSA 加密", "rsa", "[加密]案例"));
         items.add(new ItemInfo("ZoomImage", "zoomImage", "[加密]案例"));
         items.add(new ItemInfo("ScaleView", "scaleView", "[加密]案例"));
+        items.add(new ItemInfo("列表", RecyclerActivity.class, "[列表]案例"));
         return items;
     }
 

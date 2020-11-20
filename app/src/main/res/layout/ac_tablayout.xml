@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="测试" />
 
-    <android.support.design.widget.TabLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.design.widget.TabLayout
         android:id="@+id/tab_indicator"
         style="@style/tab_marketing_incentive"
         android:layout_width="wrap_content"

@@ -5,8 +5,11 @@
     <string name="ok">OK</string>
 
     <!-- 通用模块 -->
+    <string name="title" translatable="false">标题</string>
+    <string name="value" translatable="false">对应的值</string>
     <string name="no_01" translatable="false">取消</string>
     <string name="yes_01" translatable="false">确定</string>
     <string name="jump" translatable="false">跳过</string>
+    <string name="image" translatable="false">图片</string>
 
 </resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_585858"
+    android:orientation="vertical">
+
+    <com.csp.cases.step.StepView
+        android:id="@+id/step"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:background="@color/color_019b25"
+        android:padding="12dp"
+        app:step_count="4"
+        app:step_index="3"
+        app:title1="标题01"
+        app:title2="标题02"
+        app:title3="标题03"
+        app:title4="标题04"/>
+
+</LinearLayout>
