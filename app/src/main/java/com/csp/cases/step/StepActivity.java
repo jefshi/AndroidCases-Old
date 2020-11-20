@@ -14,6 +14,6 @@ public class StepActivity extends Activity {
         setContentView(R.layout.ac_step);
 
         StepView step = findViewById(R.id.step);
-        step.refreshStepIndex(3);
+        // step.refreshStepIndex(3);
     }
 }
