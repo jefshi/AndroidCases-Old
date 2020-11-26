@@ -4,7 +4,7 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_585858"
+    android:background="@color/color_ffffff"
     android:orientation="vertical">
 
     <com.csp.cases.step.StepView
@@ -19,6 +19,23 @@
         app:title1="标题01"
         app:title2="标题02"
         app:title3="标题03"
-        app:title4="标题04"/>
+        app:title4="标题04" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.csp.cases.activity.view.custom.LetterIndexBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
+
+        <com.csp.cases.activity.view.custom.SideBar
+            android:layout_width="200dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
 </LinearLayout>
