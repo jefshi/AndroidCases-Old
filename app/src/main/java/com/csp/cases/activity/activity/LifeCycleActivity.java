@@ -1,5 +1,6 @@
 package com.csp.cases.activity.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.csp.cases.base.activity.BaseListActivity;
@@ -16,57 +17,64 @@ import com.csp.utils.android.log.LogCat;
  */
 public abstract class LifeCycleActivity extends BaseListActivity {
 
-	@Override
-	public String toString() {
-		return '[' + Integer.toHexString(hashCode()) + "][" + getClass().getSimpleName() + ']';
-	}
+    @Override
+    public String toString() {
+        return '[' + Integer.toHexString(hashCode()) + "][" + getClass().getSimpleName() + ']';
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		LogCat.e(toString() + "生命周期：onCreate");
-	}
+        LogCat.e(toString() + "生命周期：onCreate");
+    }
 
-	@Override
-	protected void onStart() {
-		super.onStart();
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-		LogCat.e(toString() + "生命周期：onStart");
-	}
+        LogCat.e(toString() + "生命周期：onStart");
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-		LogCat.e(toString() + "生命周期：onResume");
-	}
+        LogCat.e(toString() + "生命周期：onResume");
+    }
 
-	@Override
-	protected void onPause() {
-		super.onPause();
+    @Override
+    protected void onPause() {
+        super.onPause();
 
-		LogCat.e(toString() + "生命周期：onPause");
-	}
+        LogCat.e(toString() + "生命周期：onPause");
+    }
 
-	@Override
-	protected void onStop() {
-		super.onStop();
+    @Override
+    protected void onStop() {
+        super.onStop();
 
-		LogCat.e(toString() + "生命周期：onStop");
-	}
+        LogCat.e(toString() + "生命周期：onStop");
+    }
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
-		LogCat.e(toString() + "生命周期：onDestroy");
-	}
+        LogCat.e(toString() + "生命周期：onDestroy");
+    }
 
-	@Override
-	protected void onRestart() {
-		super.onRestart();
+    @Override
+    protected void onRestart() {
+        super.onRestart();
 
-		LogCat.e(toString() + "生命周期：onRestart");
-	}
+        LogCat.e(toString() + "生命周期：onRestart");
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        LogCat.e(toString() + "生命周期：onNewIntent");
+    }
 }

@@ -69,26 +69,22 @@
         <activity
             android:name=".activity.activity.luanchmod.LauchModeActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="standard"
-            android:screenOrientation="landscape" />
+            android:launchMode="standard" />
 
         <activity
             android:name=".activity.activity.luanchmod.SingleTopActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTop"
-            android:screenOrientation="landscape" />
+            android:launchMode="singleTop" />
 
         <activity
             android:name=".activity.activity.luanchmod.SingleTaskActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"
-            android:screenOrientation="landscape" />
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".activity.activity.luanchmod.SingleInstanceActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleInstance"
-            android:screenOrientation="landscape" />
+            android:launchMode="singleInstance" />
 
         <!-- Android 7.0 文件权限 -->
         <provider
@@ -143,6 +139,16 @@
 
         <activity
             android:name=".activity.component.DialogActivity"
+            android:configChanges="orientation|keyboardHidden" />
+
+        <activity
+            android:name=".activity.component.DialogThemeActivity"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            android:configChanges="orientation|keyboardHidden" />
+
+        <activity
+            android:name=".activity.component.DialogTheme02Activity"
+            android:theme="@style/style_dialog"
             android:configChanges="orientation|keyboardHidden" />
 
         <activity

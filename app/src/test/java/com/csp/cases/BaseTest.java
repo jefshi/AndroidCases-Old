@@ -27,14 +27,14 @@ import java.util.concurrent.Executor;
 public class BaseTest {
 
     public BaseTest() {
-        ShadowLog.stream = System.out;
-        ThreadUtils.setDeliver(new Executor() {
-            @Override
-            public void execute(@NonNull Runnable command) {
-                command.run();
-            }
-        });
-        Utils.init(RuntimeEnvironment.application);
+//        ShadowLog.stream = System.out;
+//        ThreadUtils.setDeliver(new Executor() {
+//            @Override
+//            public void execute(@NonNull Runnable command) {
+//                command.run();
+//            }
+//        });
+//        Utils.init(RuntimeEnvironment.application);
     }
 
     @Test

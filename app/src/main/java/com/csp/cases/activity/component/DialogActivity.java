@@ -5,24 +5,16 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.PopupWindow;
 import android.widget.TimePicker;
 
 import com.csp.cases.R;
 import com.csp.cases.base.activity.BaseGridActivity;
 import com.csp.cases.base.dto.ItemInfo;
-import com.csp.utils.android.dialog.PopupWindowHelper;
-import com.csp.utils.android.dialog.PopupWindowLayoutGravity;
 import com.csp.utils.android.log.LogCat;
 
 import java.util.ArrayList;
@@ -51,7 +43,8 @@ public class DialogActivity extends BaseGridActivity {
         items.add(new ItemInfo("警告对话框：单选", "alerDialog03", ""));
         items.add(new ItemInfo("警告对话框：复选", "alerDialog04", ""));
         items.add(new ItemInfo("警告对话框：自定义View", "alerDialog05", "注：含输入控件的对话框，无法自动弹出输入法时，见详细代码"));
-        items.add(new ItemInfo("警告对话框：Activity", "", "不提共案例。方法：将[Activity]的主题改为[Dialog]形式即可"));
+        items.add(new ItemInfo("警告对话框：Activity", DialogThemeActivity.class, "不提共案例。方法：将[Activity]的主题改为[Dialog]形式即可"));
+        items.add(new ItemInfo("警告对话框：Activity", DialogTheme02Activity.class, "不提共案例。方法：将[Activity]的主题改为[Dialog]形式即可"));
         items.add(new ItemInfo("日期对话框", "datePickerDialog01", ""));
         items.add(new ItemInfo("时间对话框", "timePickerDialog01", ""));
         items.add(new ItemInfo("进度对话框", "progressDialog01", ""));

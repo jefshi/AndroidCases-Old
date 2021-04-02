@@ -41,11 +41,4 @@ public class LauchModeActivity extends LifeCycleActivity {
         txtItem.setText(String.valueOf(msg));
         LogCat.e(msg);
     }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        LogCat.e("当前调用方法：onNewIntent");
-    }
 }

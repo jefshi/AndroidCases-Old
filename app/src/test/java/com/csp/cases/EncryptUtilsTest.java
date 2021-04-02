@@ -12,7 +12,6 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import static com.blankj.utilcode.util.TestConfig.PATH_ENCRYPT;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -26,6 +25,9 @@ import static org.junit.Assert.assertEquals;
  * </pre>
  */
 public class EncryptUtilsTest extends BaseTest {
+
+    private final static String PATH_ENCRYPT = "";
+
     @Test
     public void encryptMD2() {
         String blankjMD2 = "15435017570D8A73449E25C4622E17A4";
@@ -156,7 +158,7 @@ public class EncryptUtilsTest extends BaseTest {
 
     private String blankjHmacSHA512 =
             "FC55AD54B95F55A8E32EA1BAD7748C157F80679F5561EC95A3EAD975316BA85363CB4AF6462D695F742F469EDC2D577272BE359A7F9E9C7018FDF4C921E1B3CF";
-    private String blankjHmackey    = "blankj";
+    private String blankjHmackey = "blankj";
 
     @Test
     public void encryptHmacMD5() {
@@ -260,12 +262,12 @@ public class EncryptUtilsTest extends BaseTest {
     }
 
 
-    private String dataDES      = "0008DB3345AB0223";
-    private String keyDES       = "6801020304050607";
-    private String resDES       = "1F7962581118F360";
+    private String dataDES = "0008DB3345AB0223";
+    private String keyDES = "6801020304050607";
+    private String resDES = "1F7962581118F360";
     private byte[] bytesDataDES = hexString2Bytes(dataDES);
-    private byte[] bytesKeyDES  = hexString2Bytes(keyDES);
-    private byte[] bytesResDES  = hexString2Bytes(resDES);
+    private byte[] bytesKeyDES = hexString2Bytes(keyDES);
+    private byte[] bytesResDES = hexString2Bytes(resDES);
 
     @Test
     public void encryptDES() {
@@ -299,12 +301,12 @@ public class EncryptUtilsTest extends BaseTest {
         );
     }
 
-    private String data3DES      = "1111111111111111";
-    private String key3DES       = "111111111111111111111111111111111111111111111111";
-    private String res3DES       = "F40379AB9E0EC533";
+    private String data3DES = "1111111111111111";
+    private String key3DES = "111111111111111111111111111111111111111111111111";
+    private String res3DES = "F40379AB9E0EC533";
     private byte[] bytesDataDES3 = hexString2Bytes(data3DES);
-    private byte[] bytesKeyDES3  = hexString2Bytes(key3DES);
-    private byte[] bytesResDES3  = hexString2Bytes(res3DES);
+    private byte[] bytesKeyDES3 = hexString2Bytes(key3DES);
+    private byte[] bytesResDES3 = hexString2Bytes(res3DES);
 
     @Test
     public void encrypt3DES() {
@@ -338,12 +340,12 @@ public class EncryptUtilsTest extends BaseTest {
         );
     }
 
-    private String dataAES      = "11111111111111111111111111111111";
-    private String keyAES       = "11111111111111111111111111111111";
-    private String resAES       = "E56E26F5608B8D268F2556E198A0E01B";
+    private String dataAES = "11111111111111111111111111111111";
+    private String keyAES = "11111111111111111111111111111111";
+    private String resAES = "E56E26F5608B8D268F2556E198A0E01B";
     private byte[] bytesDataAES = hexString2Bytes(dataAES);
-    private byte[] bytesKeyAES  = hexString2Bytes(keyAES);
-    private byte[] bytesResAES  = hexString2Bytes(resAES);
+    private byte[] bytesKeyAES = hexString2Bytes(keyAES);
+    private byte[] bytesResAES = hexString2Bytes(resAES);
 
     @Test
     public void encryptAES() {
@@ -376,9 +378,9 @@ public class EncryptUtilsTest extends BaseTest {
         );
     }
 
-    private String publicKey  = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWuAuSCrzUXC1l4ixXBeBfotUtkALrAjLM5UHiVfOFHrRJHM41HSeHVm56UZHgJlwk80R8juu1ykuhkgrilTv7H+3MpZdIunvndDElgdgk8aI2Ip4GUlemUDvCtWd3ychWEh4kYQ8CeInQvNM08imoLFldvbjWt/IkGK+BcGzamQIDAQAB";
+    private String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWuAuSCrzUXC1l4ixXBeBfotUtkALrAjLM5UHiVfOFHrRJHM41HSeHVm56UZHgJlwk80R8juu1ykuhkgrilTv7H+3MpZdIunvndDElgdgk8aI2Ip4GUlemUDvCtWd3ychWEh4kYQ8CeInQvNM08imoLFldvbjWt/IkGK+BcGzamQIDAQAB";
     private String privateKey = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJa4C5IKvNRcLWXiLFcF4F+i1S2QAusCMszlQeJV84UetEkczjUdJ4dWbnpRkeAmXCTzRHyO67XKS6GSCuKVO/sf7cyll0i6e+d0MSWB2CTxojYingZSV6ZQO8K1Z3fJyFYSHiRhDwJ4idC80zTyKagsWV29uNa38iQYr4FwbNqZAgMBAAECgYAxV1k6W1eMMg0OsKeRabQVuwoNG3tJEnQtDdSu0zKg3vdohAyh6MR7EvmiA7g86HH8CsPd/y/9WJe/8j6sBO0Ye9gt7eyQ2NiwWvlTuwNmngcSTapVvVI6NEyJFMfQt9PB1EHLNAXlz8jtJUyA7C48jReQD9p/SzAP0VxG7lwyMQJBAOjE7hAZ/6fyP3DB1fG7jr9gONZcz3TUaqx6BUn4GKZnckW08ht9Xqcqft5Hthu8BbLM9ptQ0U8QZekrJwD6ya0CQQClwstZMPu8jLhsgugVwodcG1mPEOiw9Yjnmt9+WTI07Ll2uFv//hRXBnahBBnZbucUYEbUY3kqUX9b3e9TmEodAkEAybPMbxt4VDoxCy6Mi/pxChkBZ4/pHV3sSiU6bAyWn6vIc+sGWRfca5MBePA/N+1IKtY9Y/02QwL8rH5+P/URyQJAL/hdjORGFdzLimuf6pwvPBKWKncEQCHuisghIZmClBpl2duklELddAnkztg2+tvDd/wcw14+NGb9aoKhvhl2aQJAbvcgoPU+xs0CjeexH+TS2S/jKkTRpvP2CpPK/k71m13xWdE8RtMkYY1measRmlIwOfWze7ll/PGT4dxWf31FNg==";
-    private String dataRSA    = "BlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBla12345678";
+    private String dataRSA = "BlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBlankjBla12345678";
 
     @Test
     public void encryptDecryptRSA() {

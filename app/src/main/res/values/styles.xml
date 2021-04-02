@@ -39,4 +39,10 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+
+    <style name="style_dialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowMinWidthMajor">200%</item>
+        <item name="android:windowMinWidthMinor">200%</item>
+    </style>
+
 </resources>
